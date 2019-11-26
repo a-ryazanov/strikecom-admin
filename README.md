@@ -1,4 +1,4 @@
-# strekecom-admin
+# strikecom-admin
 
 ## Project setup
 ```
