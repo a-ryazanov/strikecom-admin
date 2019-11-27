@@ -1,6 +1,8 @@
 <template>
   <ElMenu
     unique-opened
+    :default-active="activeRouteName"
+    class="navMenu"
   >
     <Component
       v-for="route in routes"
@@ -54,6 +56,12 @@ export default {
     [MenuItem.name]: MenuItem,
   },
 
+  computed: {
+    activeRouteName() {
+      return this.$route.name;
+    },
+  },
+
   methods: {
     handleMenuItemClick(item) {
       if (this.$route.name !== item.name) {
@@ -69,3 +77,15 @@ export default {
   },
 };
 </script>
+
+<style lang="stylus">
+@import '../styles/palette.styl'
+
+.el-menu
+  background-color transparent
+  border none
+
+.el-menu-item, .el-submenu__title
+  &:hover
+    background-color $athens-grey
+</style>

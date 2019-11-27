@@ -1,6 +1,7 @@
 import Vue from 'vue';
 // @ts-ignore
 import vueKitPlugin from '@x10d/vue-kit/src/plugins/vue-kit';
+// @ts-ignore
 import errorHandlingPlugin from '@x10d/vue-kit/src/plugins/error-handling';
 
 import App from './App.vue';

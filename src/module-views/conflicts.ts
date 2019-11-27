@@ -2,6 +2,8 @@ import { ModuleView } from '@/interfaces';
 
 export default {
   name: 'conflicts',
+  dataSourceEndPoint: 'conflicts',
+  title: 'Конфликты',
   tableView: {
     columns: [
       {

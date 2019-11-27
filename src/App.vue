@@ -4,7 +4,10 @@
       direction="horizontal"
       class="app-cnt"
     >
-      <ElAside>
+      <ElAside
+        width="250px"
+        class="app__aside"
+      >
         <TheNavBar/>
       </ElAside>
 
@@ -43,6 +46,8 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 @import '~@x10d/vue-kit/src/styles/mixins/tooltip.styl'
+@import '~@x10d/vue-kit/src/styles/mixins/utils.styl'
+@import './styles/palette.styl'
 
 #app
   globalTooltipStyles()
@@ -52,4 +57,7 @@ export default Vue.extend({
 
 .app-cnt
   min-height 100vh
+
+.app__aside
+  background-color $catskill-white
 </style>

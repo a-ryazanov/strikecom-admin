@@ -6,63 +6,6 @@ import { BASE_API_URL } from '@/config';
 import { Dictionary, Locale } from '@/interfaces';
 
 
-// // Пользователь
-// export async function fetchUserInfo() {
-//   return axiosInstance.request<Dictionary<string>>({
-//     method: 'GET',
-//     url: 'user',
-//   }).then(response => response.data);
-// }
-//
-// // Общие функции
-// export async function fetchItems<T>(
-//   endPoint: string,
-//   params: any = {},
-// ): Promise<ServerResponse<T>> {
-//   return axiosInstance.request<ServerResponse<T>>({
-//     method: 'GET',
-//     url: `${endPoint}`,
-//     params,
-//   }).then(response => response.data);
-// }
-//
-// export async function fetchItem<T>(
-//   endPoint: string,
-//   params: any = {},
-// ) {
-//   const { id, ...restParams } = params;
-//
-//   return axiosInstance.request<ServerResponse<T>>({
-//     method: 'GET',
-//     url: `${endPoint}/${id}`,
-//     params: restParams,
-//   }).then(response => response.data);
-// }
-//
-// export async function createItem<T>(
-//   endPoint: string,
-//   data: Dictionary<any>,
-//   params: any = {},
-// ) {
-//   return axiosInstance.request<ServerResponse<T>>({
-//     method: 'POST',
-//     url: endPoint,
-//     data,
-//     params,
-//   }).then(response => response.data);
-// }
-//
-// export async function deleteItem<T>(
-//   endPoint: string,
-//   params: any = {},
-// ) {
-//   return axiosInstance.request<ServerResponse<T>>({
-//     method: 'DELETE',
-//     url: endPoint,
-//     params,
-//   }).then(response => response.data);
-// }
-
 class Api {
   private axiosInstance: AxiosInstance
 
@@ -75,6 +18,9 @@ class Api {
     this.locale = Locale.ALL;
     this.axiosInstance = axios.create({
       baseURL: BASE_API_URL,
+      headers: {
+        Accept: 'application/json',
+      },
 
       paramsSerializer: params => Qs.stringify(params, {
         encode: false,
@@ -97,10 +43,22 @@ class Api {
     );
   }
 
-  private request<T>(url: string, method: Method): Promise<T> {
+  private request<T>({
+    url,
+    method,
+    data,
+    params,
+  } : {
+    url: string,
+    method: Method,
+    data?: any,
+    params?: any,
+  }): Promise<T> {
     return this.axiosInstance.request<T>({
       url,
       method,
+      data,
+      params,
     }).then(response => response.data);
   }
 
@@ -109,19 +67,52 @@ class Api {
   }
 
   public async fetchCatalogs(): Promise<{ data: Dictionary<any[]>}> {
-    return this.request<{ data: Dictionary<any[]>}>(
-      'references',
-      'get',
-    );
+    return this.request<{ data: Dictionary<any[]>}>({
+      url: 'references',
+      method: 'get',
+    });
   }
 
   public async fetchCatalogsChecksum(): Promise<string> {
-    const { data } = await this.request<{ data: { checkSum: string }}>(
-      'references-checksum',
-      'get',
-    );
+    const { data } = await this.request<{ data: { checkSum: string }}>({
+      url: 'references-checksum',
+      method: 'get',
+    });
 
     return data.checkSum;
+  }
+
+  public async fetchItems(endPoint: string, params?: any): Promise<any> {
+    return this.request({
+      url: endPoint,
+      method: 'get',
+      params,
+    });
+  }
+
+  public async createItem(endPoint: string, item: any): Promise<any> {
+    return this.request({
+      url: endPoint,
+      method: 'post',
+      data: item,
+    });
+  }
+
+  public async updateItem(endPoint: string, item: any): Promise<any> {
+    const { id, ...restData } = item;
+
+    return this.request({
+      url: `${endPoint}/${id}`,
+      method: 'put',
+      data: restData,
+    });
+  }
+
+  public async deleteItem(endPoint: string, item: any): Promise<any> {
+    return this.request({
+      url: `${endPoint}/${item.id}`,
+      method: 'delete',
+    });
   }
 }
 

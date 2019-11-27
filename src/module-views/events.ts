@@ -2,6 +2,8 @@ import { ModuleView } from '@/interfaces';
 
 export default {
   name: 'events',
+  dataSourceEndPoint: 'events',
+  title: 'События',
   tableView: {
     columns: [
       {
