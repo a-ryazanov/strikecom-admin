@@ -66,6 +66,15 @@ class Api {
     this.authToken = token;
   }
 
+
+  public async fetchUserInfo(): Promise<any> {
+    return this.request({
+      url: 'me',
+      method: 'get',
+    });
+  }
+
+
   public async fetchCatalogs(): Promise<{ data: Dictionary<any[]>}> {
     return this.request<{ data: Dictionary<any[]>}>({
       url: 'references',
@@ -81,6 +90,7 @@ class Api {
 
     return data.checkSum;
   }
+
 
   public async fetchItems(endPoint: string, params?: any): Promise<any> {
     return this.request({

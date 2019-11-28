@@ -1,22 +1,6 @@
 <template>
   <div id="app">
-    <ElContainer
-      direction="horizontal"
-      class="app-cnt"
-    >
-      <ElAside
-        width="250px"
-        class="app__aside"
-      >
-        <TheNavBar/>
-      </ElAside>
-
-      <ElContainer>
-        <ElMain>
-          <router-view id="app__content"/>
-        </ElMain>
-      </ElContainer>
-    </ElContainer>
+    <router-view></router-view>
 
     <modals-container/>
   </div>
@@ -24,17 +8,31 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { Container, Aside, Main } from 'element-ui';
+import { mapGetters } from 'vuex';
 
-import TheNavBar from '@/components/TheNavBar.vue';
+import { HAS_PERMISSIONS } from '@/store/modules/auth/getter-types';
+
+import { LOGIN_ROUTE } from '@/router/route-names';
 
 
 export default Vue.extend({
-  components: {
-    [Aside.name]: Aside,
-    [Container.name]: Container,
-    [Main.name]: Main,
-    TheNavBar,
+  watch: {
+    userHasPermission: {
+      handler(newValue) {
+        if (newValue) this.$router.push('/');
+        else {
+          this.$router.push({
+            name: LOGIN_ROUTE,
+          });
+        }
+      },
+    },
+  },
+
+  computed: {
+    ...mapGetters({
+      userHasPermission: HAS_PERMISSIONS,
+    }),
   },
 });
 </script>
@@ -47,17 +45,12 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 @import '~@x10d/vue-kit/src/styles/mixins/tooltip.styl'
 @import '~@x10d/vue-kit/src/styles/mixins/utils.styl'
-@import './styles/palette.styl'
 
 #app
   globalTooltipStyles()
+  display flex
+  min-height 100vh
 
   & /deep/
     defaultTextStyles()
-
-.app-cnt
-  min-height 100vh
-
-.app__aside
-  background-color $catskill-white
 </style>

@@ -1,14 +1,10 @@
+import { Store } from 'vuex';
 import * as fb from 'firebase/app';
 import 'firebase/auth';
 
-import { Store } from 'vuex';
-
-import { RootState } from '@/interfaces';
-
 import { api } from '@/services/api';
 
-// import { FETCH_USER_INFO } from '@/store/modules/auth/action-types';
-// import { SET_USER } from '@/store/modules/auth/mutation-types';
+import { SET_USER } from '@/store/modules/auth/mutation-types';
 
 
 class Firebase {
@@ -26,15 +22,21 @@ class Firebase {
       });
     }
 
-    initAuthStateObserver(store: Store<RootState>): Promise<void> {
+    initAuthStateObserver(store: Store<any>): Promise<void> {
       return new Promise((resolve) => {
         this.app.auth().onAuthStateChanged(
           async (user) => {
             if (user) {
-              api.setAuthToken(await user.getIdToken());
-              // await store.dispatch(FETCH_USER_INFO);
+              const authToken = await user.getIdToken();
+
+              api.setAuthToken(authToken);
+
+              const { data: userInfo } = await api.fetchUserInfo();
+
+              store.commit(SET_USER, userInfo);
             } else {
-              // store.commit(SET_USER, null);
+              store.commit(SET_USER, null);
+
               api.setAuthToken(null);
             }
 
@@ -45,7 +47,11 @@ class Firebase {
     }
 
     async signInWithEmailAndPassword(email: string, password: string): Promise<void> {
-      await this.app.auth().signInWithEmailAndPassword(email, password);
+      try {
+        await this.app.auth().signInWithEmailAndPassword(email, password);
+      } catch (e) {
+        throw e;
+      }
     }
 
     async signOut(): Promise<void> {

@@ -21,7 +21,7 @@ import { api, catalogs, firebase } from '@/services';
 
   await catalogs.initialize(checkSum);
 
-  // await firebase.initAuthStateObserver(store);
+  await firebase.initAuthStateObserver(store);
 
   const vm = new Vue({
     router,

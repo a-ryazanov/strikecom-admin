@@ -1,36 +1,42 @@
 <template>
-  <ElMenu
-    unique-opened
-    :default-active="activeRouteName"
-    class="navMenu"
-  >
-    <Component
-      v-for="route in routes"
-      :key="route.name"
-      :is="route.children ? 'ElSubmenu' : 'ElMenuItem'"
-      :index="route.name"
-      @click="handleMenuItemClick(route)"
+  <div class="theNavBar">
+    <TheNavBarUserPanel />
+
+    <ElMenu
+      unique-opened
+      :default-active="activeRouteName"
+      class="theNavBar__menu"
     >
-      <template v-if="route.children">
+      <Component
+        v-for="route in routes"
+        :key="route.name"
+        :is="route.children ? 'ElSubmenu' : 'ElMenuItem'"
+        :index="route.name"
+        @click="handleMenuItemClick(route)"
+        class="theNavBarMenu__item"
+      >
+        <template v-if="route.children">
         <span
           slot="title"
           v-text="route.meta.title"
         />
 
-        <ElMenuItem
-          v-for="childRoute in route.children"
-          :key="childRoute.name"
-          :index="childRoute.name"
-          @click="handleMenuItemClick(childRoute)"
-          v-text="childRoute.meta.title"
-        />
-      </template>
+          <ElMenuItem
+            v-for="childRoute in route.children"
+            :key="childRoute.name"
+            :index="childRoute.name"
+            @click="handleMenuItemClick(childRoute)"
+            v-text="childRoute.meta.title"
+          />
+        </template>
 
-      <template v-else>
-        {{ route.meta.title }}
-      </template>
-    </Component>
-  </ElMenu>
+        <template v-else>
+          {{ route.meta.title }}
+        </template>
+      </Component>
+    </ElMenu>
+  </div>
+
 </template>
 
 <script>
@@ -39,6 +45,8 @@ import {
   Submenu,
   MenuItem,
 } from 'element-ui';
+
+import TheNavBarUserPanel from '@/components/TheNavBarUserPanel.vue';
 
 import { routes } from '@/router';
 
@@ -54,6 +62,7 @@ export default {
     [Menu.name]: Menu,
     [Submenu.name]: Submenu,
     [MenuItem.name]: MenuItem,
+    TheNavBarUserPanel,
   },
 
   computed: {
@@ -73,19 +82,40 @@ export default {
   },
 
   created() {
-    this.routes = routes.filter(route => route.path !== '/');
+    this.routes = routes.filter(route => !!route.meta);
   },
 };
 </script>
 
 <style lang="stylus">
 @import '../styles/palette.styl'
+@import '~@x10d/vue-kit/src/styles/mixins/text.styl'
+@import '~@x10d/vue-kit/src/styles/variables/colors.styl'
 
-.el-menu
+.theNavBar__menu
+  padding 0 20px
   background-color transparent
   border none
 
-.el-menu-item, .el-submenu__title
-  &:hover
+.theNavBarMenu__item
+  commonTextStyles()
+  height auto
+  margin-top 4px
+  padding 8px
+  border-radius 4px
+  color $globalColorNileBlue
+  line-height unset
+
+  &:first-child
+    margin-top 22px
+
+  &.is-active
+    color $globalColorCobalt
+    font-weight 500
     background-color $athens-grey
+
+  &:hover:not(.is-active)
+    color $globalColorNileBlue
+    background-color $athens-grey
+
 </style>
