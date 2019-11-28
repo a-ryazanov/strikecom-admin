@@ -1,7 +1,10 @@
 import { ModuleView } from '@/interfaces';
 
+import { EVENTS_ROUTE } from '@/router/route-names';
+
+
 export default {
-  name: 'events',
+  name: EVENTS_ROUTE,
   dataSourceEndPoint: 'events',
   title: 'События',
   tableView: {

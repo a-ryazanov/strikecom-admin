@@ -1,25 +1,55 @@
 <template>
-  <section class="baseSection">
-    <div class="baseSection__header">
-      <h1
-        class="baseSectionHeader__title"
-        v-text="$props.title"
-      />
+  <ElContainer
+    direction="horizontal"
+    class="section-cnt"
+  >
+    <ElAside
+      width="250px"
+      class="section__aside"
+    >
+      <TheNavBar/>
+    </ElAside>
 
-      <div class="baseSectionHeader__addon">
-        <slot name="headerAddon"/>
-      </div>
-    </div>
+    <ElContainer class="section__container">
+      <ElHeader class="section__header">
+        <h1
+          class="sectionHeader__title"
+          v-text="$props.title"
+        />
 
-    <div class="baseSection__content">
-      <slot name="content"/>
-    </div>
-  </section>
+        <div class="sectionHeader__addon">
+          <slot name="headerAddon"/>
+        </div>
+      </ElHeader>
+
+      <ElMain class="section__content">
+        <slot name="content"/>
+      </ElMain>
+    </ElContainer>
+  </ElContainer>
 </template>
 
 <script>
+import {
+  Aside,
+  Container,
+  Header,
+  Main,
+} from 'element-ui';
+
+import TheNavBar from '@/components/TheNavBar.vue';
+
+
 export default {
   name: 'BaseSectionLayout',
+
+  components: {
+    [Aside.name]: Aside,
+    [Container.name]: Container,
+    [Header.name]: Header,
+    [Main.name]: Main,
+    TheNavBar,
+  },
 
   props: {
     // Заголовок секции
@@ -36,7 +66,13 @@ export default {
 @import "../../node_modules/@x10d/vue-kit/src/styles/variables/buttons.styl"
 @import '../styles/palette.styl'
 
-.baseSection
+.section-cnt
+  min-height 100vh
+
+.section__aside
+  background-color $catskill-white
+
+.section__container
   display flex
   flex-direction column
   height 100%
@@ -46,7 +82,7 @@ export default {
   @media(max-width: 1280px)
     padding 0 32px
 
-.baseSection__header
+.section__header
   flex 0 0 auto
   display flex
   align-items center
@@ -55,15 +91,15 @@ export default {
   padding-bottom 16px
   border-bottom solid 1px $mystic
 
-.baseSectionHeader__title
+.sectionHeader__title
   font-size 22px
   line-height 25px
 
-.baseSectionHeader__addon
+.sectionHeader__addon
   display flex
   margin-left auto
 
-.baseSection__content
+.section__content
   display flex
   flex-direction column
   flex 1 1 0

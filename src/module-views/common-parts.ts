@@ -25,7 +25,10 @@ export async function tableSectionUpdateItemAction(
   vueComponent: any,
   model: any,
 ): Promise<any> {
-  return vueComponent.$store.dispatch(UPDATE_ITEM, model);
+  // По протоколу, при обновлении сущности, не должно быть данных о пользователе
+  const { user, ...restData } = model;
+
+  return vueComponent.$store.dispatch(UPDATE_ITEM, restData);
 }
 
 export async function tableSectionDeleteItemAction(

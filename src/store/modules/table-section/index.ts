@@ -30,7 +30,7 @@ interface TableSectionModule {
   } | null
 }
 
-const tableSectionModule: Module<any, TableSectionModule> = {
+const tableSectionModule: Module<TableSectionModule, any> = {
   state: {
     dataSourceEndPoint: '',
     loadingState: 'pending',
@@ -124,7 +124,7 @@ const tableSectionModule: Module<any, TableSectionModule> = {
       try {
         commit(SET_SECTION_LOADING_STATE, 'pending');
 
-        const updatedItem = await api.updateItem(state.dataSourceEndPoint, item);
+        const { data: updatedItem } = await api.updateItem(state.dataSourceEndPoint, item);
 
         commit(MERGE_ITEM_BY_ID, {
           id: item.id,

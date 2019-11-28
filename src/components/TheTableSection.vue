@@ -1,10 +1,32 @@
 <template>
   <BaseSectionLayout :title="activeModuleView.title">
-    <template slot="content">
-      <BaseTable
-        :view="activeModuleView.tableView"
-        :items="sectionData.items"
+    <template
+      v-if="isGlobalActionsShown"
+      slot="headerAddon"
+    >
+
+      <BaseActionButton
+        v-for="action in activeModuleView.globalActions"
+        :key="action.name"
+        :action-view="action"
       />
+    </template>
+
+
+    <template slot="content">
+      <template v-if="sectionData.loadingState === 'loaded'">
+        <BaseTable
+          :view="activeModuleView.tableView"
+          :items="sectionData.items"
+        />
+
+        <BasePagination
+          :last-page="sectionData.lastResponseMeta.lastPage"
+          :current-page="sectionData.lastResponseMeta.currentPage"
+          class="section__pagination"
+          @page-changed="handlePageChanging"
+        />
+      </template>
     </template>
   </BaseSectionLayout>
 </template>
@@ -12,8 +34,8 @@
 <script>
 import { mapState } from 'vuex';
 
-import BaseActionButton from '@x10d/vue-kit/src/components/BaseActionButton';
-import BasePagination from '@x10d/vue-kit/src/components/BasePagination';
+import BaseActionButton from '@x10d/vue-kit/src/components/BaseActionButton.vue';
+import BasePagination from '@x10d/vue-kit/src/components/BasePagination.vue';
 import BaseTable from '@x10d/vue-kit/src/components/BaseTable.vue';
 
 import BaseSectionLayout from '@/components/BaseSectionLayout.vue';
@@ -32,6 +54,8 @@ export default {
   name: 'TheTableSection',
 
   components: {
+    BaseActionButton,
+    BasePagination,
     BaseSectionLayout,
     BaseTable,
   },
@@ -42,7 +66,20 @@ export default {
     }),
 
     activeModuleView() {
-      return moduleView.getModuleView(this.$route.meta.moduleName);
+      return moduleView.getModuleView(this.$route.name);
+    },
+
+    isGlobalActionsShown() {
+      return this.activeModuleView.globalActions
+        && this.sectionData.loadingState === 'loaded';
+    },
+  },
+
+  methods: {
+    handlePageChanging(page) {
+      this.$store.dispatch(FETCH_ITEMS, {
+        page,
+      });
     },
   },
 
@@ -64,6 +101,7 @@ export default {
 };
 </script>
 
-<style scoped>
-
+<style lang="stylus" scoped>
+.section__pagination
+  margin-top 20px
 </style>

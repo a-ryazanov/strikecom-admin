@@ -9,11 +9,13 @@ import {
   tableSectionUpdateItemAction,
 } from '@/module-views/common-parts';
 
-import { createEditFormFields } from '@/module-views/news/forms';
+import { commonFormFields } from '@/module-views/news/forms';
+
+import { NEWS_ROUTE } from '@/router/route-names';
 
 
 export default {
-  name: 'news',
+  name: NEWS_ROUTE,
   dataSourceEndPoint: 'news',
   title: 'Новости',
   tableView: {
@@ -47,21 +49,18 @@ export default {
       },
     ],
     itemActions: [
-      // {
-      //   name: 'update',
-      //   textContent: 'Изменить',
-      //   modalConfig: assembleCommonModalConfig(
-      //     'Редактирование новости',
-      //     'Сохранить',
-      //     {
-      //       fields: createEditFormFields,
-      //       handlers: {
-      //         input: commonFormInputHandler,
-      //       },
-      //     },
-      //   ),
-      //   handler: tableSectionUpdateItemAction,
-      // },
+      {
+        name: 'update',
+        textContent: 'Изменить',
+        modalConfig: assembleCommonModalConfig(
+          'Редактирование новости',
+          'Сохранить',
+          {
+            fields: commonFormFields,
+          },
+        ),
+        handler: tableSectionUpdateItemAction,
+      },
       {
         name: 'remove',
         textContent: 'Удалить',
@@ -109,4 +108,19 @@ export default {
       },
     ],
   },
+  globalActions: [
+    {
+      name: 'create',
+      textContent: 'Создать',
+      colorType: 'primary',
+      modalConfig: assembleCommonModalConfig(
+        'Создание новости',
+        'Создать',
+        {
+          fields: commonFormFields,
+        },
+      ),
+      handler: tableSectionCreateItemAction,
+    },
+  ],
 } as ModuleView;

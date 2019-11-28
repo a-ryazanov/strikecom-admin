@@ -1,7 +1,10 @@
 import { ModuleView } from '@/interfaces';
 
+import { CONFLICTS_ROUTE } from '@/router/route-names';
+
+
 export default {
-  name: 'conflicts',
+  name: CONFLICTS_ROUTE,
   dataSourceEndPoint: 'conflicts',
   title: 'Конфликты',
   tableView: {
