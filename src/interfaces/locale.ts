@@ -6,9 +6,9 @@ export enum Locale {
     DE = 'de',
 }
 
-export const localesMap = {
-  [Locale.ALL]: 'Все языки',
+export const localesMappings = {
   [Locale.RU]: 'Русский',
   [Locale.EN]: 'Английский',
   [Locale.ES]: 'Испанский',
+  [Locale.DE]: 'Немецкий',
 };

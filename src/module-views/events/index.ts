@@ -1,7 +1,7 @@
 import { format } from 'date-fns';
-
 import { ModuleView } from '@/interfaces';
 
+import { EVENTS_ROUTE } from '@/router/route-names';
 import {
   assembleCommonModalConfig,
   tableSectionCreateItemAction,
@@ -14,15 +14,13 @@ import {
   createFormHandlers,
   updateFormFields,
   updateFormHandlers,
-} from '@/module-views/news/forms';
-
-import { NEWS_ROUTE } from '@/router/route-names';
+} from './forms';
 
 
 export default {
-  name: NEWS_ROUTE,
-  dataSourceEndPoint: 'news',
-  title: 'Новости',
+  name: EVENTS_ROUTE,
+  dataSourceEndPoint: 'events',
+  title: 'События',
   tableView: {
     columns: [
       {
@@ -35,24 +33,33 @@ export default {
         minWidth: 240,
       },
       {
+        name: 'conflict',
+        title: 'Конфликт',
+        typeOfCell: 'html',
+        formatCellText: ({ data }) => (data.titleRu
+          ? `<span>${data.titleRu}</span>`
+          : '<span style="color:#EB171F;">Заголовок не указан</span>'),
+        minWidth: 240,
+      },
+      {
         name: 'createdAt',
         title: 'Дата создания',
         typeOfCell: 'string',
         formatCellText: ({ data }) => format(new Date(data * 1000), 'dd-MM-yyyy HH:mm'),
-        minWidth: 80,
+        minWidth: 120,
       },
       {
         name: 'views',
         title: 'Просмотры',
         typeOfCell: 'string',
-        minWidth: 40,
+        minWidth: 60,
       },
       {
         name: 'published',
         title: 'Публикация',
         typeOfCell: 'string',
         formatCellText: ({ data }) => (data ? 'Да' : 'Нет'),
-        minWidth: 40,
+        minWidth: 60,
       },
     ],
     itemActions: [
@@ -60,7 +67,7 @@ export default {
         name: 'update',
         textContent: 'Изменить',
         modalConfig: assembleCommonModalConfig(
-          'Редактирование новости',
+          'Редактирование события',
           'Сохранить',
           {
             fields: updateFormFields,
@@ -122,7 +129,7 @@ export default {
       textContent: 'Создать',
       colorType: 'primary',
       modalConfig: assembleCommonModalConfig(
-        'Создание новости',
+        'Создание события',
         'Создать',
         {
           fields: createFormFields,
