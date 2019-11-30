@@ -47,11 +47,7 @@ class Firebase {
     }
 
     async signInWithEmailAndPassword(email: string, password: string): Promise<void> {
-      try {
-        await this.app.auth().signInWithEmailAndPassword(email, password);
-      } catch (e) {
-        throw e;
-      }
+      await this.app.auth().signInWithEmailAndPassword(email, password);
     }
 
     async signOut(): Promise<void> {

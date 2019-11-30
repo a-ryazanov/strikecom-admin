@@ -18,7 +18,7 @@ const authModule : Module<AuthModule, any> = {
   getters: {
 
     [HAS_PERMISSIONS]: state => state.user
-      && (state.user.roles.includes('ADMIN') || state.user.includes('MODERATOR')),
+      && (state.user.roles.includes('ADMIN') || state.user.roles.includes('MODERATOR')),
 
   },
 

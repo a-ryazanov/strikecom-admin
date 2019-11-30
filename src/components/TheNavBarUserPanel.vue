@@ -66,12 +66,8 @@ export default {
   },
 
   methods: {
-    signOut() {
-      firebase.signOut();
-
-      this.$router.push({
-        name: LOGIN_ROUTE,
-      });
+    async signOut() {
+      await firebase.signOut();
     },
   },
 };

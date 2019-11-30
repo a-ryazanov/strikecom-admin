@@ -1,6 +1,9 @@
 <template>
   <div class="login">
-    <form class="loginForm">
+    <form
+      v-loading="isLoading"
+      class="loginForm"
+    >
       <span
         class="loginForm__title"
         v-text="'ЗабастКом'"
@@ -55,6 +58,7 @@ import { firebase } from '@/services';
 interface IComponentData {
     email : string
     password : string
+    isLoading : boolean
     error : FirebaseError | null
     fieldsViews : {
         email : IPropertyFieldView
@@ -71,10 +75,11 @@ export default Vue.extend({
     InfoIcon,
   },
 
-  data() {
-    return ({
+  data(): IComponentData {
+    return {
       email: '',
       password: '',
+      isLoading: false,
       error: null,
       fieldsViews: {
         email: {
@@ -96,7 +101,7 @@ export default Vue.extend({
           labelPosition: 'none',
         },
       },
-    } as IComponentData);
+    };
   },
 
   computed: {
@@ -108,6 +113,7 @@ export default Vue.extend({
   methods: {
     async logIn() {
       try {
+        this.isLoading = true;
         this.error = null;
 
         await firebase.signInWithEmailAndPassword(
@@ -116,6 +122,8 @@ export default Vue.extend({
         );
       } catch (error) {
         this.error = error;
+      } finally {
+        this.isLoading = false;
       }
     },
   },
@@ -136,7 +144,7 @@ $formFieldMargin = 15px
   flex 1 1 auto
   display flex
   justify-content center
-  align-items start
+  align-items flex-start
   background-color $catskill-white
 
 .loginForm
