@@ -8,15 +8,15 @@
       <ElAvatar
         shape="square"
         size="small"
-        :src="user.imageUrl"
+        :src="user ? user.imageUrl : null"
         icon="el-icon-user-solid"
-        :alt="user.name"
+        :alt="user ? user.name : null"
         class="userPanel__avatar"
       />
 
       <span
         class="userPanel__userName"
-        v-text="user.name"
+        v-text="user ? user.name : null"
       />
 
       <ElIcon
