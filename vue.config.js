@@ -17,6 +17,13 @@ module.exports = {
     config.devtool('cheap-module-source-map');
 
     vueWebpackHelpers.chainVueSvgLoader(config);
+
+    vueWebpackHelpers.setupCriticalPathRendering(
+      config,
+      [
+        './src/styles/critical.styl',
+      ],
+    );
   },
 
   devServer: {

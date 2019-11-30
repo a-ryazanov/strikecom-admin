@@ -7,14 +7,30 @@
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title>ЗабастКом | Панель администратора</title>
 
+    <!-- Критичные коды, необходимые для некритичных стилей -->
+    <%= htmlWebpackPlugin.options.injectCriticalJs
+      ? htmlWebpackPlugin.options.injectCriticalJs()
+      : ''
+    %>
+    <noscript>
+      <style> .hideIfNoScript { display: none } </style>
+    </noscript>
+
     <!-- Шрифты -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
   </head>
   <body>
+  <div id="app">
+    <div class="app__preloader  hideIfNoScript"></div>
+
     <noscript>
-      <strong>We're sorry but strikecom-admin doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+      <div class="app__noscriptWarning">
+        <p>Приложение ЗабастКом для своей работы использует JavaScript.</p>
+        <p>Но, похоже, в Вашем браузере для данной страницы JavaScript отключен.</p>
+        <p>Пожалуйста, включите JavaScript для работы в приложении, и перезагрузите страницу.</p>
+      </div>
     </noscript>
-    <div id="app"></div>
+  </div>
     <!-- built files will be auto injected -->
   </body>
 </html>

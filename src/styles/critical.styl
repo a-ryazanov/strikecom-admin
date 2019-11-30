@@ -1,0 +1,30 @@
+@import "../../node_modules/@x10d/vue-kit/src/styles/mixins/spinner.styl"
+@import "../../node_modules/@x10d/vue-kit/src/styles/mixins/utils.styl"
+@import "../../node_modules/@x10d/vue-kit/src/styles/reset.styl"
+
+@import "./palette.styl"
+
+$appLoadingSpinnerSize = 80px
+
+
+#app
+  display flex
+  min-height 100vh
+  background-color $catskill-white
+
+.app__preloader
+  spinner($appLoadingSpinnerSize, 2px, $globalColorNileBlue)
+  margin auto
+
+.app__noscriptWarning
+  defaultTextStyles()
+  width 400px
+  padding 25px
+  border-radius 10px
+  background-color $globalColorWhite
+  box-shadow 0 16px 24px 0 rgba(0, 0, 0, 0.15)
+
+  & > p
+    text-align center
+    &:not(:first-of-type)
+      margin-top 10px
