@@ -4,6 +4,8 @@ import { map, forEach } from 'lodash-es';
 import IPropertyFieldView from '@x10d/vue-kit/src/types/IPropertyFieldView.d';
 import IFormHandlers from '@x10d/vue-kit/src/types/IFormHandlers.d';
 
+import BaseSearchableMultiselect from '@/components/BaseSearchableMultiselect.vue';
+
 import { catalogs } from '@/services/catalogs';
 import { api } from '@/services/api';
 
@@ -46,6 +48,58 @@ const commonFormFields : Array<IPropertyFieldView> = [
     catalogName: 'eventStatuses',
   },
   {
+    name: '_country',
+    title: 'Страна',
+    typeOfControl: BaseSearchableMultiselect,
+    specificControlProps: {
+      async searchOptions(value: string) {
+        return (await api.fetchItems('countries', {
+          name: value,
+        })).data;
+      },
+      validateQueryValue: value => value !== '' && value.length >= 3,
+      formatFieldTitle: value => value.nameRu,
+    },
+    labelPosition: 'top',
+    validator: 'required',
+  },
+  {
+    name: '_region',
+    title: 'Регион',
+    typeOfControl: BaseSearchableMultiselect,
+    specificControlProps: {
+      async searchOptions(value: string, model: any) {
+        return (await api.fetchItems('regions', {
+          countryId: model._country.id,
+          name: value,
+        })).data;
+      },
+      validateQueryValue: value => value !== '' && value.length >= 3,
+      formatFieldTitle: value => value.name,
+    },
+    labelPosition: 'top',
+    validator: 'required',
+    hidden: true,
+  },
+  {
+    name: '_locality',
+    title: 'Населенный пункт',
+    typeOfControl: BaseSearchableMultiselect,
+    specificControlProps: {
+      async searchOptions(value: string, model: any) {
+        return (await api.fetchItems('localities', {
+          regionId: model._region.id,
+          name: value,
+        })).data;
+      },
+      validateQueryValue: value => value !== '' && value.length >= 3,
+      formatFieldTitle: value => value.name,
+    },
+    labelPosition: 'top',
+    validator: 'required',
+    hidden: true,
+  },
+  {
     name: 'latitude',
     title: 'Широта',
     typeOfControl: 'number',
@@ -67,7 +121,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
   },
   {
     name: 'date',
-    title: 'Дата новости',
+    title: 'Дата события',
     typeOfControl: 'dateRange',
     labelPosition: 'top',
     validator: 'required',
@@ -94,7 +148,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
 
         return data;
       },
-      formatFieldTitle: value => value.titleRu,
+      formatFieldTitle: value => value.titleRu || value.id,
     },
   },
   {
@@ -219,6 +273,26 @@ const commonFormHandlers : IFormHandlers = {
       setLanguageDependentFieldsVisibility(
         map(model._languages, 'id'),
         formFields,
+      );
+    }
+
+    if (changedField.name === '_country') {
+      const regionFieldViewIdx = formFields.findIndex(field => field.name === '_region');
+
+      formFields[regionFieldViewIdx].hidden = !model._country;
+    }
+
+    if (changedField.name === '_region') {
+      const localityFieldViewIdx = formFields.findIndex(field => field.name === '_locality');
+
+      formFields[localityFieldViewIdx].hidden = !model._region;
+    }
+
+    if (changedField.name === '_locality') {
+      Vue.set(
+        model,
+        'localityId',
+        model._locality ? model._locality.id : null,
       );
     }
 

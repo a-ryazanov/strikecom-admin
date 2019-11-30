@@ -1,10 +1,13 @@
 import axios, { AxiosInstance, Method } from 'axios';
+import { forEach } from 'lodash-es';
 import Qs from 'qs';
 
 import { BASE_API_URL } from '@/config';
 
 import { Dictionary, Locale } from '@/interfaces';
 
+
+const dateFields = ['date', 'dateFrom', 'dateTo'];
 
 class Api {
   private axiosInstance: AxiosInstance
@@ -21,10 +24,44 @@ class Api {
       headers: {
         Accept: 'application/json',
       },
-
       paramsSerializer: params => Qs.stringify(params, {
         encode: false,
       }),
+      transformRequest: [(model) => {
+        if (model) {
+          // По протоколу, при обновлении сущности, не должно быть данных о пользователе.
+          delete model.user;
+
+          // Также, удалим из модели служебные поля
+          forEach(model, (value, key) => {
+            if (key.charAt(0) === '_') {
+              delete model[key];
+            }
+          });
+
+          // Преобразуем поля, содержащие дату
+          forEach(dateFields, (field) => {
+            if (model[field]) model[field] /= 1000;
+          });
+        }
+
+        return model;
+      }, ...axios.defaults.transformRequest],
+      transformResponse: [
+        ...axios.defaults.transformResponse,
+        (model) => {
+        // Если запрос списка сущностей, то для каждой из них преобразуем поля, содержащие дату
+          if (model && model.data && model.meta) {
+            forEach(model.data, (entity) => {
+              forEach(dateFields, (field) => {
+                if (entity[field]) entity[field] *= 1000;
+              });
+            });
+          }
+
+          return model;
+        },
+      ],
     });
 
     this.axiosInstance.interceptors.request.use(

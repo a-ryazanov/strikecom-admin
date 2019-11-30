@@ -64,28 +64,6 @@ export default {
     ],
     itemActions: [
       {
-        name: 'update',
-        textContent: 'Изменить',
-        modalConfig: assembleCommonModalConfig(
-          'Редактирование события',
-          'Сохранить',
-          {
-            fields: updateFormFields,
-            handlers: updateFormHandlers,
-          },
-        ),
-        handler: tableSectionUpdateItemAction,
-      },
-      {
-        name: 'remove',
-        textContent: 'Удалить',
-        confirmation: {
-          title: 'Удаление новости',
-          text: 'Вы точно хотите удалить новость?',
-        },
-        handler: tableSectionDeleteItemAction,
-      },
-      {
         name: 'publish',
         textContent: 'Опубликовать',
         hiddenCondition: item => item.published,
@@ -120,6 +98,28 @@ export default {
             },
           );
         },
+      },
+      {
+        name: 'update',
+        textContent: 'Изменить',
+        modalConfig: assembleCommonModalConfig(
+          'Редактирование события',
+          'Сохранить',
+          {
+            fields: updateFormFields,
+            handlers: updateFormHandlers,
+          },
+        ),
+        handler: tableSectionUpdateItemAction,
+      },
+      {
+        name: 'remove',
+        textContent: 'Удалить',
+        confirmation: {
+          title: 'Удаление новости',
+          text: 'Вы точно хотите удалить новость?',
+        },
+        handler: tableSectionDeleteItemAction,
       },
     ],
   },

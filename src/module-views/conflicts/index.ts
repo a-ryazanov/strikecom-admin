@@ -1,28 +1,27 @@
 import { format } from 'date-fns';
-
 import { ModuleView } from '@/interfaces';
 
+import { catalogs } from '@/services/catalogs';
+
+import { CONFLICTS_ROUTE } from '@/router/route-names';
 import {
   assembleCommonModalConfig,
   tableSectionCreateItemAction,
   tableSectionDeleteItemAction,
   tableSectionUpdateItemAction,
 } from '@/module-views/common-parts';
-
 import {
   createFormFields,
   createFormHandlers,
   updateFormFields,
   updateFormHandlers,
-} from '@/module-views/news/forms';
-
-import { NEWS_ROUTE } from '@/router/route-names';
+} from './forms';
 
 
 export default {
-  name: NEWS_ROUTE,
-  dataSourceEndPoint: 'news',
-  title: 'Новости',
+  name: CONFLICTS_ROUTE,
+  dataSourceEndPoint: 'conflicts',
+  title: 'Конфликты',
   tableView: {
     columns: [
       {
@@ -39,64 +38,35 @@ export default {
         title: 'Дата создания',
         typeOfCell: 'string',
         formatCellText: ({ data }) => format(new Date(data * 1000), 'dd-MM-yyyy HH:mm'),
-        minWidth: 80,
+        minWidth: 120,
       },
       {
-        name: 'views',
-        title: 'Просмотры',
-        typeOfCell: 'string',
-        minWidth: 40,
+        name: 'conflictReasonId',
+        title: 'Причина',
+        typeOfCell: 'html',
+        // @ts-ignore
+        formatCellText: ({ data }) => (data
+          // @ts-ignore
+          ? `<span>${catalogs.getCatalogValue('conflictReasons', data).nameRu}</span>`
+          : '<span style="color:#EB171F;">Не указана</span>'),
+        minWidth: 120,
       },
       {
-        name: 'published',
-        title: 'Публикация',
+        name: 'conflictResultId',
+        title: 'Результат',
         typeOfCell: 'string',
-        formatCellText: ({ data }) => (data ? 'Да' : 'Нет'),
-        minWidth: 40,
+        // @ts-ignore
+        formatCellText: ({ data }) => catalogs.getCatalogValue('conflictResults', data).nameRu,
+        minWidth: 120,
+        nullPlaceholder: 'Не окончен',
       },
     ],
     itemActions: [
       {
-        name: 'publish',
-        textContent: 'Опубликовать',
-        hiddenCondition: item => item.published,
-        confirmation: {
-          title: 'Публикация новости',
-          text: 'Вы точно хотите опубликовать новость?',
-        },
-        handler: async (vueComponent, model) => {
-          await tableSectionUpdateItemAction(
-            vueComponent,
-            {
-              ...model,
-              published: true,
-            },
-          );
-        },
-      },
-      {
-        name: 'unPublish',
-        textContent: 'Снять с публикации',
-        hiddenCondition: item => !item.published,
-        confirmation: {
-          title: 'Снятие новости с публикации',
-          text: 'Вы точно хотите снять новость с публикации?',
-        },
-        handler: async (vueComponent, model) => {
-          await tableSectionUpdateItemAction(
-            vueComponent,
-            {
-              ...model,
-              published: false,
-            },
-          );
-        },
-      },
-      {
         name: 'update',
         textContent: 'Изменить',
         modalConfig: assembleCommonModalConfig(
-          'Редактирование новости',
+          'Редактирование конфликта',
           'Сохранить',
           {
             fields: updateFormFields,
@@ -109,10 +79,15 @@ export default {
         name: 'remove',
         textContent: 'Удалить',
         confirmation: {
-          title: 'Удаление новости',
-          text: 'Вы точно хотите удалить новость?',
+          title: 'Удаление конфликта',
+          text: 'Вы точно хотите удалить конфликт?',
         },
         handler: tableSectionDeleteItemAction,
+      },
+      {
+        name: 'addEvent',
+        textContent: 'Добавить событие',
+        handler: () => alert('TODO'),
       },
     ],
   },
@@ -122,7 +97,7 @@ export default {
       textContent: 'Создать',
       colorType: 'primary',
       modalConfig: assembleCommonModalConfig(
-        'Создание новости',
+        'Создание конфликта',
         'Создать',
         {
           fields: createFormFields,
