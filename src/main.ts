@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { Loading } from 'element-ui';
 // @ts-ignore
 import vueKitPlugin from '@x10d/vue-kit/src/plugins/vue-kit';
 // @ts-ignore
@@ -13,7 +14,8 @@ import { api, catalogs, firebase } from '@/services';
 
 (async function () {
   Vue.use(vueKitPlugin);
-
+  Vue.use(Loading.directive);
+  Vue.prototype.$loading = Loading.service;
   Vue.config.productionTip = false;
 
   // Инициализация справочников

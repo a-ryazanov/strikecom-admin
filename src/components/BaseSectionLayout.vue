@@ -10,7 +10,10 @@
       <TheNavBar/>
     </ElAside>
 
-    <ElContainer class="section__container">
+    <ElContainer
+      class="section__container"
+      v-loading="$props.loadingState === 'pending'"
+    >
       <ElHeader class="section__header">
         <h1
           class="sectionHeader__title"
@@ -57,6 +60,12 @@ export default {
       type: String,
       required: true,
     },
+
+    // Состояние загрузки секции
+    loadingState: {
+      type: String,
+      required: true,
+    },
   },
 };
 </script>
@@ -78,6 +87,7 @@ export default {
   height 100%
   max-height 100%
   padding 24px 44px
+  background-color $globalColorWhite
 
   @media(max-width: 1280px)
     padding 0 32px

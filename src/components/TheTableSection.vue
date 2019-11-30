@@ -1,5 +1,8 @@
 <template>
-  <BaseSectionLayout :title="activeModuleView.title">
+  <BaseSectionLayout
+    :title="activeModuleView.title"
+    :loading-state="sectionData.loadingState"
+  >
     <template
       v-if="isGlobalActionsShown"
       slot="headerAddon"
@@ -60,6 +63,19 @@ export default {
     BaseTable,
   },
 
+  watch: {
+    activeModuleView(newValue) {
+      this.$store.commit(CLEAR_SECTION_DATA);
+
+      this.$store.commit(
+        SET_SECTION_DATA_SOURCE_END_POINT,
+        newValue.dataSourceEndPoint,
+      );
+
+      this.$store.dispatch(FETCH_ITEMS);
+    },
+  },
+
   computed: {
     ...mapState({
       sectionData: state => state.tableSectionData,
@@ -83,20 +99,13 @@ export default {
     },
   },
 
-  // !!! Не `created`, т.к. `created` вызывается раньше, чем `beforeDestroy` предыдущего роута,
-  // и, соответственно, при переходе от одной секции с данными к другой,
-  // с `created` новая секция запрашивает данные раньше, чем старая отчистила в `beforeDestroy`
-  mounted() {
+  created() {
     this.$store.commit(
       SET_SECTION_DATA_SOURCE_END_POINT,
       this.activeModuleView.dataSourceEndPoint,
     );
 
     this.$store.dispatch(FETCH_ITEMS);
-  },
-
-  beforeDestroy() {
-    this.$store.commit(CLEAR_SECTION_DATA);
   },
 };
 </script>
