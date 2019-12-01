@@ -103,8 +103,10 @@ export default {
   },
 
   created() {
-    this.debouncedValidateAndSearchOptions =
-      debounce(this.validateAndSearchOptions.bind(this), 400);
+    this.debouncedValidateAndSearchOptions = debounce(
+      this.validateAndSearchOptions.bind(this),
+      400,
+    );
   },
 
   methods: {

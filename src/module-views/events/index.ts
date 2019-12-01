@@ -4,7 +4,7 @@ import store from '@/store';
 
 import { ModuleView } from '@/interfaces';
 
-import {FETCH_ITEM} from '@/store/modules/table-section/action-types';
+import { FETCH_ITEM } from '@/store/modules/table-section/action-types';
 import { EVENTS_ROUTE } from '@/router/route-names';
 
 import {

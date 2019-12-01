@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { map, forEach } from 'lodash-es';
+import { map } from 'lodash-es';
 
 import IPropertyFieldView from '@x10d/vue-kit/src/types/IPropertyFieldView.d';
 import IFormHandlers from '@x10d/vue-kit/src/types/IFormHandlers.d';
@@ -9,7 +9,11 @@ import BaseSearchableMultiselect from '@/components/BaseSearchableMultiselect.vu
 import { catalogs } from '@/services/catalogs';
 import { api } from '@/services/api';
 
-import { Locale, localesMappings } from '@/interfaces';
+import {
+  Dictionary,
+  Locale,
+  localesMappings,
+} from '@/interfaces';
 
 import {
   setCatalogsDependentModelValues,
@@ -21,7 +25,7 @@ import {
 
 
 // Сопоставления локальных полей серверным
-const catalogsFieldsMappings = {
+const catalogsFieldsMappings : Dictionary = {
   _eventStatus: 'eventStatusId',
   _eventType: 'eventTypeId',
 };
@@ -34,7 +38,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
     labelPosition: 'top',
     specificControlProps: {
       incomingOptions: catalogs.getCatalog('eventTypes'),
-      formatFieldTitle: value => value.nameRu,
+      formatFieldTitle: (value : any) => value.nameRu,
     },
     catalogName: 'eventTypes',
   },
@@ -45,13 +49,14 @@ const commonFormFields : Array<IPropertyFieldView> = [
     labelPosition: 'top',
     specificControlProps: {
       incomingOptions: catalogs.getCatalog('eventStatuses'),
-      formatFieldTitle: value => value.nameRu,
+      formatFieldTitle: (value : any) => value.nameRu,
     },
     catalogName: 'eventStatuses',
   },
   {
     name: '_country',
     title: 'Страна',
+    // @ts-ignore
     typeOfControl: BaseSearchableMultiselect,
     specificControlProps: {
       async searchOptions(value: string) {
@@ -59,8 +64,8 @@ const commonFormFields : Array<IPropertyFieldView> = [
           name: value,
         })).data;
       },
-      validateQueryValue: value => value !== '' && value.length >= 3,
-      formatFieldTitle: value => value.nameRu,
+      validateQueryValue: (value : any) => value !== '' && value.length >= 3,
+      formatFieldTitle: (value : any) => value.nameRu,
     },
     labelPosition: 'top',
     validator: 'required',
@@ -68,6 +73,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
   {
     name: '_region',
     title: 'Регион',
+    // @ts-ignore
     typeOfControl: BaseSearchableMultiselect,
     specificControlProps: {
       async searchOptions(value: string, model: any) {
@@ -76,8 +82,8 @@ const commonFormFields : Array<IPropertyFieldView> = [
           name: value,
         })).data;
       },
-      validateQueryValue: value => value !== '' && value.length >= 3,
-      formatFieldTitle: value => value.name,
+      validateQueryValue: (value : any) => value !== '' && value.length >= 3,
+      formatFieldTitle: (value : any) => value.name,
     },
     labelPosition: 'top',
     validator: 'required',
@@ -86,6 +92,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
   {
     name: '_locality',
     title: 'Населенный пункт',
+    // @ts-ignore
     typeOfControl: BaseSearchableMultiselect,
     specificControlProps: {
       async searchOptions(value: string, model: any) {
@@ -94,8 +101,8 @@ const commonFormFields : Array<IPropertyFieldView> = [
           name: value,
         })).data;
       },
-      validateQueryValue: value => value !== '' && value.length >= 3,
-      formatFieldTitle: value => value.name,
+      validateQueryValue: (value : any) => value !== '' && value.length >= 3,
+      formatFieldTitle: (value : any) => value.name,
     },
     labelPosition: 'top',
     validator: 'required',
@@ -150,7 +157,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
 
         return data;
       },
-      formatFieldTitle: value => value.titleRu || value.id,
+      formatFieldTitle: (value : any) => value.titleRu || value.id,
     },
   },
   {

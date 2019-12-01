@@ -1,11 +1,14 @@
-import Vue from 'vue';
-import { forEach, map } from 'lodash-es';
+import { map } from 'lodash-es';
 
 import IPropertyFieldView from '@x10d/vue-kit/src/types/IPropertyFieldView.d';
 import IFormHandlers from '@x10d/vue-kit/src/types/IFormHandlers.d';
 
 import { catalogs } from '@/services/catalogs';
-import { Locale, localesMappings } from '@/interfaces';
+import {
+  Dictionary,
+  Locale,
+  localesMappings,
+} from '@/interfaces';
 
 import {
   setLanguageDependentModelValues,
@@ -15,7 +18,7 @@ import {
 
 
 // Сопоставления локальных полей серверным
-const catalogsFieldsMappings = {
+const catalogsFieldsMappings : Dictionary = {
   _conflictReason: 'conflictReasonId',
   _conflictResult: 'conflictResultId',
   _industry: 'industryId',
@@ -29,7 +32,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
     labelPosition: 'top',
     specificControlProps: {
       incomingOptions: catalogs.getCatalog('conflictReasons'),
-      formatFieldTitle: value => value.nameRu,
+      formatFieldTitle: (value : any) => value.nameRu,
     },
     catalogName: 'conflictReasons',
     validator: 'required',
@@ -48,7 +51,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
     labelPosition: 'top',
     specificControlProps: {
       incomingOptions: catalogs.getCatalog('industries'),
-      formatFieldTitle: value => value.nameRu,
+      formatFieldTitle: (value : any) => value.nameRu,
     },
     catalogName: 'industries',
   },
@@ -100,7 +103,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
     labelPosition: 'top',
     specificControlProps: {
       incomingOptions: catalogs.getCatalog('conflictResults'),
-      formatFieldTitle: value => value.nameRu,
+      formatFieldTitle: (value : any) => value.nameRu,
     },
     catalogName: 'conflictResults',
   },

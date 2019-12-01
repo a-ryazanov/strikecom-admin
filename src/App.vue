@@ -22,7 +22,7 @@ import { LOGIN_ROUTE } from '@/router/route-names';
 export default Vue.extend({
   computed: {
     ...mapState({
-      user: state => state.auth.user,
+      user: (state : any) => state.auth.user,
     }),
   },
 
@@ -31,9 +31,9 @@ export default Vue.extend({
       'user',
       async function (newValue) {
         if (this.$store.getters[HAS_PERMISSIONS]) {
-            if (this.$route.name === LOGIN_ROUTE) {
-                await this.$router.push('/');
-            }
+          if (this.$route.name === LOGIN_ROUTE) {
+            await this.$router.push('/');
+          }
         } else if (newValue) {
           // @ts-ignore
           const modalPromise = this.$qrKitOpenModal(

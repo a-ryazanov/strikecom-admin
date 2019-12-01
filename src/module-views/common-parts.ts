@@ -3,10 +3,12 @@ import { flatten, forEach, map } from 'lodash-es';
 
 import IFormView from '@x10d/vue-kit/src/types/IFormView.d';
 import IModalPayload from '@x10d/vue-kit/src/types/IModalPayload.d';
-import IModalView from '@x10d/vue-kit/src/types/IModalView';
+import IModalView from '@x10d/vue-kit/src/types/IModalView.d';
 import IPropertyFieldView from '@x10d/vue-kit/src/types/IPropertyFieldView.d';
 
 import { catalogs } from '@/services/catalogs';
+
+import { Dictionary, Locale } from '@/interfaces';
 
 import {
   CREATE_ITEM,
@@ -15,7 +17,6 @@ import {
 } from '@/store/modules/table-section/action-types';
 
 import { COMMON_MODAL_FORM_WIDTH } from '@/config';
-import { Locale } from '@/interfaces';
 
 
 // Общие обработчики элементов таблицы
@@ -94,7 +95,7 @@ export const languageDependentFieldGroups = [
   ],
 ];
 
-export const languageDependentFieldMappings : any = {
+export const languageDependentFieldMappings : Dictionary<any> = {
   titleRu: { id: Locale.RU, title: 'Русский' },
   titleEn: { id: Locale.EN, title: 'Английский' },
   titleEs: { id: Locale.ES, title: 'Испанский' },
@@ -146,7 +147,7 @@ export function setLanguageDependentModelValues(model :any) {
 export function setCatalogsDependentModelValues(
   model : any,
   formFields : Array<IPropertyFieldView>,
-  catalogsFieldsMappings : any,
+  catalogsFieldsMappings : Dictionary,
 ) : void {
   forEach(catalogsFieldsMappings, (serverFieldName : string, localFieldName : string) => {
     if (model[serverFieldName]) {
@@ -155,6 +156,7 @@ export function setCatalogsDependentModelValues(
       Vue.set(
         model,
         localFieldName,
+        // @ts-ignore
         catalogs.getCatalogValue(fieldView.catalogName, model[serverFieldName]),
       );
     }

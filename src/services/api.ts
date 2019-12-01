@@ -46,9 +46,11 @@ class Api {
         }
 
         return model;
+      // @ts-ignore
       }, ...axios.defaults.transformRequest],
       // TODO перевести в конструкторы моделей
       transformResponse: [
+        // @ts-ignore
         ...axios.defaults.transformResponse,
         (model) => {
           if (model && model.data) {

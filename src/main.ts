@@ -35,13 +35,13 @@ import { api, catalogs, firebase } from '@/services';
     errorHandlersParams: {
       vueInstance: vm,
 
-      apiErrorPreHandler(error) {
+      apiErrorPreHandler(error : any) {
         if (!error.response) return false;
 
         return error.response.status === 401;
       },
 
-      getApiErrorModalOptions(error) {
+      getApiErrorModalOptions(error : any) {
         if (!error.response) return {};
 
         return {

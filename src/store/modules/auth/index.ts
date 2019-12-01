@@ -1,5 +1,7 @@
 import { Module } from 'vuex';
 
+import { UserRole } from '@/interfaces';
+
 import { SET_USER } from './mutation-types';
 
 import { HAS_PERMISSIONS } from './getter-types';
@@ -18,7 +20,10 @@ const authModule : Module<AuthModule, any> = {
   getters: {
 
     [HAS_PERMISSIONS]: state => state.user
-      && (state.user.roles.includes('ADMIN') || state.user.roles.includes('MODERATOR')),
+      && (
+        state.user.roles.includes(UserRole.ADMIN)
+        || state.user.roles.includes(UserRole.MODERATOR)
+      ),
 
   },
 
