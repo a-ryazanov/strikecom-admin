@@ -1,14 +1,17 @@
-import { flatten } from 'lodash-es';
+import Vue from 'vue';
+import { flatten, forEach, map } from 'lodash-es';
 
 import IFormView from '@x10d/vue-kit/src/types/IFormView.d';
 import IModalPayload from '@x10d/vue-kit/src/types/IModalPayload.d';
+import IModalView from '@x10d/vue-kit/src/types/IModalView';
 import IPropertyFieldView from '@x10d/vue-kit/src/types/IPropertyFieldView.d';
+
+import { catalogs } from '@/services/catalogs';
 
 import {
   CREATE_ITEM,
   UPDATE_ITEM,
   DELETE_ITEM,
-// @ts-ignore
 } from '@/store/modules/table-section/action-types';
 
 import { COMMON_MODAL_FORM_WIDTH } from '@/config';
@@ -43,6 +46,7 @@ export function assembleCommonModalConfig(
   modalTitle: string,
   acceptButtonText: string,
   formView: IFormView,
+  beforeOpen ?: IModalView['beforeOpen'],
 ): {
   payload: IModalPayload
   options: object
@@ -62,6 +66,7 @@ export function assembleCommonModalConfig(
             colorType: 'primary',
           },
         ],
+        beforeOpen,
       },
       formView,
     },
@@ -97,9 +102,10 @@ export const languageDependentFieldMappings : any = {
 };
 
 export function setLanguageDependentFieldsVisibility(
-  languages : Array<string>,
+  model : any,
   formFields : Array<IPropertyFieldView>,
 ) : void {
+  const modelLanguages = map(model._languages, 'id');
   const languageDependentFieldNames = flatten(languageDependentFieldGroups);
 
   const languageDependentFieldsIdx = formFields.reduce<Array<number>>(
@@ -115,6 +121,83 @@ export function setLanguageDependentFieldsVisibility(
   languageDependentFieldsIdx.forEach((index) => {
     const languageDependentField = formFields[index];
 
-    languageDependentField.hidden = !languages.includes(languageDependentField.localeName);
+    languageDependentField.hidden = !modelLanguages.includes(languageDependentField.localeName);
+  });
+}
+
+export function setLanguageDependentModelValues(model :any) {
+  languageDependentFieldGroups[0].forEach((fieldName) => {
+    if (model[fieldName]) {
+      Vue.set(
+        model,
+        '_languages',
+        model._languages
+          ? [
+            ...model._languages,
+            languageDependentFieldMappings[fieldName],
+          ]
+          : [languageDependentFieldMappings[fieldName]],
+      );
+    }
+  });
+}
+
+
+export function setCatalogsDependentModelValues(
+  model : any,
+  formFields : Array<IPropertyFieldView>,
+  catalogsFieldsMappings : any,
+) : void {
+  forEach(catalogsFieldsMappings, (serverFieldName : string, localFieldName : string) => {
+    if (model[serverFieldName]) {
+      const fieldView = formFields.find(field => field.name === localFieldName);
+
+      Vue.set(
+        model,
+        localFieldName,
+        catalogs.getCatalogValue(fieldView.catalogName, model[serverFieldName]),
+      );
+    }
+  });
+}
+
+
+const localityDependentFieldNames = ['_region', '_locality'];
+
+export function setLocalityDependentModelValues(model : any) : void {
+  if (model.locality) {
+    const { id: regionId, name: regionName, country } = model.locality.region;
+    const { id: localityId, name: localityName } = model.locality;
+
+    Vue.set(model, '_country', country);
+    Vue.set(model, '_region', {
+      id: regionId,
+      name: regionName,
+    });
+    Vue.set(model, '_locality', {
+      id: localityId,
+      name: localityName,
+    });
+  }
+}
+
+export function setLocalityDependentFieldVisibility(
+  model : any,
+  formFields : Array<IPropertyFieldView>,
+) : void {
+  const localityDependentFieldsIdx = formFields.reduce<Array<number>>(
+    (accumulator, field, index) => {
+      if (localityDependentFieldNames.includes(field.name)) {
+        accumulator.push(index);
+      }
+
+      return accumulator;
+    }, [],
+  );
+
+  localityDependentFieldsIdx.forEach((index) => {
+    const localityDependentField = formFields[index];
+
+    localityDependentField.hidden = !model[localityDependentField.name];
   });
 }

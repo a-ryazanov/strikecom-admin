@@ -1,7 +1,12 @@
 import { format } from 'date-fns';
+
+import store from '@/store';
+
 import { ModuleView } from '@/interfaces';
 
+import {FETCH_ITEM} from '@/store/modules/table-section/action-types';
 import { EVENTS_ROUTE } from '@/router/route-names';
+
 import {
   assembleCommonModalConfig,
   tableSectionCreateItemAction,
@@ -23,6 +28,12 @@ export default {
   title: 'События',
   tableView: {
     columns: [
+      {
+        name: 'id',
+        title: 'ID',
+        typeOfCell: 'string',
+        minWidth: 40,
+      },
       {
         name: 'titleRu',
         title: 'Заголовок',
@@ -108,6 +119,9 @@ export default {
           {
             fields: updateFormFields,
             handlers: updateFormHandlers,
+          },
+          async (modalView, formView, formData) => {
+            await store.dispatch(FETCH_ITEM, formData.id);
           },
         ),
         handler: tableSectionUpdateItemAction,

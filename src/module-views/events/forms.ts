@@ -12,9 +12,11 @@ import { api } from '@/services/api';
 import { Locale, localesMappings } from '@/interfaces';
 
 import {
-  languageDependentFieldGroups,
-  languageDependentFieldMappings,
+  setCatalogsDependentModelValues,
+  setLanguageDependentModelValues,
   setLanguageDependentFieldsVisibility,
+  setLocalityDependentModelValues,
+  setLocalityDependentFieldVisibility,
 } from '@/module-views/common-parts';
 
 
@@ -269,17 +271,15 @@ const commonFormFields : Array<IPropertyFieldView> = [
 const commonFormHandlers : IFormHandlers = {
   input: (model, formFields, changedField) => {
     if (changedField.name === '_languages') {
-      // !!! Изменяет представление !!!
-      setLanguageDependentFieldsVisibility(
-        map(model._languages, 'id'),
-        formFields,
-      );
+      setLanguageDependentFieldsVisibility(model, formFields);
     }
 
     if (changedField.name === '_country') {
       const regionFieldViewIdx = formFields.findIndex(field => field.name === '_region');
+      const localityFieldViewIdx = formFields.findIndex(field => field.name === '_locality');
 
       formFields[regionFieldViewIdx].hidden = !model._country;
+      formFields[localityFieldViewIdx].hidden = !model._country;
     }
 
     if (changedField.name === '_region') {
@@ -331,37 +331,13 @@ export const updateFormFields : Array<IPropertyFieldView> = [
 
 export const updateFormHandlers : IFormHandlers = {
   ...commonFormHandlers,
-  open: (model, formFields) => {
-    languageDependentFieldGroups[0].forEach((fieldName) => {
-      if (model[fieldName]) {
-        Vue.set(
-          model,
-          '_languages',
-          model._languages
-            ? [
-              ...model._languages,
-              languageDependentFieldMappings[fieldName],
-            ]
-            : [languageDependentFieldMappings[fieldName]],
-        );
-      }
-    });
+  open: async (model, formFields) => {
+    setLocalityDependentModelValues(model);
+    setLocalityDependentFieldVisibility(model, formFields);
 
-    setLanguageDependentFieldsVisibility(
-      map(model._languages, 'id'),
-      formFields,
-    );
+    setLanguageDependentModelValues(model);
+    setLanguageDependentFieldsVisibility(model, formFields);
 
-    forEach(catalogsFieldsMappings, (serverFieldName, localFieldName) => {
-      if (model[serverFieldName]) {
-        const fieldView = formFields.find(field => field.name === localFieldName);
-
-        Vue.set(
-          model,
-          localFieldName,
-          catalogs.getCatalogValue(fieldView.catalogName, model[serverFieldName]),
-        );
-      }
-    });
+    setCatalogsDependentModelValues(model, formFields, catalogsFieldsMappings);
   },
 };

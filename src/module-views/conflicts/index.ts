@@ -1,8 +1,12 @@
 import { format } from 'date-fns';
+
+import store from '@/store';
+
 import { ModuleView } from '@/interfaces';
 
 import { catalogs } from '@/services/catalogs';
 
+import { FETCH_ITEM } from '@/store/modules/table-section/action-types';
 import { CONFLICTS_ROUTE } from '@/router/route-names';
 import {
   assembleCommonModalConfig,
@@ -24,6 +28,12 @@ export default {
   title: 'Конфликты',
   tableView: {
     columns: [
+      {
+        name: 'id',
+        title: 'ID',
+        typeOfCell: 'string',
+        minWidth: 40,
+      },
       {
         name: 'titleRu',
         title: 'Заголовок',
@@ -71,6 +81,9 @@ export default {
           {
             fields: updateFormFields,
             handlers: updateFormHandlers,
+          },
+          async (modalView, formView, formData) => {
+            await store.dispatch(FETCH_ITEM, formData.id);
           },
         ),
         handler: tableSectionUpdateItemAction,

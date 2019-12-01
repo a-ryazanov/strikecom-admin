@@ -1,6 +1,6 @@
 import { Module } from 'vuex';
 
-import { api } from '@/services';
+import { api } from '@/services/api';
 
 import {
   CLEAR_SECTION_DATA,
@@ -12,6 +12,7 @@ import {
 } from './mutation-types';
 
 import {
+  FETCH_ITEM,
   FETCH_ITEMS,
   CREATE_ITEM,
   UPDATE_ITEM,
@@ -98,6 +99,25 @@ const tableSectionModule: Module<TableSectionModule, any> = {
       } catch (error) {
         commit(SET_SECTION_ITEMS, preRequestItems);
 
+        throw error;
+      } finally {
+        commit(SET_SECTION_LOADING_STATE, 'loaded');
+      }
+    },
+
+    async [FETCH_ITEM]({ commit, state }, id) {
+      commit(SET_SECTION_LOADING_STATE, 'pending');
+
+      try {
+        const { data: item } = await api.fetchItem(state.dataSourceEndPoint, id);
+
+        commit(MERGE_ITEM_BY_ID, {
+          id,
+          newItem: item,
+        });
+
+        return item;
+      } catch (error) {
         throw error;
       } finally {
         commit(SET_SECTION_LOADING_STATE, 'loaded');

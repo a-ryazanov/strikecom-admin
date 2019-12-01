@@ -10,10 +10,7 @@
       <TheNavBar/>
     </ElAside>
 
-    <ElContainer
-      class="section__container"
-      v-loading="$props.loadingState === 'pending'"
-    >
+    <ElContainer class="section__container">
       <ElHeader class="section__header">
         <h1
           class="sectionHeader__title"
@@ -57,12 +54,6 @@ export default {
   props: {
     // Заголовок секции
     title: {
-      type: String,
-      required: true,
-    },
-
-    // Состояние загрузки секции
-    loadingState: {
       type: String,
       required: true,
     },

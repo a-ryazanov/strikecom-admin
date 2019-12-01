@@ -47,16 +47,23 @@ class Api {
 
         return model;
       }, ...axios.defaults.transformRequest],
+      // TODO перевести в конструкторы моделей
       transformResponse: [
         ...axios.defaults.transformResponse,
         (model) => {
-        // Если запрос списка сущностей, то для каждой из них преобразуем поля, содержащие дату
-          if (model && model.data && model.meta) {
-            forEach(model.data, (entity) => {
-              forEach(dateFields, (field) => {
-                if (entity[field]) entity[field] *= 1000;
+          if (model && model.data) {
+            // Если запрос списка сущностей, то для каждой из них преобразуем поля, содержащие дату
+            if (model.meta) {
+              forEach(model.data, (entity) => {
+                forEach(dateFields, (field) => {
+                  if (entity[field]) entity[field] *= 1000;
+                });
               });
-            });
+            } else {
+              forEach(dateFields, (field) => {
+                if (model.data[field]) model.data[field] *= 1000;
+              });
+            }
           }
 
           return model;
@@ -134,6 +141,13 @@ class Api {
       url: endPoint,
       method: 'get',
       params,
+    });
+  }
+
+  public async fetchItem(endPoint: string, id: number): Promise<any> {
+    return this.request({
+      url: `${endPoint}/${id}`,
+      method: 'get',
     });
   }
 

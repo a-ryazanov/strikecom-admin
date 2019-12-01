@@ -1,7 +1,8 @@
 <template>
   <BaseSectionLayout
     :title="activeModuleView.title"
-    :loading-state="sectionData.loadingState"
+    v-loading="sectionData.loadingState === 'pending'"
+    element-loading-background="rgba(17,32,57,0.45)"
   >
     <template
       v-if="isGlobalActionsShown"

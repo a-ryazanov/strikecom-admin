@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { map } from 'lodash-es';
 
 import IPropertyFieldView from '@x10d/vue-kit/src/types/IPropertyFieldView.d';
@@ -7,8 +6,7 @@ import IFormHandlers from '@x10d/vue-kit/src/types/IFormHandlers.d';
 import { Locale, localesMappings } from '@/interfaces';
 
 import {
-  languageDependentFieldGroups,
-  languageDependentFieldMappings,
+  setLanguageDependentModelValues,
   setLanguageDependentFieldsVisibility,
 } from '@/module-views/common-parts';
 
@@ -143,11 +141,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
 const commonFormHandlers : IFormHandlers = {
   input: (model, formFields, changedField) => {
     if (changedField.name === '_languages') {
-      // !!! Изменяет представление !!!
-      setLanguageDependentFieldsVisibility(
-        map(model._languages, 'id'),
-        formFields,
-      );
+      setLanguageDependentFieldsVisibility(model, formFields);
     }
   },
 };
@@ -176,24 +170,7 @@ export const updateFormFields : Array<IPropertyFieldView> = [
 export const updateFormHandlers : IFormHandlers = {
   ...commonFormHandlers,
   open: (model, formFields) => {
-    languageDependentFieldGroups[0].forEach((fieldName) => {
-      if (model[fieldName]) {
-        Vue.set(
-          model,
-          '_languages',
-          model._languages
-            ? [
-              ...model._languages,
-              languageDependentFieldMappings[fieldName],
-            ]
-            : [languageDependentFieldMappings[fieldName]],
-        );
-      }
-    });
-
-    setLanguageDependentFieldsVisibility(
-      map(model._languages, 'id'),
-      formFields,
-    );
+    setLanguageDependentModelValues(model);
+    setLanguageDependentFieldsVisibility(model, formFields);
   },
 };
