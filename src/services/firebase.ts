@@ -20,6 +20,8 @@ class Firebase {
         messagingSenderId: '438907362423',
         appId: '1:438907362423:web:748c474db86a8bca',
       });
+
+      fb.auth().useDeviceLanguage();
     }
 
     initAuthStateObserver(store: Store<any>): Promise<void> {
@@ -48,6 +50,12 @@ class Firebase {
 
     async signInWithEmailAndPassword(email: string, password: string): Promise<void> {
       await this.app.auth().signInWithEmailAndPassword(email, password);
+    }
+
+    async signInWithGoogle(): Promise<void> {
+      const provider = new fb.auth.GoogleAuthProvider();
+
+      await this.app.auth().signInWithPopup(provider);
     }
 
     async signOut(): Promise<void> {

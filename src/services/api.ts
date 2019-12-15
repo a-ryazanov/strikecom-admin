@@ -7,7 +7,7 @@ import { BASE_API_URL } from '@/config';
 import { Dictionary, Locale } from '@/interfaces';
 
 
-const dateFields = ['date', 'dateFrom', 'dateTo'];
+const dateFields = ['date', 'dateFrom', 'dateTo', 'createdAt'];
 
 class Api {
   private axiosInstance: AxiosInstance

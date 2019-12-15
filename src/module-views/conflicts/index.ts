@@ -47,7 +47,7 @@ export default {
         name: 'createdAt',
         title: 'Дата создания',
         typeOfCell: 'string',
-        formatCellText: ({ data }) => format(new Date(data * 1000), 'dd-MM-yyyy HH:mm'),
+        formatCellText: ({ data }) => format(new Date(data), 'dd-MM-yyyy HH:mm'),
         minWidth: 120,
       },
       {

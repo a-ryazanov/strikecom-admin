@@ -1,5 +1,7 @@
 import { format } from 'date-fns';
 
+import BasePublicationStatusCell from '@/components/BasePublicationStatusCell.vue';
+
 import store from '@/store';
 
 import { ModuleView } from '@/interfaces';
@@ -48,7 +50,7 @@ export default {
         name: 'createdAt',
         title: 'Дата создания',
         typeOfCell: 'string',
-        formatCellText: ({ data }) => format(new Date(data * 1000), 'dd-MM-yyyy HH:mm'),
+        formatCellText: ({ data }) => format(new Date(data), 'dd-MM-yyyy HH:mm'),
         minWidth: 80,
       },
       {
@@ -60,8 +62,7 @@ export default {
       {
         name: 'published',
         title: 'Публикация',
-        typeOfCell: 'string',
-        formatCellText: ({ data }) => (data ? 'Да' : 'Нет'),
+        typeOfCell: BasePublicationStatusCell,
         minWidth: 40,
       },
     ],
@@ -78,7 +79,7 @@ export default {
           await tableSectionUpdateItemAction(
             vueComponent,
             {
-              ...model,
+              id: model.id,
               published: true,
             },
           );
@@ -96,7 +97,7 @@ export default {
           await tableSectionUpdateItemAction(
             vueComponent,
             {
-              ...model,
+              id: model.id,
               published: false,
             },
           );

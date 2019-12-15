@@ -184,10 +184,23 @@ export const createFormFields : Array<IPropertyFieldView> = [
 
 export const createFormHandlers : IFormHandlers = {
   ...commonFormHandlers,
+  open: (model) => {
+    model.dateFrom = new Date();
+  },
 };
 
 
 export const updateFormFields : Array<IPropertyFieldView> = [
+  {
+    name: 'createdAt',
+    title: 'Дата создания конфликта',
+    typeOfControl: 'staticDate',
+    labelPosition: 'side',
+    tooltip: 'Дата создания сущности в базе данных ЗабастКом',
+    specificControlProps: {
+      format: 'date',
+    },
+  },
   ...commonFormFields,
 ];
 

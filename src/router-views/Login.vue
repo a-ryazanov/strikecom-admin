@@ -20,6 +20,16 @@
         />
       </div>
 
+      <div class="loginForm__services-cnt">
+        <ElButton
+          circle
+          size="large"
+          @click="logIn('google')"
+        >
+          <i class="fa fa-google" aria-hidden="true"/>
+        </ElButton>
+      </div>
+
       <BaseFormField
         v-model="email"
         :field-view="fieldsViews.email"
@@ -44,6 +54,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { FirebaseError } from 'firebase';
+import { Button } from 'element-ui';
 
 import BaseButton from '@x10d/vue-kit/src/components/BaseButton.vue';
 import BaseFormField from '@x10d/vue-kit/src/components/BaseFormField.vue';
@@ -73,6 +84,7 @@ export default Vue.extend({
     BaseFormField,
     BaseButton,
     InfoIcon,
+    [Button.name]: Button,
   },
 
   data(): IComponentData {
@@ -111,20 +123,28 @@ export default Vue.extend({
   },
 
   methods: {
-    async logIn() {
+    async logIn(provider ?: string) : Promise<void> {
       try {
         this.isLoading = true;
         this.error = null;
 
-        await firebase.signInWithEmailAndPassword(
-          this.email,
-          this.password,
-        );
+        if (provider === 'google') {
+          await firebase.signInWithGoogle();
+        } else {
+          await firebase.signInWithEmailAndPassword(
+            this.email,
+            this.password,
+          );
+        }
       } catch (error) {
         this.error = error;
       } finally {
         this.isLoading = false;
       }
+    },
+
+    async logInWithGoogle() {
+
     },
   },
 });
@@ -183,6 +203,11 @@ $formFieldMargin = 15px
   line-height 16px
   color $globalColorWhite
 
+.loginForm__services-cnt
+  display flex
+  align-items center
+  justify-content center
+  margin-top 14px
 
 .loginForm__button
   display block

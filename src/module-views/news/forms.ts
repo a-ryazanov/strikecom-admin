@@ -121,7 +121,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
     validator: 'max:255',
   },
   {
-    name: 'tag',
+    name: 'tags',
     title: 'Тэги',
     typeOfControl: 'tag',
     labelPosition: 'top',
@@ -134,7 +134,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
     title: 'Фотографии',
     typeOfControl: 'tag',
     labelPosition: 'top',
-    description: 'Ссылки на фотографии',
+    tooltip: 'Ссылки на фотографии',
   },
 ];
 
@@ -154,16 +154,30 @@ export const createFormFields : Array<IPropertyFieldView> = [
     title: 'Публикация',
     typeOfControl: 'switch',
     labelPosition: 'side',
-    description: 'Опубликовать ли новость сразу после создания?',
+    tooltip: 'Опубликовать ли новость сразу после создания?',
   },
 ];
 
 export const createFormHandlers : IFormHandlers = {
   ...commonFormHandlers,
+  open: (model) => {
+    model.date = new Date();
+    model.published = true;
+  },
 };
 
 
 export const updateFormFields : Array<IPropertyFieldView> = [
+  {
+    name: 'createdAt',
+    title: 'Дата создания новости',
+    typeOfControl: 'staticDate',
+    labelPosition: 'side',
+    tooltip: 'Дата создания сущности в базе данных ЗабастКом',
+    specificControlProps: {
+      format: 'date',
+    },
+  },
   ...commonFormFields,
 ];
 
