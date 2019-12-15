@@ -26,7 +26,7 @@
           size="large"
           @click="logIn('google')"
         >
-          <i class="fa fa-google" aria-hidden="true"/>
+          <i class="fab fa-google"></i>
         </ElButton>
       </div>
 
@@ -239,6 +239,8 @@ $formFieldMargin = 15px
   color $globalColorPerano
   text-decoration none
 
+i
+  font-family "Font Awesome 5 Brands" !important
 
 // Переопределим свойства baseFormField'a
 /deep/ .baseInput
