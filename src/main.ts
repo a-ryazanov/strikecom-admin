@@ -16,7 +16,6 @@ import { api, catalogs, firebase } from '@/services';
   Vue.use(vueKitPlugin);
   Vue.use(Loading.directive);
   Vue.prototype.$loading = Loading.service;
-  Vue.config.productionTip = false;
 
   // Инициализация справочников
   const checkSum = await api.fetchCatalogsChecksum();

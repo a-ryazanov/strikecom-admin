@@ -130,7 +130,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
     },
   },
   {
-    name: 'photos',
+    name: 'photoUrls',
     title: 'Фотографии',
     typeOfControl: 'tag',
     labelPosition: 'top',
@@ -161,7 +161,7 @@ export const createFormFields : Array<IPropertyFieldView> = [
 export const createFormHandlers : IFormHandlers = {
   ...commonFormHandlers,
   open: (model) => {
-    model.date = new Date();
+    model.date = Date.now();
     model.published = true;
   },
 };

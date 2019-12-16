@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import { map } from 'lodash-es';
 
+import BaseModalForm from '@x10d/vue-kit/src/components/BaseModalForm.vue';
+
 import IPropertyFieldView from '@x10d/vue-kit/src/types/IPropertyFieldView.d';
 import IFormHandlers from '@x10d/vue-kit/src/types/IFormHandlers.d';
 
@@ -64,7 +66,72 @@ const commonFormFields : Array<IPropertyFieldView> = [
           name: value,
         })).data;
       },
-      validateQueryValue: (value : any) => value !== '' && value.length >= 3,
+      validateQueryValue: (value : any) => value !== '' && value.length >= 2,
+      async createItem(value : string, model : any, componentInstance : any) {
+        const modalResult = await componentInstance.$qrKitOpenModal(
+          BaseModalForm,
+          {
+            modalView: {
+              title: 'Создание страны',
+              actions: [
+                {
+                  title: 'Отмена',
+                  reason: 'dismiss',
+                },
+                {
+                  title: 'Создать',
+                  reason: 'accept',
+                  colorType: 'primary',
+                },
+              ],
+            },
+            formView: {
+              fields: [
+                {
+                  name: 'nameRu',
+                  title: 'Название на русском',
+                  typeOfControl: 'string',
+                  labelPosition: 'top',
+                  validator: 'required|max:255',
+                },
+                {
+                  name: 'nameEn',
+                  title: 'Название на английском',
+                  typeOfControl: 'string',
+                  labelPosition: 'top',
+                  validator: 'required|max:255',
+                },
+                {
+                  name: 'nameEs',
+                  title: 'Название на испанском',
+                  typeOfControl: 'string',
+                  labelPosition: 'top',
+                  validator: 'required|max:255',
+                },
+                {
+                  name: 'nameDe',
+                  title: 'Название на немецком',
+                  typeOfControl: 'string',
+                  labelPosition: 'top',
+                  validator: 'required|max:255',
+                },
+              ],
+            },
+            formData: {
+              nameRu: value,
+            },
+          },
+        );
+
+        if (modalResult.reason === 'accept') {
+          const { data } = await api.createItem('countries', {
+            ...modalResult.payload.formData,
+          });
+
+          model._country = data;
+        }
+      },
+      noResultOptionTextPrefix: 'страну',
       formatFieldTitle: (value : any) => value.nameRu,
     },
     labelPosition: 'top',
@@ -82,7 +149,16 @@ const commonFormFields : Array<IPropertyFieldView> = [
           name: value,
         })).data;
       },
-      validateQueryValue: (value : any) => value !== '' && value.length >= 3,
+      validateQueryValue: (value : any) => value !== '' && value.length >= 2,
+      async createItem(value : string, model : any) {
+        const { data } = await api.createItem('regions', {
+          countryId: model._country.id,
+          name: value,
+        });
+
+        model._region = data;
+      },
+      noResultOptionTextPrefix: 'регион',
       formatFieldTitle: (value : any) => value.name,
     },
     labelPosition: 'top',
@@ -91,7 +167,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
   },
   {
     name: '_locality',
-    title: 'Населенный пункт',
+    title: 'Населённый пункт',
     // @ts-ignore
     typeOfControl: BaseSearchableMultiselect,
     specificControlProps: {
@@ -101,7 +177,16 @@ const commonFormFields : Array<IPropertyFieldView> = [
           name: value,
         })).data;
       },
-      validateQueryValue: (value : any) => value !== '' && value.length >= 3,
+      validateQueryValue: (value : any) => value !== '' && value.length >= 2,
+      async createItem(value : string, model : any) {
+        const { data } = await api.createItem('localities', {
+          regionId: model._region.id,
+          name: value,
+        });
+
+        model._locality = data;
+      },
+      noResultOptionTextPrefix: 'населённый пункт',
       formatFieldTitle: (value : any) => value.name,
     },
     labelPosition: 'top',
@@ -165,7 +250,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
     title: 'Языки',
     typeOfControl: 'multiselect',
     labelPosition: 'top',
-    tooltip: 'Языки, на которые переведена новость',
+    tooltip: 'Языки, на которые переведено событие',
     specificControlProps: {
       incomingOptions: map(localesMappings, (value, key) => ({
         // Поле id нужно для  BaseMultiselect, чтобы он мог отслеживать уникальность
@@ -267,7 +352,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
     },
   },
   {
-    name: 'photos',
+    name: 'photoUrls',
     title: 'Фотографии',
     typeOfControl: 'tag',
     labelPosition: 'top',
@@ -286,7 +371,7 @@ const commonFormHandlers : IFormHandlers = {
       const localityFieldViewIdx = formFields.findIndex(field => field.name === '_locality');
 
       formFields[regionFieldViewIdx].hidden = !model._country;
-      formFields[localityFieldViewIdx].hidden = !model._country;
+      formFields[localityFieldViewIdx].hidden = !model._country || !model._region;
     }
 
     if (changedField.name === '_region') {
@@ -330,7 +415,7 @@ export const createFormFields : Array<IPropertyFieldView> = [
 export const createFormHandlers : IFormHandlers = {
   ...commonFormHandlers,
   open: (model) => {
-    model.date = new Date();
+    model.date = Date.now();
     model.published = true;
   },
 };

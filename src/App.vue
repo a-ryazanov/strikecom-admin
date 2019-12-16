@@ -69,15 +69,6 @@ export default Vue.extend({
 .el-loading-spinner
   .path
     stroke $globalColorNileBlue !important
-
-.input-tag
-  max-width 80px
-
-  span
-    width 100%
-    text-overflow: ellipsis
-    overflow hidden
-    white-space nowrap
 </style>
 
 <style lang="stylus" scoped>

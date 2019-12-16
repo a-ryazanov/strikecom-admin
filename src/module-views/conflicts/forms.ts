@@ -185,7 +185,7 @@ export const createFormFields : Array<IPropertyFieldView> = [
 export const createFormHandlers : IFormHandlers = {
   ...commonFormHandlers,
   open: (model) => {
-    model.dateFrom = new Date();
+    model.dateFrom = Date.now();
   },
 };
 

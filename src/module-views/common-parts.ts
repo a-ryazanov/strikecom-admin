@@ -47,7 +47,7 @@ export function assembleCommonModalConfig(
   modalTitle: string,
   acceptButtonText: string,
   formView: IFormView,
-  beforeOpen ?: IModalView['beforeOpen'],
+  beforeOpen ?: IModalPayload['beforeOpen'],
 ): {
   payload: IModalPayload
   options: object
@@ -67,9 +67,9 @@ export function assembleCommonModalConfig(
             colorType: 'primary',
           },
         ],
-        beforeOpen,
       },
       formView,
+      beforeOpen,
     },
     options: {
       width: COMMON_MODAL_FORM_WIDTH,

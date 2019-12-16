@@ -9,7 +9,23 @@
     :incoming-options="searchedOptions"
     :external-loading-state="loadingState"
     @search-change="handleSearchEvent"
-  />
+  >
+
+    <div
+      v-if="isSearchValueValid && !this.loadingState"
+      slot="noResult"
+      class="baseSearchableMultiselectNoResult-cnt"
+      @click="handleNoResultOptionClick"
+    >
+      <i class="el-icon-plus"/>
+
+      <span
+        class="baseSearchableMultiselectNoResult__text"
+        v-text="noResultOptionText"
+      />
+    </div>
+
+  </BaseMultiselect>
 </template>
 
 <script>
@@ -83,11 +99,24 @@ export default {
       required: true,
     },
 
+    // Функция создания нового элемента
+    createItem: {
+      type: Function,
+      required: true,
+    },
+
+    // Префикс для текста, который отобразится в опции создания новой сущности.
+    // По сути, это имя сущности, которую нужно создать, но в винительном падеже.
+    noResultOptionTextPrefix: {
+      type: String,
+      required: true,
+    },
   },
 
   data: () => ({
     debouncedValidateAndSearchOptions: () => {},
     loadingState: false,
+    searchValue: '',
     searchedOptions: [],
   }),
 
@@ -100,6 +129,14 @@ export default {
         this.$emit('input', newVal);
       },
     },
+
+    isSearchValueValid() {
+      return this.$props.validateQueryValue(this.searchValue);
+    },
+
+    noResultOptionText() {
+      return `Создать ${this.$props.noResultOptionTextPrefix} ${this.searchValue}`;
+    },
   },
 
   created() {
@@ -110,13 +147,20 @@ export default {
   },
 
   methods: {
-    async validateAndSearchOptions(value) {
-      const valueIsValid = this.$props.validateQueryValue(value);
+    async fetchSearchedOptions() {
+      this.searchedOptions = await this.$props.searchOptions(
+        this.searchValue,
+        this.$props.contextModel,
+      );
+    },
 
-      if (valueIsValid) {
+    async validateAndSearchOptions(value) {
+      this.searchValue = value;
+
+      if (this.isSearchValueValid) {
         this.loadingState = true;
 
-        this.searchedOptions = await this.$props.searchOptions(value, this.$props.contextModel);
+        await this.fetchSearchedOptions();
 
         this.loadingState = false;
       }
@@ -125,6 +169,32 @@ export default {
     async handleSearchEvent(value) {
       await this.debouncedValidateAndSearchOptions(value);
     },
+
+    async handleNoResultOptionClick() {
+      this.loadingState = true;
+
+      await this.$props.createItem(
+        this.searchValue,
+        this.$props.contextModel,
+        this,
+      );
+
+      await this.fetchSearchedOptions();
+
+      this.loadingState = false;
+    },
   },
 };
 </script>
+
+<style lang="stylus" scoped>
+.baseSearchableMultiselectNoResult-cnt
+  display flex
+  align-items center
+
+.el-icon-plus
+  font-weight 700
+
+.baseSearchableMultiselectNoResult__text
+  margin-left 8px
+</style>
