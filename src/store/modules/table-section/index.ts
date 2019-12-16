@@ -1,4 +1,5 @@
 import { Module } from 'vuex';
+import { merge } from 'lodash';
 
 import { api } from '@/services/api';
 
@@ -70,10 +71,14 @@ const tableSectionModule: Module<TableSectionModule, any> = {
         throw new Error('Setting non-existent item');
       }
 
-      state.items.splice(itemIdx, 1, {
-        ...state.items[itemIdx],
-        ...newItem,
-      });
+      // !!!Осторожно, изменяет объект!!! Это сделано в первую очередь из-за того,
+      // что при открытии модального окна нужно запросить детальные данные
+      // сущности у сервера и передать обновленные данные в модальное окно, НО
+      // x10d-vue-kit построен таким образом, что данные для модального окна
+      // передаются параметром в экшн таблицы ДО обновления данных.
+
+      // TODO Строго говоря, нужно дорабатывать x10d-vue-kit, поскольку вышеописанное не хорошо.
+      merge(state.items[itemIdx], newItem);
     },
   },
 
