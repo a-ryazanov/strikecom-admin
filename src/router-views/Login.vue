@@ -20,13 +20,14 @@
         />
       </div>
 
-      <div class="loginForm__services-cnt">
+      <div class="loginForm__providers-cnt">
         <ElButton
           circle
           size="large"
           @click="logIn('google')"
+          class="loginForm__provider"
         >
-          <i class="fab fa-google"></i>
+          <GoogleIcon class="loginFormProvider__icon"/>
         </ElButton>
       </div>
 
@@ -63,6 +64,8 @@ import InfoIcon from '@x10d/vue-kit/src/assets/icons/info.svg';
 
 import IPropertyFieldView from '@x10d/vue-kit/src/types/IPropertyFieldView.d';
 
+import GoogleIcon from '../assets/svg/google.svg';
+
 import { firebase } from '@/services';
 
 
@@ -84,6 +87,7 @@ export default Vue.extend({
     BaseFormField,
     BaseButton,
     InfoIcon,
+    GoogleIcon,
     [Button.name]: Button,
   },
 
@@ -142,10 +146,6 @@ export default Vue.extend({
         this.isLoading = false;
       }
     },
-
-    async logInWithGoogle() {
-
-    },
   },
 });
 
@@ -203,11 +203,15 @@ $formFieldMargin = 15px
   line-height 16px
   color $globalColorWhite
 
-.loginForm__services-cnt
+.loginForm__providers-cnt
   display flex
   align-items center
   justify-content center
   margin-top 14px
+
+.loginFormProvider__icon
+  width 16px
+  height @width
 
 .loginForm__button
   display block
@@ -229,18 +233,6 @@ $formFieldMargin = 15px
   &:hover:not(:disabled),
   &:focus:not(:disabled)
     background-color $caribbean-green-almost
-
-
-.loginForm__link
-  margin 21px auto 0
-  text-align center
-  font-size 13px
-  line-height 15px
-  color $globalColorPerano
-  text-decoration none
-
-i
-  font-family "Font Awesome 5 Brands" !important
 
 // Переопределим свойства baseFormField'a
 /deep/ .baseInput
