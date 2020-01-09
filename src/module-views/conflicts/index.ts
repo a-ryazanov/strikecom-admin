@@ -32,7 +32,7 @@ export default {
         name: 'id',
         title: 'ID',
         typeOfCell: 'string',
-        minWidth: 40,
+        minWidth: 80,
       },
       {
         name: 'titleRu',

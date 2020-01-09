@@ -6,7 +6,7 @@
     >
       <span
         class="loginForm__title"
-        v-text="'ЗабастКом'"
+        v-text="'Забастком'"
       />
 
       <div

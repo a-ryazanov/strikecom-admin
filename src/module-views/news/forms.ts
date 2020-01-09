@@ -173,7 +173,7 @@ export const updateFormFields : Array<IPropertyFieldView> = [
     title: 'Дата создания новости',
     typeOfControl: 'staticDate',
     labelPosition: 'side',
-    tooltip: 'Дата создания сущности в базе данных ЗабастКом',
+    tooltip: 'Дата создания сущности в базе данных Забастком',
     specificControlProps: {
       format: 'date',
     },

@@ -42,7 +42,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
     title: 'Компания',
     typeOfControl: 'string',
     labelPosition: 'top',
-    validator: 'required|min:3|max:500',
+    validator: 'min:3|max:500',
   },
   {
     name: '_industry',
@@ -196,7 +196,7 @@ export const updateFormFields : Array<IPropertyFieldView> = [
     title: 'Дата создания конфликта',
     typeOfControl: 'staticDate',
     labelPosition: 'side',
-    tooltip: 'Дата создания сущности в базе данных ЗабастКом',
+    tooltip: 'Дата создания сущности в базе данных Забастком',
     specificControlProps: {
       format: 'date',
     },
