@@ -2,8 +2,6 @@ import axios, { AxiosInstance, Method } from 'axios';
 import { forEach } from 'lodash-es';
 import Qs from 'qs';
 
-import { BASE_API_URL } from '@/config';
-
 import { Dictionary, Locale } from '@/interfaces';
 
 
@@ -20,12 +18,15 @@ class Api {
     this.authToken = null;
     this.locale = Locale.ALL;
     this.axiosInstance = axios.create({
-      baseURL: BASE_API_URL,
+      // Определяется сервером в рантайме
+      // @ts-ignore
+      baseURL: document.apiUrl,
       headers: {
         Accept: 'application/json',
       },
       paramsSerializer: params => Qs.stringify(params, {
         encode: false,
+        allowDots: true,
       }),
       transformRequest: [(model) => {
         if (model) {
