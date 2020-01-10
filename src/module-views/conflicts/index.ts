@@ -8,12 +8,19 @@ import { catalogs } from '@/services/catalogs';
 
 import { FETCH_ITEM } from '@/store/modules/table-section/action-types';
 import { CONFLICTS_ROUTE } from '@/router/route-names';
+
 import {
   assembleCommonModalConfig,
   tableSectionCreateItemAction,
   tableSectionDeleteItemAction,
   tableSectionUpdateItemAction,
 } from '@/module-views/common-parts';
+
+import {
+  createFormFields as createEventFormFields,
+  createFormHandlers as createEventFormHandlers,
+} from '../events/forms';
+
 import {
   createFormFields,
   createFormHandlers,
@@ -100,7 +107,15 @@ export default {
       {
         name: 'addEvent',
         textContent: 'Добавить событие',
-        handler: () => alert('TODO'),
+        modalConfig: assembleCommonModalConfig(
+          'Создание события',
+          'Создать',
+          {
+            fields: createEventFormFields,
+            handlers: createEventFormHandlers,
+          },
+        ),
+        handler: tableSectionUpdateItemAction,
       },
     ],
   },

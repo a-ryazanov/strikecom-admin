@@ -4,34 +4,55 @@
     v-loading="sectionData.loadingState === 'pending'"
     element-loading-background="rgba(17,32,57,0.45)"
   >
+
     <template
-      v-if="isGlobalActionsShown"
+      v-show="isGlobalActionsShown"
       slot="headerAddon"
     >
-
-      <BaseActionButton
-        v-for="action in activeModuleView.globalActions"
-        :key="action.name"
-        :action-view="action"
-      />
-    </template>
-
-
-    <template slot="content">
-      <template v-if="sectionData.loadingState === 'loaded'">
-        <BaseTable
-          :view="activeModuleView.tableView"
-          :items="sectionData.items"
+      <template v-for="action in activeModuleView.globalActions">
+        <BaseActionButton
+          v-if="action.name !== 'search'"
+          :key="action.name"
+          :action-view="action"
+          class="section__globalAction"
         />
 
-        <BasePagination
-          :last-page="sectionData.lastResponseMeta.lastPage"
-          :current-page="sectionData.lastResponseMeta.currentPage"
-          class="section__pagination"
-          @page-changed="handlePageChanging"
+        <BaseSearchableInput
+          v-else
+          :key="action.name"
+          :value="sectionData.searchValue"
+          :action-view="action"
+          class="section__globalAction"
         />
       </template>
     </template>
+
+    <template slot="content">
+      <template v-if="sectionData.loadingState === 'loaded'">
+
+        <template v-if="sectionData.items.length !== 0">
+          <BaseTable
+            :view="activeModuleView.tableView"
+            :items="sectionData.items"
+          />
+
+          <BasePagination
+            :last-page="sectionData.lastResponseMeta.lastPage"
+            :current-page="sectionData.lastResponseMeta.currentPage"
+            class="section__pagination"
+            @page-changed="handlePageChanging"
+          />
+        </template>
+
+        <span
+          v-else
+          class="section__emptyItemsStub"
+          v-text="'Нет данных'"
+        />
+
+      </template>
+    </template>
+
   </BaseSectionLayout>
 </template>
 
@@ -43,6 +64,7 @@ import BasePagination from '@x10d/vue-kit/src/components/BasePagination.vue';
 import BaseTable from '@x10d/vue-kit/src/components/BaseTable.vue';
 
 import BaseSectionLayout from '@/components/BaseSectionLayout.vue';
+import BaseSearchableInput from '@/components/BaseSearchableInput.vue';
 
 import { moduleView } from '@/services';
 
@@ -61,6 +83,7 @@ export default {
     BaseActionButton,
     BasePagination,
     BaseSectionLayout,
+    BaseSearchableInput,
     BaseTable,
   },
 
@@ -112,6 +135,18 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+@import "~@x10d/vue-kit/src/styles/variables/colors.styl"
+
 .section__pagination
   margin-top 20px
+
+.section__globalAction
+  &:not(:first-child)
+    margin-left 8px
+
+.section__emptyItemsStub
+    margin auto
+    font-size 18px
+    font-weight 400
+    color $globalColorSlateGray
 </style>

@@ -14,6 +14,7 @@ import {
   tableSectionCreateItemAction,
   tableSectionDeleteItemAction,
   tableSectionUpdateItemAction,
+  tableSectionSearchAction,
 } from '@/module-views/common-parts';
 
 import {
@@ -27,6 +28,7 @@ import {
 export default {
   name: EVENTS_ROUTE,
   dataSourceEndPoint: 'events',
+  allowGlobalSearch: true,
   title: 'События',
   tableView: {
     columns: [
@@ -139,6 +141,11 @@ export default {
     ],
   },
   globalActions: [
+    {
+      name: 'search',
+      textContent: 'Поиск событий',
+      handler: tableSectionSearchAction,
+    },
     {
       name: 'create',
       textContent: 'Создать',

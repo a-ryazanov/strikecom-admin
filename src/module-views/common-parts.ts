@@ -3,7 +3,6 @@ import { flatten, forEach, map } from 'lodash-es';
 
 import IFormView from '@x10d/vue-kit/src/types/IFormView.d';
 import IModalPayload from '@x10d/vue-kit/src/types/IModalPayload.d';
-import IModalView from '@x10d/vue-kit/src/types/IModalView.d';
 import IPropertyFieldView from '@x10d/vue-kit/src/types/IPropertyFieldView.d';
 
 import { catalogs } from '@/services/catalogs';
@@ -11,6 +10,7 @@ import { catalogs } from '@/services/catalogs';
 import { Dictionary, Locale } from '@/interfaces';
 
 import {
+  FETCH_ITEMS,
   CREATE_ITEM,
   UPDATE_ITEM,
   DELETE_ITEM,
@@ -39,6 +39,17 @@ export async function tableSectionDeleteItemAction(
   model: any,
 ): Promise<any> {
   return vueComponent.$store.dispatch(DELETE_ITEM, model);
+}
+
+export async function tableSectionSearchAction(
+  vueComponent: any,
+  query: string,
+): Promise<any> {
+  return vueComponent.$store.dispatch(FETCH_ITEMS, {
+    filters: {
+      containsContent: query,
+    },
+  });
 }
 
 

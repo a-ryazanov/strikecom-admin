@@ -1,15 +1,16 @@
 import { Module } from 'vuex';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 
 import { api } from '@/services/api';
 
 import {
   CLEAR_SECTION_DATA,
+  MERGE_ITEM_BY_ID,
   SET_SECTION_DATA_SOURCE_END_POINT,
   SET_LAST_RESPONSE_META,
+  SET_SEARCH_VALUE,
   SET_SECTION_ITEMS,
   SET_SECTION_LOADING_STATE,
-  MERGE_ITEM_BY_ID,
 } from './mutation-types';
 
 import {
@@ -27,9 +28,8 @@ interface TableSectionModule {
   dataSourceEndPoint: string
   loadingState: LoadingState
   items: Array<any>
-  lastResponseMeta: {
-
-  } | null
+  lastResponseMeta: any
+  searchValue: string
 }
 
 const tableSectionModule: Module<TableSectionModule, any> = {
@@ -38,6 +38,7 @@ const tableSectionModule: Module<TableSectionModule, any> = {
     loadingState: 'pending',
     items: [],
     lastResponseMeta: null,
+    searchValue: '',
   },
 
   mutations: {
@@ -46,22 +47,7 @@ const tableSectionModule: Module<TableSectionModule, any> = {
       state.loadingState = 'pending';
       state.items = [];
       state.lastResponseMeta = null;
-    },
-
-    [SET_SECTION_DATA_SOURCE_END_POINT](state, dataSourceEndPoint: string) {
-      state.dataSourceEndPoint = dataSourceEndPoint;
-    },
-
-    [SET_LAST_RESPONSE_META](state, meta) {
-      state.lastResponseMeta = meta;
-    },
-
-    [SET_SECTION_ITEMS](state, items: Array<any>) {
-      state.items = items;
-    },
-
-    [SET_SECTION_LOADING_STATE](state, loadingState: LoadingState) {
-      state.loadingState = loadingState;
+      state.searchValue = '';
     },
 
     [MERGE_ITEM_BY_ID](state, { newItem, id }) {
@@ -79,6 +65,26 @@ const tableSectionModule: Module<TableSectionModule, any> = {
 
       // TODO Строго говоря, нужно дорабатывать x10d-vue-kit, поскольку вышеописанное не хорошо.
       merge(state.items[itemIdx], newItem);
+    },
+
+    [SET_SECTION_DATA_SOURCE_END_POINT](state, dataSourceEndPoint: string) {
+      state.dataSourceEndPoint = dataSourceEndPoint;
+    },
+
+    [SET_LAST_RESPONSE_META](state, meta) {
+      state.lastResponseMeta = meta;
+    },
+
+    [SET_SEARCH_VALUE](state, searchValue: string) {
+      state.searchValue = searchValue;
+    },
+
+    [SET_SECTION_ITEMS](state, items: Array<any>) {
+      state.items = items;
+    },
+
+    [SET_SECTION_LOADING_STATE](state, loadingState: LoadingState) {
+      state.loadingState = loadingState;
     },
   },
 
