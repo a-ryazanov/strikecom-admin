@@ -3,7 +3,11 @@ import { map } from 'lodash-es';
 import IPropertyFieldView from '@x10d/vue-kit/src/types/IPropertyFieldView.d';
 import IFormHandlers from '@x10d/vue-kit/src/types/IFormHandlers.d';
 
+import BaseSearchableMultiselect from '@/components/BaseSearchableMultiselect.vue';
+
+import { api } from '@/services/api';
 import { catalogs } from '@/services/catalogs';
+
 import {
   Dictionary,
   Locale,
@@ -13,7 +17,8 @@ import {
 import {
   setLanguageDependentModelValues,
   setLanguageDependentFieldsVisibility,
-  setCatalogsDependentModelValues,
+  setCatalogsDependentModelValueFromLocalValue,
+  setCatalogsDependentModelValuesFromServerValues,
 } from '@/module-views/common-parts';
 
 
@@ -24,7 +29,51 @@ const catalogsFieldsMappings : Dictionary = {
   _industry: 'industryId',
 };
 
+function setInheritDependentFieldsVisibility(
+  model : any,
+  formFields : Array<IPropertyFieldView>,
+) {
+  const parentEventFieldView = formFields.find(field => field.name === '_parentEvent');
+
+  // @ts-ignore
+  parentEventFieldView.hidden = !model._isInherited;
+}
+
+function setInheritDependentModelValuesFromLocalValues(model : any) {
+  if (!model._isInherited) {
+    model._parentEvent = null;
+    model.parentEventId = null;
+  }
+}
+
+
 const commonFormFields : Array<IPropertyFieldView> = [
+  {
+    name: '_isInherited',
+    title: 'Вытекает из события',
+    typeOfControl: 'switch',
+    labelPosition: 'side',
+    tooltip: 'Флаг, говорящий о том, вытекает ли конфликт из события другого конфликта.',
+  },
+  {
+    name: '_parentEvent',
+    title: 'Родительское событие',
+    typeOfControl: BaseSearchableMultiselect,
+    labelPosition: 'top',
+    specificControlProps: {
+      async searchOptions(value: string) {
+        return (await api.fetchItems('events', {
+          filters: {
+            fulltext: value,
+          },
+        })).data;
+      },
+      formatFieldTitle: (value : any) => value.titleRu,
+      debouncedInputSearch: false,
+      placeholder: 'Поиск',
+    },
+    hidden: true,
+  },
   {
     name: '_conflictReason',
     title: 'Причина конфликта',
@@ -165,14 +214,23 @@ const commonFormFields : Array<IPropertyFieldView> = [
 
 const commonFormHandlers : IFormHandlers = {
   input: (model, formFields, changedField) => {
+    if (changedField.name === '_isInherited') {
+      setInheritDependentFieldsVisibility(model, formFields);
+      setInheritDependentModelValuesFromLocalValues(model);
+    }
+
+    if (changedField.name === '_parentEvent') {
+      model.parentEventId = model._parentEvent
+        ? model._parentEvent.id
+        : null;
+    }
+
     if (changedField.name === '_languages') {
       setLanguageDependentFieldsVisibility(model, formFields);
     }
 
     if (Object.keys(catalogsFieldsMappings).includes(changedField.name)) {
-      const mappedFieldName = catalogsFieldsMappings[changedField.name];
-
-      model[mappedFieldName] = model[changedField.name].id;
+      setCatalogsDependentModelValueFromLocalValue(model, changedField, catalogsFieldsMappings);
     }
   },
 };
@@ -207,9 +265,11 @@ export const updateFormFields : Array<IPropertyFieldView> = [
 export const updateFormHandlers : IFormHandlers = {
   ...commonFormHandlers,
   open: (model, formFields) => {
+    setInheritDependentFieldsVisibility(model, formFields);
+
     setLanguageDependentModelValues(model);
     setLanguageDependentFieldsVisibility(model, formFields);
 
-    setCatalogsDependentModelValues(model, formFields, catalogsFieldsMappings);
+    setCatalogsDependentModelValuesFromServerValues(model, formFields, catalogsFieldsMappings);
   },
 };

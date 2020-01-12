@@ -98,7 +98,7 @@ export default {
 
 .sectionHeader__addon
   display flex
-  margin-left auto
+  flex-grow 1
 
 .section__content
   display flex

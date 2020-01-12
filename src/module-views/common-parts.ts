@@ -10,7 +10,6 @@ import { catalogs } from '@/services/catalogs';
 import { Dictionary, Locale } from '@/interfaces';
 
 import {
-  FETCH_ITEMS,
   CREATE_ITEM,
   UPDATE_ITEM,
   DELETE_ITEM,
@@ -41,24 +40,13 @@ export async function tableSectionDeleteItemAction(
   return vueComponent.$store.dispatch(DELETE_ITEM, model);
 }
 
-export async function tableSectionSearchAction(
-  vueComponent: any,
-  query: string,
-): Promise<any> {
-  return vueComponent.$store.dispatch(FETCH_ITEMS, {
-    filters: {
-      containsContent: query,
-    },
-  });
-}
-
 
 // Вспомогательные функции
 export function assembleCommonModalConfig(
   modalTitle: string,
   acceptButtonText: string,
   formView: IFormView,
-  beforeOpen ?: IModalPayload['beforeOpen'],
+  preinit ?: IModalPayload['preinit'],
 ): {
   payload: IModalPayload
   options: object
@@ -80,7 +68,7 @@ export function assembleCommonModalConfig(
         ],
       },
       formView,
-      beforeOpen,
+      preinit,
     },
     options: {
       width: COMMON_MODAL_FORM_WIDTH,
@@ -155,7 +143,7 @@ export function setLanguageDependentModelValues(model :any) {
 }
 
 
-export function setCatalogsDependentModelValues(
+export function setCatalogsDependentModelValuesFromServerValues(
   model : any,
   formFields : Array<IPropertyFieldView>,
   catalogsFieldsMappings : Dictionary,
@@ -168,10 +156,24 @@ export function setCatalogsDependentModelValues(
         model,
         localFieldName,
         // @ts-ignore
-        catalogs.getCatalogValue(fieldView.catalogName, model[serverFieldName]),
+        fieldView.typeOfControl === 'staticText'
+          // @ts-ignore
+          ? catalogs.getCatalogValue(fieldView.catalogName, model[serverFieldName]).nameRu
+          // @ts-ignore
+          : catalogs.getCatalogValue(fieldView.catalogName, model[serverFieldName]),
       );
     }
   });
+}
+
+export function setCatalogsDependentModelValueFromLocalValue(
+  model : any,
+  changedField : IPropertyFieldView,
+  catalogsFieldsMappings : Dictionary,
+) {
+  const mappedFieldName = catalogsFieldsMappings[changedField.name];
+
+  model[mappedFieldName] = model[changedField.name].id;
 }
 
 

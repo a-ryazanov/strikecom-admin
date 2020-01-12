@@ -14,7 +14,6 @@ import {
   tableSectionCreateItemAction,
   tableSectionDeleteItemAction,
   tableSectionUpdateItemAction,
-  tableSectionSearchAction,
 } from '@/module-views/common-parts';
 
 import {
@@ -28,7 +27,7 @@ import {
 export default {
   name: EVENTS_ROUTE,
   dataSourceEndPoint: 'events',
-  allowGlobalSearch: true,
+  allowSearch: true,
   title: 'События',
   tableView: {
     columns: [
@@ -62,6 +61,7 @@ export default {
         typeOfCell: 'string',
         formatCellText: ({ data }) => format(new Date(data), 'dd-MM-yyyy HH:mm'),
         minWidth: 120,
+        sortable: true,
       },
       {
         name: 'views',
@@ -133,19 +133,14 @@ export default {
         name: 'remove',
         textContent: 'Удалить',
         confirmation: {
-          title: 'Удаление новости',
-          text: 'Вы точно хотите удалить новость?',
+          title: 'Удаление события',
+          text: 'Вы точно хотите удалить событие?',
         },
         handler: tableSectionDeleteItemAction,
       },
     ],
   },
   globalActions: [
-    {
-      name: 'search',
-      textContent: 'Поиск событий',
-      handler: tableSectionSearchAction,
-    },
     {
       name: 'create',
       textContent: 'Создать',

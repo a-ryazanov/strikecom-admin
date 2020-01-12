@@ -29,6 +29,7 @@ export default {
   name: NEWS_ROUTE,
   dataSourceEndPoint: 'news',
   title: 'Новости',
+  allowSearch: false,
   tableView: {
     columns: [
       {
@@ -52,6 +53,7 @@ export default {
         typeOfCell: 'string',
         formatCellText: ({ data }) => format(new Date(data), 'dd-MM-yyyy HH:mm'),
         minWidth: 80,
+        sortable: true,
       },
       {
         name: 'views',

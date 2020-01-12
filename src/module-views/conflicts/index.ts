@@ -4,13 +4,15 @@ import store from '@/store';
 
 import { ModuleView } from '@/interfaces';
 
+import { api } from '@/services/api';
 import { catalogs } from '@/services/catalogs';
 
-import { FETCH_ITEM } from '@/store/modules/table-section/action-types';
 import { CONFLICTS_ROUTE } from '@/router/route-names';
 
 import {
   assembleCommonModalConfig,
+  setLocalityDependentFieldVisibility,
+  setLocalityDependentModelValues,
   tableSectionCreateItemAction,
   tableSectionDeleteItemAction,
   tableSectionUpdateItemAction,
@@ -18,7 +20,7 @@ import {
 
 import {
   createFormFields as createEventFormFields,
-  createFormHandlers as createEventFormHandlers,
+  createFromConflictsFormHandlers as createEventFormHandlers,
 } from '../events/forms';
 
 import {
@@ -29,10 +31,17 @@ import {
 } from './forms';
 
 
+import {
+  MERGE_ITEM_BY_ID,
+  SET_SECTION_LOADING_STATE,
+} from '@/store/modules/table-section/mutation-types';
+
+
 export default {
   name: CONFLICTS_ROUTE,
   dataSourceEndPoint: 'conflicts',
   title: 'Конфликты',
+  allowSearch: true,
   tableView: {
     columns: [
       {
@@ -56,6 +65,7 @@ export default {
         typeOfCell: 'string',
         formatCellText: ({ data }) => format(new Date(data), 'dd-MM-yyyy HH:mm'),
         minWidth: 120,
+        sortable: true,
       },
       {
         name: 'conflictReasonId',
@@ -90,7 +100,24 @@ export default {
             handlers: updateFormHandlers,
           },
           async (modalView, formView, formData) => {
-            await store.dispatch(FETCH_ITEM, formData.id);
+            try {
+              store.commit(SET_SECTION_LOADING_STATE, 'pending');
+
+              store.commit(MERGE_ITEM_BY_ID, {
+                id: formData.id,
+                newItem: {
+                  ...(await api.fetchItem('conflicts', formData.id)).data,
+                  _isInherited: !!formData.parentEventId,
+                  _parentEvent: formData.parentEventId
+                    ? (await api.fetchItem('events', formData.parentEventId)).data
+                    : null,
+                },
+              });
+            } catch (error) {
+              throw error;
+            } finally {
+              store.commit(SET_SECTION_LOADING_STATE, 'loaded');
+            }
           },
         ),
         handler: tableSectionUpdateItemAction,
@@ -109,13 +136,52 @@ export default {
         textContent: 'Добавить событие',
         modalConfig: assembleCommonModalConfig(
           'Создание события',
-          'Создать',
+          'Добавить',
           {
             fields: createEventFormFields,
             handlers: createEventFormHandlers,
           },
+          async (modalView, formView, formData) => {
+            try {
+              store.commit(SET_SECTION_LOADING_STATE, 'pending');
+
+              const conflict = (await api.fetchItem('conflicts', formData.id)).data;
+              const latestLocality = await api.fetchConflictLatestLocality(formData.id);
+
+              const eventFormData = {
+                conflict,
+                conflictId: conflict.id,
+                locality: latestLocality ? latestLocality.data : null,
+                localityId: latestLocality ? latestLocality.data.id : null,
+                latitude: formData.latitude,
+                longitude: formData.longitude,
+                date: Date.now(),
+                published: true,
+              };
+
+              setLocalityDependentModelValues(eventFormData);
+              // @ts-ignore
+              setLocalityDependentFieldVisibility(eventFormData, formView.fields);
+
+              return eventFormData;
+            } catch (error) {
+              throw error;
+            } finally {
+              store.commit(SET_SECTION_LOADING_STATE, 'loaded');
+            }
+          },
         ),
-        handler: tableSectionUpdateItemAction,
+        handler: async (vueComponent: any, model: any) => {
+          try {
+            vueComponent.$store.commit(SET_SECTION_LOADING_STATE, 'pending');
+
+            await api.createItem('events', model);
+          } catch (error) {
+            throw error;
+          } finally {
+            vueComponent.$store.commit(SET_SECTION_LOADING_STATE, 'loaded');
+          }
+        },
       },
     ],
   },

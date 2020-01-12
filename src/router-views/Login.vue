@@ -64,6 +64,7 @@ import InfoIcon from '@x10d/vue-kit/src/assets/icons/info.svg';
 
 import IPropertyFieldView from '@x10d/vue-kit/src/types/IPropertyFieldView.d';
 
+// @ts-ignore
 import GoogleIcon from '../assets/svg/google.svg';
 
 import { firebase } from '@/services';

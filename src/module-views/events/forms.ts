@@ -2,12 +2,9 @@ import Vue from 'vue';
 import { map } from 'lodash-es';
 
 import BaseInputImageTag from '@x10d/vue-kit/src/components/BaseInputImageTag.vue';
-import BaseModalForm from '@x10d/vue-kit/src/components/BaseModalForm.vue';
 
 import IPropertyFieldView from '@x10d/vue-kit/src/types/IPropertyFieldView.d';
 import IFormHandlers from '@x10d/vue-kit/src/types/IFormHandlers.d';
-
-import BaseSearchableMultiselect from '@/components/BaseSearchableMultiselect.vue';
 
 import { catalogs } from '@/services/catalogs';
 import { api } from '@/services/api';
@@ -19,7 +16,8 @@ import {
 } from '@/interfaces';
 
 import {
-  setCatalogsDependentModelValues,
+  setCatalogsDependentModelValueFromLocalValue,
+  setCatalogsDependentModelValuesFromServerValues,
   setLanguageDependentModelValues,
   setLanguageDependentFieldsVisibility,
   setLocalityDependentModelValues,
@@ -46,93 +44,11 @@ const commonFormFields : Array<IPropertyFieldView> = [
     catalogName: 'eventTypes',
   },
   {
-    name: '_eventStatus',
-    title: 'Статус события',
-    typeOfControl: 'multiselect',
-    labelPosition: 'top',
-    specificControlProps: {
-      incomingOptions: catalogs.getCatalog('eventStatuses'),
-      formatFieldTitle: (value : any) => value.nameRu,
-    },
-    catalogName: 'eventStatuses',
-  },
-  {
     name: '_country',
     title: 'Страна',
-    // @ts-ignore
-    typeOfControl: BaseSearchableMultiselect,
+    typeOfControl: 'multiselect',
     specificControlProps: {
-      async searchOptions(value: string) {
-        return (await api.fetchItems('countries', {
-          name: value,
-        })).data;
-      },
-      validateQueryValue: (value : any) => value !== '' && value.length >= 2,
-      async createItem(value : string, model : any, componentInstance : any) {
-        const modalResult = await componentInstance.$qrKitOpenModal(
-          BaseModalForm,
-          {
-            modalView: {
-              title: 'Создание страны',
-              actions: [
-                {
-                  title: 'Отмена',
-                  reason: 'dismiss',
-                },
-                {
-                  title: 'Создать',
-                  reason: 'accept',
-                  colorType: 'primary',
-                },
-              ],
-            },
-            formView: {
-              fields: [
-                {
-                  name: 'nameRu',
-                  title: 'Название на русском',
-                  typeOfControl: 'string',
-                  labelPosition: 'top',
-                  validator: 'required|max:255',
-                },
-                {
-                  name: 'nameEn',
-                  title: 'Название на английском',
-                  typeOfControl: 'string',
-                  labelPosition: 'top',
-                  validator: 'required|max:255',
-                },
-                {
-                  name: 'nameEs',
-                  title: 'Название на испанском',
-                  typeOfControl: 'string',
-                  labelPosition: 'top',
-                  validator: 'required|max:255',
-                },
-                {
-                  name: 'nameDe',
-                  title: 'Название на немецком',
-                  typeOfControl: 'string',
-                  labelPosition: 'top',
-                  validator: 'required|max:255',
-                },
-              ],
-            },
-            formData: {
-              nameRu: value,
-            },
-          },
-        );
-
-        if (modalResult.reason === 'accept') {
-          const { data } = await api.createItem('countries', {
-            ...modalResult.payload.formData,
-          });
-
-          model._country = data;
-        }
-      },
-      noResultOptionTextPrefix: 'страну',
+      incomingOptions: catalogs.getCatalog('countries'),
       formatFieldTitle: (value : any) => value.nameRu,
     },
     labelPosition: 'top',
@@ -141,25 +57,13 @@ const commonFormFields : Array<IPropertyFieldView> = [
   {
     name: '_region',
     title: 'Регион',
-    // @ts-ignore
-    typeOfControl: BaseSearchableMultiselect,
+    typeOfControl: 'multiselect',
     specificControlProps: {
-      async searchOptions(value: string, model: any) {
+      async fetchOptions(model: any) {
         return (await api.fetchItems('regions', {
           countryId: model._country.id,
-          name: value,
         })).data;
       },
-      validateQueryValue: (value : any) => value !== '' && value.length >= 2,
-      async createItem(value : string, model : any) {
-        const { data } = await api.createItem('regions', {
-          countryId: model._country.id,
-          name: value,
-        });
-
-        model._region = data;
-      },
-      noResultOptionTextPrefix: 'регион',
       formatFieldTitle: (value : any) => value.name,
     },
     labelPosition: 'top',
@@ -169,25 +73,13 @@ const commonFormFields : Array<IPropertyFieldView> = [
   {
     name: '_locality',
     title: 'Населённый пункт',
-    // @ts-ignore
-    typeOfControl: BaseSearchableMultiselect,
+    typeOfControl: 'multiselect',
     specificControlProps: {
-      async searchOptions(value: string, model: any) {
+      async fetchOptions(model: any) {
         return (await api.fetchItems('localities', {
           regionId: model._region.id,
-          name: value,
         })).data;
       },
-      validateQueryValue: (value : any) => value !== '' && value.length >= 2,
-      async createItem(value : string, model : any) {
-        const { data } = await api.createItem('localities', {
-          regionId: model._region.id,
-          name: value,
-        });
-
-        model._locality = data;
-      },
-      noResultOptionTextPrefix: 'населённый пункт',
       formatFieldTitle: (value : any) => value.name,
     },
     labelPosition: 'top',
@@ -394,9 +286,7 @@ const commonFormHandlers : IFormHandlers = {
     }
 
     if (Object.keys(catalogsFieldsMappings).includes(changedField.name)) {
-      const mappedFieldName = catalogsFieldsMappings[changedField.name];
-
-      model[mappedFieldName] = model[changedField.name].id;
+      setCatalogsDependentModelValueFromLocalValue(model, changedField, catalogsFieldsMappings);
     }
   },
 };
@@ -433,6 +323,13 @@ export const updateFormFields : Array<IPropertyFieldView> = [
       format: 'date',
     },
   },
+  {
+    name: '_eventStatus',
+    title: 'Статус события',
+    typeOfControl: 'staticText',
+    labelPosition: 'side',
+    catalogName: 'eventStatuses',
+  },
   ...commonFormFields,
 ];
 
@@ -445,6 +342,11 @@ export const updateFormHandlers : IFormHandlers = {
     setLanguageDependentModelValues(model);
     setLanguageDependentFieldsVisibility(model, formFields);
 
-    setCatalogsDependentModelValues(model, formFields, catalogsFieldsMappings);
+    setCatalogsDependentModelValuesFromServerValues(model, formFields, catalogsFieldsMappings);
   },
+};
+
+
+export const createFromConflictsFormHandlers : IFormHandlers = {
+  ...commonFormHandlers,
 };

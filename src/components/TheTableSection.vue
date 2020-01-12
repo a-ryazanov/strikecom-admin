@@ -9,22 +9,19 @@
       v-show="isGlobalActionsShown"
       slot="headerAddon"
     >
-      <template v-for="action in activeModuleView.globalActions">
-        <BaseActionButton
-          v-if="action.name !== 'search'"
-          :key="action.name"
-          :action-view="action"
-          class="section__globalAction"
-        />
+      <BaseSearch
+        v-if="activeModuleView.allowSearch"
+        :value="sectionData.params.filters.fulltext"
+        @search="handleSearch"
+        class="sectionHeader__search"
+      />
 
-        <BaseSearchableInput
-          v-else
-          :key="action.name"
-          :value="sectionData.searchValue"
-          :action-view="action"
-          class="section__globalAction"
-        />
-      </template>
+      <BaseActionButton
+        v-for="action in activeModuleView.globalActions"
+        :key="action.name"
+        :action-view="action"
+        class="sectionHeader__action"
+      />
     </template>
 
     <template slot="content">
@@ -34,6 +31,9 @@
           <BaseTable
             :view="activeModuleView.tableView"
             :items="sectionData.items"
+            :sorting-direction="sortingDirection"
+            :sorting-column-name="sortingColumnName"
+            @sorting-parameters-changed="changeSortingParameters"
           />
 
           <BasePagination
@@ -64,15 +64,16 @@ import BasePagination from '@x10d/vue-kit/src/components/BasePagination.vue';
 import BaseTable from '@x10d/vue-kit/src/components/BaseTable.vue';
 
 import BaseSectionLayout from '@/components/BaseSectionLayout.vue';
-import BaseSearchableInput from '@/components/BaseSearchableInput.vue';
+import BaseSearch from '@/components/BaseSearch.vue';
 
 import { moduleView } from '@/services';
 
 import { FETCH_ITEMS } from '@/store/modules/table-section/action-types';
 
 import {
-  SET_SECTION_DATA_SOURCE_END_POINT,
   CLEAR_SECTION_DATA,
+  SET_SECTION_DATA_SOURCE_END_POINT,
+  UPDATE_SECTION_PARAMS,
 } from '@/store/modules/table-section/mutation-types';
 
 
@@ -83,7 +84,7 @@ export default {
     BaseActionButton,
     BasePagination,
     BaseSectionLayout,
-    BaseSearchableInput,
+    BaseSearch,
     BaseTable,
   },
 
@@ -113,13 +114,42 @@ export default {
       return this.activeModuleView.globalActions
         && this.sectionData.loadingState === 'loaded';
     },
+
+    sortingColumnName() {
+      return this.sectionData.params.sort.field || null;
+    },
+
+    sortingDirection() {
+      return this.sectionData.params.sort.order || null;
+    },
   },
 
   methods: {
+    changeSortingParameters(field, order) {
+      if (order) {
+        this.$store.commit(UPDATE_SECTION_PARAMS, {
+          sort: {
+            field,
+            order,
+          },
+        });
+      } else {
+        this.$store.commit(UPDATE_SECTION_PARAMS, {
+          sort: {},
+        });
+      }
+
+      this.$store.dispatch(FETCH_ITEMS);
+    },
+
     handlePageChanging(page) {
       this.$store.dispatch(FETCH_ITEMS, {
         page,
       });
+    },
+
+    async handleSearch() {
+      await this.$store.dispatch(FETCH_ITEMS);
     },
   },
 
@@ -137,10 +167,13 @@ export default {
 <style lang="stylus" scoped>
 @import "~@x10d/vue-kit/src/styles/variables/colors.styl"
 
-.section__pagination
-  margin-top 20px
+.sectionHeader__search
+  margin-left 20px
+  margin-right auto
 
-.section__globalAction
+.sectionHeader__action
+  margin-left auto
+
   &:not(:first-child)
     margin-left 8px
 
@@ -149,4 +182,7 @@ export default {
     font-size 18px
     font-weight 400
     color $globalColorSlateGray
+
+.section__pagination
+  margin-top 20px
 </style>

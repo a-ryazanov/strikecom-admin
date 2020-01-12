@@ -8,11 +8,12 @@
     :format-field-title="$props.formatFieldTitle"
     :incoming-options="searchedOptions"
     :external-loading-state="loadingState"
+    @keyup.enter.native="validateAndSearchOptions"
     @search-change="handleSearchEvent"
   >
 
     <div
-      v-if="isSearchValueValid && !this.loadingState"
+      v-if="$props.createItem && isSearchValueValid && !this.loadingState"
       slot="noResult"
       class="baseSearchableMultiselectNoResult-cnt"
       @click="handleNoResultOptionClick"
@@ -96,20 +97,28 @@ export default {
     // Функция валидации поисковой строки
     validateQueryValue: {
       type: Function,
-      required: true,
+      required: false,
+    },
+
+    // Выполнять ли поиск при введении новых символов, но с задержкой.
+    // Иначе поиск будет выполнен при нажатии клавиши Enter
+    debouncedInputSearch: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
 
     // Функция создания нового элемента
     createItem: {
       type: Function,
-      required: true,
+      required: false,
     },
 
     // Префикс для текста, который отобразится в опции создания новой сущности.
     // По сути, это имя сущности, которую нужно создать, но в винительном падеже.
     noResultOptionTextPrefix: {
       type: String,
-      required: true,
+      required: false,
     },
   },
 
@@ -119,6 +128,14 @@ export default {
     searchValue: '',
     searchedOptions: [],
   }),
+
+  watch: {
+    async searchValue(newValue) {
+      if (this.$props.debouncedInputSearch) {
+        await this.debouncedValidateAndSearchOptions(newValue);
+      }
+    },
+  },
 
   computed: {
     valueModel: {
@@ -131,19 +148,14 @@ export default {
     },
 
     isSearchValueValid() {
-      return this.$props.validateQueryValue(this.searchValue);
+      return this.$props.validateQueryValue
+        ? this.$props.validateQueryValue(this.searchValue)
+        : true;
     },
 
     noResultOptionText() {
       return `Создать ${this.$props.noResultOptionTextPrefix} ${this.searchValue}`;
     },
-  },
-
-  created() {
-    this.debouncedValidateAndSearchOptions = debounce(
-      this.validateAndSearchOptions.bind(this),
-      400,
-    );
   },
 
   methods: {
@@ -154,9 +166,7 @@ export default {
       );
     },
 
-    async validateAndSearchOptions(value) {
-      this.searchValue = value;
-
+    async validateAndSearchOptions() {
       if (this.isSearchValueValid) {
         this.loadingState = true;
 
@@ -167,7 +177,7 @@ export default {
     },
 
     async handleSearchEvent(value) {
-      await this.debouncedValidateAndSearchOptions(value);
+      this.searchValue = value;
     },
 
     async handleNoResultOptionClick() {
@@ -183,6 +193,15 @@ export default {
 
       this.loadingState = false;
     },
+  },
+
+  created() {
+    if (this.$props.debouncedInputSearch) {
+      this.debouncedValidateAndSearchOptions = debounce(
+        this.validateAndSearchOptions.bind(this),
+        400,
+      );
+    }
   },
 };
 </script>

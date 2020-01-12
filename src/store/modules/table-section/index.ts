@@ -3,14 +3,16 @@ import { merge } from 'lodash-es';
 
 import { api } from '@/services/api';
 
+import { Dictionary } from '@/interfaces';
+
 import {
   CLEAR_SECTION_DATA,
   MERGE_ITEM_BY_ID,
   SET_SECTION_DATA_SOURCE_END_POINT,
   SET_LAST_RESPONSE_META,
-  SET_SEARCH_VALUE,
   SET_SECTION_ITEMS,
   SET_SECTION_LOADING_STATE,
+  UPDATE_SECTION_PARAMS,
 } from './mutation-types';
 
 import {
@@ -28,8 +30,11 @@ interface TableSectionModule {
   dataSourceEndPoint: string
   loadingState: LoadingState
   items: Array<any>
+  params: {
+    sort: Dictionary
+    filters: Dictionary
+  }
   lastResponseMeta: any
-  searchValue: string
 }
 
 const tableSectionModule: Module<TableSectionModule, any> = {
@@ -37,8 +42,13 @@ const tableSectionModule: Module<TableSectionModule, any> = {
     dataSourceEndPoint: '',
     loadingState: 'pending',
     items: [],
+    params: {
+      sort: {},
+      filters: {
+        fulltext: '',
+      },
+    },
     lastResponseMeta: null,
-    searchValue: '',
   },
 
   mutations: {
@@ -46,8 +56,13 @@ const tableSectionModule: Module<TableSectionModule, any> = {
       state.dataSourceEndPoint = '';
       state.loadingState = 'pending';
       state.items = [];
+      state.params = {
+        sort: {},
+        filters: {
+          fulltext: '',
+        },
+      };
       state.lastResponseMeta = null;
-      state.searchValue = '';
     },
 
     [MERGE_ITEM_BY_ID](state, { newItem, id }) {
@@ -57,13 +72,12 @@ const tableSectionModule: Module<TableSectionModule, any> = {
         throw new Error('Setting non-existent item');
       }
 
-      // !!!Осторожно, изменяет объект!!! Это сделано в первую очередь из-за того,
-      // что при открытии модального окна нужно запросить детальные данные
-      // сущности у сервера и передать обновленные данные в модальное окно, НО
-      // x10d-vue-kit построен таким образом, что данные для модального окна
-      // передаются параметром в экшн таблицы ДО обновления данных.
-
-      // TODO Строго говоря, нужно дорабатывать x10d-vue-kit, поскольку вышеописанное не хорошо.
+      // TODO !!!Осторожно, изменяет объект!!! Это сделано из-за того,
+      //      что при открытии модального окна нужно запросить детальные данные
+      //      сущности у сервера и передать обновленные данные в модальное окно, НО
+      //      x10d-vue-kit построен таким образом, что данные для модального окна
+      //      передаются параметром в экшн таблицы ДО обновления данных.
+      //      Строго говоря, нужно дорабатывать x10d-vue-kit, поскольку вышеописанное не хорошо.
       merge(state.items[itemIdx], newItem);
     },
 
@@ -75,16 +89,19 @@ const tableSectionModule: Module<TableSectionModule, any> = {
       state.lastResponseMeta = meta;
     },
 
-    [SET_SEARCH_VALUE](state, searchValue: string) {
-      state.searchValue = searchValue;
-    },
-
     [SET_SECTION_ITEMS](state, items: Array<any>) {
       state.items = items;
     },
 
     [SET_SECTION_LOADING_STATE](state, loadingState: LoadingState) {
       state.loadingState = loadingState;
+    },
+
+    [UPDATE_SECTION_PARAMS](state, params) {
+      state.params = {
+        ...state.params,
+        ...params,
+      };
     },
   },
 
@@ -100,7 +117,10 @@ const tableSectionModule: Module<TableSectionModule, any> = {
         const {
           data: items,
           meta,
-        } = await api.fetchItems(state.dataSourceEndPoint, params);
+        } = await api.fetchItems(state.dataSourceEndPoint, {
+          ...state.params,
+          ...params,
+        });
 
         commit(SET_SECTION_ITEMS, items);
 

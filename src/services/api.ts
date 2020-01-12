@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, Method } from 'axios';
-import { forEach } from 'lodash-es';
+import { forEach, reject } from 'lodash-es';
 import Qs from 'qs';
 
 import { Dictionary, Locale } from '@/interfaces';
@@ -177,6 +177,24 @@ class Api {
       url: `${endPoint}/${item.id}`,
       method: 'delete',
     });
+  }
+
+  public async fetchConflictLatestLocality(conflictId : number): Promise<any> {
+    return this.request({
+      url: `conflicts/${conflictId}/latest-locality`,
+      method: 'get',
+    })
+      .catch((error) => {
+        if (
+          error.response
+          && error.response.status
+          && error.response.status === 404
+        ) {
+          return;
+        }
+
+        throw error;
+      });
   }
 }
 
