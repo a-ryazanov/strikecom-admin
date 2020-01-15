@@ -79,13 +79,12 @@ export default {
         minWidth: 120,
       },
       {
-        name: 'conflictResultId',
-        title: 'Результат',
+        name: 'dateTo',
+        title: 'Дата окончания',
         typeOfCell: 'string',
-        // @ts-ignore
-        formatCellText: ({ data }) => catalogs.getCatalogValue('conflictResults', data).nameRu,
+        formatCellText: ({ data }) => format(new Date(data), 'dd-MM-yyyy HH:mm'),
         minWidth: 120,
-        nullPlaceholder: 'Не окончен',
+        nullPlaceholder: '—',
       },
     ],
     itemActions: [

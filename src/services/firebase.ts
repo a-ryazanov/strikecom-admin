@@ -10,6 +10,8 @@ import { SET_USER } from '@/store/modules/auth/mutation-types';
 class Firebase {
     app: fb.app.App
 
+    user: fb.User | null = null
+
     constructor() {
       this.app = fb.initializeApp({
         apiKey: 'AIzaSyBqMWYu8ke0r0ONrI3SKR2C2h2Q4N261vc',
@@ -28,19 +30,16 @@ class Firebase {
       return new Promise((resolve) => {
         this.app.auth().onAuthStateChanged(
           async (user) => {
+            this.user = user;
+            let userInfo = null;
+
+            await this.updateFirebaseIdToken();
+
             if (user) {
-              const authToken = await user.getIdToken();
-
-              api.setAuthToken(authToken);
-
-              const { data: userInfo } = await api.fetchUserInfo();
-
-              store.commit(SET_USER, userInfo);
-            } else {
-              store.commit(SET_USER, null);
-
-              api.setAuthToken(null);
+              userInfo = (await api.fetchUserInfo()).data;
             }
+
+            store.commit(SET_USER, userInfo);
 
             resolve();
           },
@@ -60,6 +59,16 @@ class Firebase {
 
     async signOut(): Promise<void> {
       await this.app.auth().signOut();
+    }
+
+    async updateFirebaseIdToken(): Promise<void> {
+      let authToken = null;
+
+      if (this.user) {
+        authToken = await this.user.getIdToken();
+      }
+
+      api.setAuthToken(authToken);
     }
 }
 

@@ -58,6 +58,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
   {
     name: '_parentEvent',
     title: 'Родительское событие',
+    // @ts-ignore
     typeOfControl: BaseSearchableMultiselect,
     labelPosition: 'top',
     specificControlProps: {
@@ -131,7 +132,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
     labelPosition: 'top',
     validator: 'required',
     specificControlProps: {
-      pickerType: 'date',
+      pickerType: 'datetime',
       valueFormat: 'timestamp',
     },
   },
@@ -141,7 +142,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
     typeOfControl: 'dateRange',
     labelPosition: 'top',
     specificControlProps: {
-      pickerType: 'date',
+      pickerType: 'datetime',
       valueFormat: 'timestamp',
     },
   },

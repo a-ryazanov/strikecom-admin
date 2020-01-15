@@ -6,6 +6,8 @@ import BaseInputImageTag from '@x10d/vue-kit/src/components/BaseInputImageTag.vu
 import IPropertyFieldView from '@x10d/vue-kit/src/types/IPropertyFieldView.d';
 import IFormHandlers from '@x10d/vue-kit/src/types/IFormHandlers.d';
 
+import BaseSearchableMultiselect from '@/components/BaseSearchableMultiselect.vue';
+
 import { catalogs } from '@/services/catalogs';
 import { api } from '@/services/api';
 
@@ -57,13 +59,25 @@ const commonFormFields : Array<IPropertyFieldView> = [
   {
     name: '_region',
     title: 'Регион',
-    typeOfControl: 'multiselect',
+    // @ts-ignore
+    typeOfControl: BaseSearchableMultiselect,
     specificControlProps: {
-      async fetchOptions(model: any) {
+      async searchOptions(value: string, model: any) {
         return (await api.fetchItems('regions', {
           countryId: model._country.id,
+          name: value,
         })).data;
       },
+      validateQueryValue: (value : any) => value !== '' && value.length >= 2,
+      async createItem(value : string, model : any) {
+        const { data } = await api.createItem('regions', {
+          countryId: model._country.id,
+          name: value,
+        });
+
+        model._region = data;
+      },
+      noResultOptionTextPrefix: 'регион',
       formatFieldTitle: (value : any) => value.name,
     },
     labelPosition: 'top',
@@ -73,14 +87,26 @@ const commonFormFields : Array<IPropertyFieldView> = [
   {
     name: '_locality',
     title: 'Населённый пункт',
-    typeOfControl: 'multiselect',
+    // @ts-ignore
+    typeOfControl: BaseSearchableMultiselect,
     specificControlProps: {
-      async fetchOptions(model: any) {
+      async searchOptions(value: string, model: any) {
         return (await api.fetchItems('localities', {
           regionId: model._region.id,
+          name: value,
         })).data;
       },
-      formatFieldTitle: (value : any) => value.name,
+      validateQueryValue: (value: any) => value !== '' && value.length >= 2,
+      async createItem(value: string, model: any) {
+        const { data } = await api.createItem('localities', {
+          regionId: model._region.id,
+          name: value,
+        });
+
+        model._locality = data;
+      },
+      noResultOptionTextPrefix: 'населённый пункт',
+      formatFieldTitle: (value: any) => value.name,
     },
     labelPosition: 'top',
     validator: 'required',
@@ -113,7 +139,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
     labelPosition: 'top',
     validator: 'required',
     specificControlProps: {
-      pickerType: 'date',
+      pickerType: 'datetime',
       valueFormat: 'timestamp',
     },
   },

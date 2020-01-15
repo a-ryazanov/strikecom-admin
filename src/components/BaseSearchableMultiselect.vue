@@ -13,7 +13,7 @@
   >
 
     <div
-      v-if="$props.createItem && isSearchValueValid && !this.loadingState"
+      v-if="isCreateOptionShown"
       slot="noResult"
       class="baseSearchableMultiselectNoResult-cnt"
       @click="handleNoResultOptionClick"
@@ -155,6 +155,13 @@ export default {
 
     noResultOptionText() {
       return `Создать ${this.$props.noResultOptionTextPrefix} ${this.searchValue}`;
+    },
+
+    isCreateOptionShown() {
+      return this.$props.createItem
+        && this.searchedOptions.length === 0
+        && this.isSearchValueValid
+        && !this.loadingState;
     },
   },
 

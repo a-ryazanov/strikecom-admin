@@ -1,18 +1,28 @@
-import axios, { AxiosInstance, Method } from 'axios';
-import { forEach, reject } from 'lodash-es';
+import axios, {
+  AxiosError,
+  AxiosInstance,
+} from 'axios';
+import { forEach } from 'lodash-es';
 import Qs from 'qs';
 
 import { Dictionary, Locale } from '@/interfaces';
+
+// eslint-disable-next-line import/no-cycle
+import { firebase } from '@/services/firebase';
 
 
 const dateFields = ['date', 'dateFrom', 'dateTo', 'createdAt'];
 
 class Api {
+  private readonly locale: Locale
+
+  private maxRequestRetries: number = 2
+
   private axiosInstance: AxiosInstance
 
   private authToken: string | null
 
-  private readonly locale: Locale
+  private lastRequestRetriesCount: number = 0
 
   constructor() {
     this.authToken = null;
@@ -76,7 +86,12 @@ class Api {
 
     this.axiosInstance.interceptors.request.use(
       (config) => {
-        config.url = `${this.locale}/${config.url}`;
+        // @ts-ignore
+        const { requestConfig } = config;
+
+        if (!requestConfig || requestConfig.modifyUrl) {
+          config.url = `${this.locale}/${config.url}`;
+        }
 
         if (this.authToken) {
           config.headers.common = {
@@ -88,6 +103,19 @@ class Api {
         return config;
       },
     );
+
+    this.axiosInstance.interceptors.response.use(
+      response => response,
+      async (error) => {
+        if (error.response && error.response.status === 401) {
+          await firebase.updateFirebaseIdToken();
+
+          await this.retryRequest(error);
+        } else {
+          throw error;
+        }
+      },
+    );
   }
 
   private request<T>({
@@ -97,7 +125,7 @@ class Api {
     params,
   } : {
     url: string,
-    method: Method,
+    method: string,
     data?: any,
     params?: any,
   }): Promise<T> {
@@ -109,10 +137,31 @@ class Api {
     }).then(response => response.data);
   }
 
+  private async retryRequest(error : AxiosError): Promise<void> {
+    if (this.lastRequestRetriesCount < this.maxRequestRetries) {
+      this.lastRequestRetriesCount += 1;
+
+      await this.axiosInstance.request({
+        url: error.config.url,
+        method: error.config.method,
+        data: JSON.parse(error.config.data),
+        params: error.config.params,
+        // @ts-ignore
+        requestConfig: {
+          modifyUrl: false,
+        },
+      });
+    } else {
+      this.lastRequestRetriesCount = 0;
+
+      throw error;
+    }
+  }
+
+
   public setAuthToken(token: string | null) {
     this.authToken = token;
   }
-
 
   public async fetchUserInfo(): Promise<any> {
     return this.request({

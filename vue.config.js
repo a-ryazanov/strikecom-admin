@@ -25,8 +25,4 @@ module.exports = {
       ],
     );
   },
-
-  devServer: {
-    proxy: 'https://strikeapi2.herokuapp.com',
-  },
 };

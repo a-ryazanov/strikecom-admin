@@ -34,6 +34,7 @@
             :sorting-direction="sortingDirection"
             :sorting-column-name="sortingColumnName"
             @sorting-parameters-changed="changeSortingParameters"
+            class="section__table"
           />
 
           <BasePagination
@@ -176,6 +177,9 @@ export default {
 
   &:not(:first-child)
     margin-left 8px
+
+.section__table
+  flex-grow 1
 
 .section__emptyItemsStub
     margin auto
