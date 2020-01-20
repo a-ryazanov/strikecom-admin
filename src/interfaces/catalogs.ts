@@ -1,6 +1,6 @@
-import { Dictionary } from './dictionary';
+import { Dictionary } from './dictionary'
 
 
 export interface Catalogs {
-    [key: string]: Dictionary<Dictionary<string>>
+    [key : string] : Dictionary<Dictionary<string>>
 }

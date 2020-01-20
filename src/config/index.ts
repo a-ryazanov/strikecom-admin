@@ -1,1 +1,1 @@
-export const COMMON_MODAL_FORM_WIDTH = 500;
+export const COMMON_MODAL_FORM_WIDTH = 500

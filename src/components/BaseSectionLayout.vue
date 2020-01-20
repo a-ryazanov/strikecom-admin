@@ -1,64 +1,64 @@
 <template>
-  <ElContainer
-    direction="horizontal"
-    class="section-cnt"
-  >
-    <ElAside
-      width="250px"
-      class="section__aside"
+    <ElContainer
+        direction="horizontal"
+        class="section-cnt"
     >
-      <TheNavBar/>
-    </ElAside>
+        <ElAside
+            width="250px"
+            class="section__aside"
+        >
+            <TheNavBar/>
+        </ElAside>
 
-    <ElContainer class="section__container">
-      <ElHeader class="section__header">
-        <h1
-          class="sectionHeader__title"
-          v-text="$props.title"
-        />
+        <ElContainer class="section__container">
+            <ElHeader class="section__header">
+                <h1
+                    class="sectionHeader__title"
+                    v-text="$props.title"
+                />
 
-        <div class="sectionHeader__addon">
-          <slot name="headerAddon"/>
-        </div>
-      </ElHeader>
+                <div class="sectionHeader__addon">
+                    <slot name="headerAddon"/>
+                </div>
+            </ElHeader>
 
-      <ElMain class="section__content">
-        <slot name="content"/>
-      </ElMain>
+            <ElMain class="section__content">
+                <slot name="content"/>
+            </ElMain>
+        </ElContainer>
     </ElContainer>
-  </ElContainer>
 </template>
 
 <script>
 import {
-  Aside,
-  Container,
-  Header,
-  Main,
-} from 'element-ui';
+    Aside,
+    Container,
+    Header,
+    Main,
+} from 'element-ui'
 
-import TheNavBar from '@/components/TheNavBar.vue';
+import TheNavBar from '@/components/TheNavBar.vue'
 
 
 export default {
-  name: 'BaseSectionLayout',
+    name: 'BaseSectionLayout',
 
-  components: {
-    [Aside.name]: Aside,
-    [Container.name]: Container,
-    [Header.name]: Header,
-    [Main.name]: Main,
-    TheNavBar,
-  },
-
-  props: {
-    // Заголовок секции
-    title: {
-      type: String,
-      required: true,
+    components: {
+        [Aside.name]: Aside,
+        [Container.name]: Container,
+        [Header.name]: Header,
+        [Main.name]: Main,
+        TheNavBar,
     },
-  },
-};
+
+    props: {
+    // Заголовок секции
+        title: {
+            type: String,
+            required: true,
+        },
+    },
+}
 </script>
 
 <style scoped lang="stylus">

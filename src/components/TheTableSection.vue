@@ -1,168 +1,169 @@
 <template>
-  <BaseSectionLayout
-    :title="activeModuleView.title"
-    v-loading="sectionData.loadingState === 'pending'"
-    element-loading-background="rgba(17,32,57,0.45)"
-  >
-
-    <template
-      v-show="isGlobalActionsShown"
-      slot="headerAddon"
+    <BaseSectionLayout
+        v-loading="sectionData.loadingState === 'pending'"
+        element-loading-background="rgba(17,32,57,0.45)"
+        :title="activeModuleView.title"
     >
-      <BaseSearch
-        v-if="activeModuleView.allowSearch"
-        :value="sectionData.params.filters.fulltext"
-        @search="handleSearch"
-        class="sectionHeader__search"
-      />
 
-      <BaseActionButton
-        v-for="action in activeModuleView.globalActions"
-        :key="action.name"
-        :action-view="action"
-        class="sectionHeader__action"
-      />
-    </template>
+        <template
+            v-show="isGlobalActionsShown"
+            slot="headerAddon"
+        >
+            <BaseSearch
+                v-if="activeModuleView.allowSearch"
+                :value="sectionData.params.filters.fulltext"
+                class="sectionHeader__search"
+                @search="handleSearch"
+            />
 
-    <template slot="content">
-      <template v-if="sectionData.loadingState === 'loaded'">
-
-        <template v-if="sectionData.items.length !== 0">
-          <BaseTable
-            :view="activeModuleView.tableView"
-            :items="sectionData.items"
-            :sorting-direction="sortingDirection"
-            :sorting-column-name="sortingColumnName"
-            @sorting-parameters-changed="changeSortingParameters"
-            class="section__table"
-          />
-
-          <BasePagination
-            :last-page="sectionData.lastResponseMeta.lastPage"
-            :current-page="sectionData.lastResponseMeta.currentPage"
-            class="section__pagination"
-            @page-changed="handlePageChanging"
-          />
+            <BaseActionButton
+                v-for="action in activeModuleView.globalActions"
+                :key="action.name"
+                :action-view="action"
+                class="sectionHeader__action"
+            />
         </template>
 
-        <span
-          v-else
-          class="section__emptyItemsStub"
-          v-text="'Нет данных'"
-        />
+        <template slot="content">
+            <template v-if="sectionData.loadingState === 'loaded'">
 
-      </template>
-    </template>
+                <template v-if="sectionData.items.length !== 0">
+                    <BaseTable
+                        :view="activeModuleView.tableView"
+                        :items="sectionData.items"
+                        :sorting-direction="sortingDirection"
+                        :sorting-column-name="sortingColumnName"
+                        class="section__table"
+                        @sorting-parameters-changed="changeSortingParameters"
+                    />
 
-  </BaseSectionLayout>
+                    <BasePagination
+                        :last-page="sectionData.lastResponseMeta.lastPage"
+                        :current-page="sectionData.lastResponseMeta.currentPage"
+                        class="section__pagination"
+                        @page-changed="handlePageChanging"
+                    />
+                </template>
+
+                <span
+                    v-else
+                    class="section__emptyItemsStub"
+                    v-text="'Нет данных'"
+                />
+
+            </template>
+        </template>
+
+    </BaseSectionLayout>
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState } from 'vuex'
 
-import BaseActionButton from '@x10d/vue-kit/src/components/BaseActionButton.vue';
-import BasePagination from '@x10d/vue-kit/src/components/BasePagination.vue';
-import BaseTable from '@x10d/vue-kit/src/components/BaseTable.vue';
+import BaseActionButton from '@x10d/vue-kit/src/components/BaseActionButton.vue'
+import BasePagination from '@x10d/vue-kit/src/components/BasePagination.vue'
+import BaseTable from '@x10d/vue-kit/src/components/BaseTable.vue'
 
-import BaseSectionLayout from '@/components/BaseSectionLayout.vue';
-import BaseSearch from '@/components/BaseSearch.vue';
+import BaseSectionLayout from '@/components/BaseSectionLayout.vue'
+import BaseSearch from '@/components/BaseSearch.vue'
 
-import { moduleView } from '@/services';
+import { moduleView } from '@/services'
 
-import { FETCH_ITEMS } from '@/store/modules/table-section/action-types';
+import { FETCH_ITEMS } from '@/store/modules/table-section/action-types'
 
 import {
-  CLEAR_SECTION_DATA,
-  SET_SECTION_DATA_SOURCE_END_POINT,
-  UPDATE_SECTION_PARAMS,
-} from '@/store/modules/table-section/mutation-types';
+    CLEAR_SECTION_DATA,
+    SET_SECTION_DATA_SOURCE_END_POINT,
+    UPDATE_SECTION_PARAMS,
+} from '@/store/modules/table-section/mutation-types'
 
 
 export default {
-  name: 'TheTableSection',
+    name: 'TheTableSection',
 
-  components: {
-    BaseActionButton,
-    BasePagination,
-    BaseSectionLayout,
-    BaseSearch,
-    BaseTable,
-  },
-
-  watch: {
-    activeModuleView(newValue) {
-      this.$store.commit(CLEAR_SECTION_DATA);
-
-      this.$store.commit(
-        SET_SECTION_DATA_SOURCE_END_POINT,
-        newValue.dataSourceEndPoint,
-      );
-
-      this.$store.dispatch(FETCH_ITEMS);
-    },
-  },
-
-  computed: {
-    ...mapState({
-      sectionData: state => state.tableSectionData,
-    }),
-
-    activeModuleView() {
-      return moduleView.getModuleView(this.$route.name);
+    components: {
+        BaseActionButton,
+        BasePagination,
+        BaseSectionLayout,
+        BaseSearch,
+        BaseTable,
     },
 
-    isGlobalActionsShown() {
-      return this.activeModuleView.globalActions
-        && this.sectionData.loadingState === 'loaded';
+    computed: {
+        ...mapState({
+            sectionData: state => state.tableSectionData,
+        }),
+
+        activeModuleView() {
+            return moduleView.getModuleView(this.$route.name)
+        },
+
+        isGlobalActionsShown() {
+            return this.activeModuleView.globalActions &&
+        this.sectionData.loadingState === 'loaded'
+        },
+
+        sortingColumnName() {
+            return this.sectionData.params.sort.field || null
+        },
+
+        sortingDirection() {
+            return this.sectionData.params.sort.order || null
+        },
     },
 
-    sortingColumnName() {
-      return this.sectionData.params.sort.field || null;
+    watch: {
+        activeModuleView(newValue) {
+            this.$store.commit(CLEAR_SECTION_DATA)
+
+            this.$store.commit(
+                SET_SECTION_DATA_SOURCE_END_POINT,
+                newValue.dataSourceEndPoint,
+            )
+
+            this.$store.dispatch(FETCH_ITEMS)
+        },
     },
 
-    sortingDirection() {
-      return this.sectionData.params.sort.order || null;
-    },
-  },
+    created() {
+        this.$store.commit(
+            SET_SECTION_DATA_SOURCE_END_POINT,
+            this.activeModuleView.dataSourceEndPoint,
+        )
 
-  methods: {
-    changeSortingParameters(field, order) {
-      if (order) {
-        this.$store.commit(UPDATE_SECTION_PARAMS, {
-          sort: {
-            field,
-            order,
-          },
-        });
-      } else {
-        this.$store.commit(UPDATE_SECTION_PARAMS, {
-          sort: {},
-        });
-      }
-
-      this.$store.dispatch(FETCH_ITEMS);
+        this.$store.dispatch(FETCH_ITEMS)
     },
 
-    handlePageChanging(page) {
-      this.$store.dispatch(FETCH_ITEMS, {
-        page,
-      });
+    methods: {
+        changeSortingParameters(field, order) {
+            if (order) {
+                this.$store.commit(UPDATE_SECTION_PARAMS, {
+                    sort: {
+                        field,
+                        order,
+                    },
+                })
+            }
+            else {
+                this.$store.commit(UPDATE_SECTION_PARAMS, {
+                    sort: {},
+                })
+            }
+
+            this.$store.dispatch(FETCH_ITEMS)
+        },
+
+        handlePageChanging(page) {
+            this.$store.dispatch(FETCH_ITEMS, {
+                page,
+            })
+        },
+
+        async handleSearch() {
+            await this.$store.dispatch(FETCH_ITEMS)
+        },
     },
-
-    async handleSearch() {
-      await this.$store.dispatch(FETCH_ITEMS);
-    },
-  },
-
-  created() {
-    this.$store.commit(
-      SET_SECTION_DATA_SOURCE_END_POINT,
-      this.activeModuleView.dataSourceEndPoint,
-    );
-
-    this.$store.dispatch(FETCH_ITEMS);
-  },
-};
+}
 </script>
 
 <style lang="stylus" scoped>

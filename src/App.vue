@@ -1,65 +1,67 @@
 <template>
-  <div id="app">
-    <router-view></router-view>
+    <div id="app">
+        <router-view/>
 
-    <modals-container/>
-  </div>
+        <modals-container/>
+    </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { mapState } from 'vuex';
+import Vue from 'vue'
+import { mapState } from 'vuex'
 
-import BaseModalError from '@x10d/vue-kit/src/components/BaseModalError.vue';
+import BaseModalError from '@x10d/vue-kit/src/components/BaseModalError.vue'
 
-import { firebase } from '@/services';
+import { firebase } from '@/services'
 
-import { HAS_PERMISSIONS } from '@/store/modules/auth/getter-types';
+import { HAS_PERMISSIONS } from '@/store/modules/auth/getter-types'
 
-import { LOGIN_ROUTE } from '@/router/route-names';
+import { LOGIN_ROUTE } from '@/router/route-names'
 
 
 export default Vue.extend({
-  computed: {
-    ...mapState({
-      user: (state : any) => state.auth.user,
-    }),
-  },
+    computed: {
+        ...mapState({
+            user: (state : any) => state.auth.user,
+        }),
+    },
 
-  mounted(): void {
-    this.$watch(
-      'user',
-      async function (newValue) {
-        if (this.$store.getters[HAS_PERMISSIONS]) {
-          if (this.$route.name === LOGIN_ROUTE) {
-            await this.$router.push('/');
-          }
-        } else if (newValue) {
-          // @ts-ignore
-          const modalPromise = this.$qrKitOpenModal(
-            BaseModalError,
-            {
-              modalCompletingInterceptor: async () => {
-                await firebase.signOut();
-              },
-              mainErrorText: 'У вас нет прав для доступа к панели администратора!',
-              hideAcceptButton: false,
+    mounted() : void {
+        this.$watch(
+            'user',
+            async function (newValue) {
+                if (this.$store.getters[HAS_PERMISSIONS]) {
+                    if (this.$route.name === LOGIN_ROUTE) {
+                        await this.$router.push('/')
+                    }
+                }
+                else if (newValue) {
+                    // @ts-ignore
+                    const modalPromise = this.$qrKitOpenModal(
+                        BaseModalError,
+                        {
+                            modalCompletingInterceptor: async () => {
+                                await firebase.signOut()
+                            },
+                            mainErrorText: 'У вас нет прав для доступа к панели администратора!',
+                            hideAcceptButton: false,
+                        },
+                    )
+
+                    await modalPromise
+                }
+                else if (this.$route.name !== LOGIN_ROUTE) {
+                    await this.$router.push({
+                        name: LOGIN_ROUTE,
+                    })
+                }
             },
-          );
-
-          await modalPromise;
-        } else if (this.$route.name !== LOGIN_ROUTE) {
-          await this.$router.push({
-            name: LOGIN_ROUTE,
-          });
-        }
-      },
-      {
-        immediate: true,
-      },
-    );
-  },
-});
+            {
+                immediate: true,
+            },
+        )
+    },
+})
 </script>
 
 

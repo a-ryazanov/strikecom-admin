@@ -1,90 +1,90 @@
 <template>
-  <div class="theNavBar">
-    <TheNavBarUserPanel />
+    <div class="theNavBar">
+        <TheNavBarUserPanel/>
 
-    <ElMenu
-      unique-opened
-      :default-active="activeRouteName"
-      class="theNavBar__menu"
-    >
-      <Component
-        v-for="route in routes"
-        :key="route.name"
-        :is="route.children ? 'ElSubmenu' : 'ElMenuItem'"
-        :index="route.name"
-        @click="handleMenuItemClick(route)"
-        class="theNavBarMenu__item"
-      >
-        <template v-if="route.children">
-        <span
-          slot="title"
-          v-text="route.meta.title"
-        />
+        <ElMenu
+            unique-opened
+            :default-active="activeRouteName"
+            class="theNavBar__menu"
+        >
+            <Component
+                :is="route.children ? 'ElSubmenu' : 'ElMenuItem'"
+                v-for="route in routes"
+                :key="route.name"
+                :index="route.name"
+                class="theNavBarMenu__item"
+                @click="handleMenuItemClick(route)"
+            >
+                <template v-if="route.children">
+                    <span
+                        slot="title"
+                        v-text="route.meta.title"
+                    />
 
-          <ElMenuItem
-            v-for="childRoute in route.children"
-            :key="childRoute.name"
-            :index="childRoute.name"
-            @click="handleMenuItemClick(childRoute)"
-            v-text="childRoute.meta.title"
-          />
-        </template>
+                    <ElMenuItem
+                        v-for="childRoute in route.children"
+                        :key="childRoute.name"
+                        :index="childRoute.name"
+                        @click="handleMenuItemClick(childRoute)"
+                        v-text="childRoute.meta.title"
+                    />
+                </template>
 
-        <template v-else>
-          {{ route.meta.title }}
-        </template>
-      </Component>
-    </ElMenu>
-  </div>
+                <template v-else>
+                    {{ route.meta.title }}
+                </template>
+            </Component>
+        </ElMenu>
+    </div>
 
 </template>
 
 <script>
 import {
-  Menu,
-  Submenu,
-  MenuItem,
-} from 'element-ui';
+    Menu,
+    Submenu,
+    MenuItem,
+} from 'element-ui'
 
-import TheNavBarUserPanel from '@/components/TheNavBarUserPanel.vue';
+import TheNavBarUserPanel from '@/components/TheNavBarUserPanel.vue'
 
-import { routes } from '@/router';
+import { routes } from '@/router'
 
 
 export default {
-  name: 'TheNavBar',
+    name: 'TheNavBar',
 
-  data: () => ({
-    routes: null,
-  }),
-
-  components: {
-    [Menu.name]: Menu,
-    [Submenu.name]: Submenu,
-    [MenuItem.name]: MenuItem,
-    TheNavBarUserPanel,
-  },
-
-  computed: {
-    activeRouteName() {
-      return this.$route.name;
+    components: {
+        [Menu.name]: Menu,
+        [Submenu.name]: Submenu,
+        [MenuItem.name]: MenuItem,
+        TheNavBarUserPanel,
     },
-  },
 
-  methods: {
-    handleMenuItemClick(item) {
-      if (this.$route.name !== item.name) {
-        this.$router.push({
-          name: item.name,
-        });
-      }
+    data: () => ({
+        routes: null,
+    }),
+
+    computed: {
+        activeRouteName() {
+            return this.$route.name
+        },
     },
-  },
 
-  created() {
-    this.routes = routes.filter(route => !!route.meta);
-  },
-};
+    created() {
+        this.routes = routes.filter(route => !!route.meta)
+    },
+
+    methods: {
+        handleMenuItemClick(item) {
+            if (this.$route.name !== item.name) {
+                this.$router.push({
+                    name: item.name,
+                })
+            }
+        },
+    },
+}
 </script>
 
 <style lang="stylus">

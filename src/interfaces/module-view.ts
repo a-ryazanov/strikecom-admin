@@ -1,15 +1,15 @@
-import ITableView from '@x10d/vue-kit/src/types/ITableView.d';
-import IActionButtonView from '@x10d/vue-kit/src/types/IActionButtonView.d';
+import ITableView from '@x10d/vue-kit/src/types/ITableView.d'
+import IActionButtonView from '@x10d/vue-kit/src/types/IActionButtonView.d'
 
 
 export interface ModuleView {
-  name: string
+    name : string
 
-  dataSourceEndPoint: string
+    dataSourceEndPoint : string
 
-  title: string
+    title : string
 
-  tableView?: ITableView
+    tableView ?: ITableView
 
-  globalActions?: Array<IActionButtonView>
+    globalActions ?: Array<IActionButtonView>
 }

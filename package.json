@@ -3,11 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "----- Develop -----": "",
     "serve": "vue-cli-service serve",
+    "----- Build -----": "",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "----- Lint -----": "",
+    "lint": "vue-cli-service lint --no-fix --format node_modules/eslint-friendly-formatter ./",
+    "lint:fix": "vue-cli-service lint --format node_modules/eslint-friendly-formatter ./"
   },
   "dependencies": {
+    "@x10d/eslint-config": "bitbucket:x10d_frontend/x10d-eslint-config#1.1.2",
     "@x10d/vue-kit": "bitbucket:x10d_frontend/x10d-vue-kit#master",
     "axios": "^0.18.1",
     "core-js": "^3.3.2",
@@ -36,6 +41,7 @@
     "babel-plugin-component": "^1.1.1",
     "babel-plugin-transform-builtin-extend": "^1.1.2",
     "eslint": "^5.16.0",
+    "eslint-friendly-formatter": "^4.0.1",
     "eslint-plugin-vue": "^5.0.0",
     "lint-staged": "^9.4.2",
     "stylus": "^0.54.7",

@@ -1,73 +1,73 @@
 <template>
-  <div class="login">
-    <form
-      v-loading="isLoading"
-      class="loginForm"
-    >
-      <span
-        class="loginForm__title"
-        v-text="'Забастком'"
-      />
-
-      <div
-        v-if="error"
-        class="loginForm__error"
-      >
-        <InfoIcon/>
-        <p
-          class="loginForm__errorText"
-          v-text="error.message"
-        />
-      </div>
-
-      <div class="loginForm__providers-cnt">
-        <ElButton
-          circle
-          size="large"
-          @click="logIn('google')"
-          class="loginForm__provider"
+    <div class="login">
+        <form
+            v-loading="isLoading"
+            class="loginForm"
         >
-          <GoogleIcon class="loginFormProvider__icon"/>
-        </ElButton>
-      </div>
+            <span
+                class="loginForm__title"
+                v-text="'Забастком'"
+            />
 
-      <BaseFormField
-        v-model="email"
-        :field-view="fieldsViews.email"
-      />
+            <div
+                v-if="error"
+                class="loginForm__error"
+            >
+                <InfoIcon/>
+                <p
+                    class="loginForm__errorText"
+                    v-text="error.message"
+                />
+            </div>
 
-      <BaseFormField
-        v-model="password"
-        :field-view="fieldsViews.password"
-      />
+            <div class="loginForm__providers-cnt">
+                <ElButton
+                    circle
+                    size="large"
+                    class="loginForm__provider"
+                    @click="logIn('google')"
+                >
+                    <GoogleIcon class="loginFormProvider__icon"/>
+                </ElButton>
+            </div>
 
-      <BaseButton
-        :disabled="isSubmitButtonDisabled"
-        class="loginForm__button"
-        type="submit"
-        @click="logIn"
-        v-text="'Войти'"
-      />
-    </form>
-  </div>
+            <BaseFormField
+                v-model="email"
+                :field-view="fieldsViews.email"
+            />
+
+            <BaseFormField
+                v-model="password"
+                :field-view="fieldsViews.password"
+            />
+
+            <BaseButton
+                :disabled="isSubmitButtonDisabled"
+                class="loginForm__button"
+                type="submit"
+                @click="logIn"
+                v-text="'Войти'"
+            />
+        </form>
+    </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { FirebaseError } from 'firebase';
-import { Button } from 'element-ui';
+import Vue from 'vue'
+import { FirebaseError } from 'firebase'
+import { Button } from 'element-ui'
 
-import BaseButton from '@x10d/vue-kit/src/components/BaseButton.vue';
-import BaseFormField from '@x10d/vue-kit/src/components/BaseFormField.vue';
+import BaseButton from '@x10d/vue-kit/src/components/BaseButton.vue'
+import BaseFormField from '@x10d/vue-kit/src/components/BaseFormField.vue'
 // @ts-ignore
-import InfoIcon from '@x10d/vue-kit/src/assets/icons/info.svg';
+import InfoIcon from '@x10d/vue-kit/src/assets/icons/info.svg'
 
-import IPropertyFieldView from '@x10d/vue-kit/src/types/IPropertyFieldView.d';
+import IPropertyFieldView from '@x10d/vue-kit/src/types/IPropertyFieldView.d'
 
 // @ts-ignore
-import GoogleIcon from '../assets/svg/google.svg';
+import GoogleIcon from '../assets/svg/google.svg'
 
-import { firebase } from '@/services';
+import { firebase } from '@/services'
 
 
 interface IComponentData {
@@ -82,73 +82,76 @@ interface IComponentData {
 }
 
 export default Vue.extend({
-  name: 'Login',
+    name: 'Login',
 
-  components: {
-    BaseFormField,
-    BaseButton,
-    InfoIcon,
-    GoogleIcon,
-    [Button.name]: Button,
-  },
-
-  data(): IComponentData {
-    return {
-      email: '',
-      password: '',
-      isLoading: false,
-      error: null,
-      fieldsViews: {
-        email: {
-          name: 'email',
-          typeOfControl: 'string',
-          specificControlProps: {
-            placeholder: 'Почта',
-          },
-          title: 'Почта',
-          labelPosition: 'none',
-        },
-        password: {
-          name: 'password',
-          typeOfControl: 'password',
-          specificControlProps: {
-            placeholder: 'Пароль',
-          },
-          title: 'Пароль',
-          labelPosition: 'none',
-        },
-      },
-    };
-  },
-
-  computed: {
-    isSubmitButtonDisabled() : boolean {
-      return !this.email || !this.password;
+    components: {
+        BaseFormField,
+        BaseButton,
+        InfoIcon,
+        GoogleIcon,
+        [Button.name]: Button,
     },
-  },
 
-  methods: {
-    async logIn(provider ?: string) : Promise<void> {
-      try {
-        this.isLoading = true;
-        this.error = null;
-
-        if (provider === 'google') {
-          await firebase.signInWithGoogle();
-        } else {
-          await firebase.signInWithEmailAndPassword(
-            this.email,
-            this.password,
-          );
+    data() : IComponentData {
+        return {
+            email: '',
+            password: '',
+            isLoading: false,
+            error: null,
+            fieldsViews: {
+                email: {
+                    name: 'email',
+                    typeOfControl: 'string',
+                    specificControlProps: {
+                        placeholder: 'Почта',
+                    },
+                    title: 'Почта',
+                    labelPosition: 'none',
+                },
+                password: {
+                    name: 'password',
+                    typeOfControl: 'password',
+                    specificControlProps: {
+                        placeholder: 'Пароль',
+                    },
+                    title: 'Пароль',
+                    labelPosition: 'none',
+                },
+            },
         }
-      } catch (error) {
-        this.error = error;
-      } finally {
-        this.isLoading = false;
-      }
     },
-  },
-});
+
+    computed: {
+        isSubmitButtonDisabled() : boolean {
+            return !this.email || !this.password
+        },
+    },
+
+    methods: {
+        async logIn(provider ?: string) : Promise<void> {
+            try {
+                this.isLoading = true
+                this.error = null
+
+                if (provider === 'google') {
+                    await firebase.signInWithGoogle()
+                }
+                else {
+                    await firebase.signInWithEmailAndPassword(
+                        this.email,
+                        this.password,
+                    )
+                }
+            }
+            catch (error) {
+                this.error = error
+            }
+            finally {
+                this.isLoading = false
+            }
+        },
+    },
+})
 
 </script>
 

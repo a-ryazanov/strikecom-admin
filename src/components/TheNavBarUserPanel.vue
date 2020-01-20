@@ -1,76 +1,77 @@
 <template>
-  <ElDropdown
-    trigger="click"
-    size="small"
-    class="userPanel"
-  >
-    <div class="userPanel__main">
-      <ElAvatar
-        shape="square"
+    <ElDropdown
+        trigger="click"
         size="small"
-        :src="user ? user.imageUrl : null"
-        icon="el-icon-user-solid"
-        :alt="user ? user.name : null"
-        class="userPanel__avatar"
-      />
+        class="userPanel"
+    >
+        <div class="userPanel__main">
+            <ElAvatar
+                shape="square"
+                size="small"
+                :src="user ? user.imageUrl : null"
+                icon="el-icon-user-solid"
+                :alt="user ? user.name : null"
+                class="userPanel__avatar"
+            />
 
-      <span
-        class="userPanel__userName"
-        v-text="user ? user.name : null"
-      />
+            <span
+                class="userPanel__userName"
+                v-text="user ? user.name : null"
+            />
 
-      <ElIcon
-        name="arrow-down"
-        class="userPanel__chevron"
-      />
-    </div>
+            <ElIcon
+                name="arrow-down"
+                class="userPanel__chevron"
+            />
+        </div>
 
-    <ElDropdownMenu slot="dropdown" class="userPanel__dropdown">
-      <ElDropdownItem>
-        <span @click="signOut">Выйти</span>
-      </ElDropdownItem>
-    </ElDropdownMenu>
-  </ElDropdown>
+        <ElDropdownMenu
+            slot="dropdown"
+            class="userPanel__dropdown"
+        >
+            <ElDropdownItem>
+                <span @click="signOut">Выйти</span>
+            </ElDropdownItem>
+        </ElDropdownMenu>
+    </ElDropdown>
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState } from 'vuex'
 import {
-  Avatar,
-  Dropdown,
-  DropdownMenu,
-  DropdownItem,
-  Icon,
-} from 'element-ui';
+    Avatar,
+    Dropdown,
+    DropdownMenu,
+    DropdownItem,
+    Icon,
+} from 'element-ui'
 
-import { firebase } from '@/services';
-
-import { LOGIN_ROUTE } from '@/router/route-names';
+import { firebase } from '@/services'
 
 
 export default {
-  name: 'TheNavBarUserPanel',
+    name: 'TheNavBarUserPanel',
 
-  components: {
-    [Avatar.name]: Avatar,
-    [Dropdown.name]: Dropdown,
-    [DropdownMenu.name]: DropdownMenu,
-    [DropdownItem.name]: DropdownItem,
-    [Icon.name]: Icon,
-  },
-
-  computed: {
-    ...mapState({
-      user: state => state.auth.user,
-    }),
-  },
-
-  methods: {
-    async signOut() {
-      await firebase.signOut();
+    components: {
+        [Avatar.name]: Avatar,
+        [Dropdown.name]: Dropdown,
+        [DropdownMenu.name]: DropdownMenu,
+        [DropdownItem.name]: DropdownItem,
+        [Icon.name]: Icon,
     },
-  },
-};
+
+    computed: {
+        ...mapState({
+            user: state => state.auth.user,
+        }),
+    },
+
+    methods: {
+        async signOut() {
+            await firebase.signOut()
+        },
+    },
+}
 </script>
 
 <style lang="stylus" scoped>
