@@ -7,6 +7,7 @@ import IPropertyFieldView from '@x10d/vue-kit/src/types/IPropertyFieldView.d'
 import IFormHandlers from '@x10d/vue-kit/src/types/IFormHandlers.d'
 
 import BaseSearchableMultiselect from '@/components/BaseSearchableMultiselect.vue'
+import BaseVideoInput from '@/components/BaseVideoInput.vue'
 
 import { catalogs } from '@/services/catalogs'
 import { api } from '@/services/api'
@@ -18,6 +19,7 @@ import {
 } from '@/interfaces'
 
 import {
+    extendVideosValues,
     setCatalogsDependentModelValueFromLocalValue,
     setCatalogsDependentModelValuesFromServerValues,
     setLanguageDependentModelValues,
@@ -277,6 +279,12 @@ const commonFormFields : Array<IPropertyFieldView> = [
         labelPosition: 'top',
         tooltip: 'Ссылки на фотографии',
     },
+    {
+        name: 'videos',
+        title: 'Видео',
+        typeOfControl: BaseVideoInput,
+        labelPosition: 'top',
+    },
 ]
 
 const commonFormHandlers : IFormHandlers = {
@@ -373,6 +381,8 @@ export const updateFormHandlers : IFormHandlers = {
         setLanguageDependentFieldsVisibility(model, formFields)
 
         setCatalogsDependentModelValuesFromServerValues(model, formFields, catalogsFieldsMappings)
+
+        extendVideosValues(model)
     },
 }
 

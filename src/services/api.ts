@@ -48,6 +48,13 @@ class Api {
                         if (key.charAt(0) === '_') {
                             delete model[key]
                         }
+
+                        // TODO Обязательно нужно переносить в модели
+                        if (key === 'videos') {
+                            forEach(value, (video) => {
+                                delete video._videoType
+                            })
+                        }
                     })
 
                     // Преобразуем поля, содержащие дату

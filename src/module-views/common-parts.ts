@@ -41,6 +41,51 @@ export async function tableSectionDeleteItemAction(
 }
 
 
+const videoTypesMappings : Dictionary = {
+    other: 'Другое',
+    vk_link: 'Вконтакте',
+    youtube_link: 'Youtube',
+}
+
+export const addVideoFormView : IFormView = {
+    fields: [
+        {
+            name: 'url',
+            title: 'URL',
+            typeOfControl: 'string',
+            labelPosition: 'top',
+            validator: 'required',
+        },
+        {
+            name: '_videoType',
+            title: 'Тип видео',
+            typeOfControl: 'multiselect',
+            labelPosition: 'top',
+            validator: 'required',
+            specificControlProps: {
+                incomingOptions: catalogs.getCatalog('videoTypes'),
+                formatFieldTitle: (value : any) => videoTypesMappings[value.code],
+            },
+        },
+        {
+            name: 'previewUrl',
+            title: 'Превью',
+            tooltip: 'URL изображения, отображающегося в предпросмотре видео',
+            typeOfControl: 'string',
+            labelPosition: 'top',
+        },
+    ],
+    handlers: {
+        open: () => {},
+        input: (model, formFields, changedField) => {
+            if (changedField.name === '_videoType') {
+                model.videoTypeId = model._videoType.id
+            }
+        },
+    },
+}
+
+
 // Вспомогательные функции
 export function assembleCommonModalConfig(
     modalTitle : string,
@@ -214,5 +259,16 @@ export function setLocalityDependentFieldVisibility(
         const localityDependentField = formFields[index]
 
         localityDependentField.hidden = !model[localityDependentField.name]
+    })
+}
+
+
+export function extendVideosValues(model : any) : void {
+    forEach(model.videos, (video) => {
+        Vue.set(
+            video,
+            '_videoType',
+            catalogs.getCatalogValue('videoTypes', video.videoTypeId),
+        )
     })
 }

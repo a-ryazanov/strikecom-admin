@@ -5,9 +5,12 @@ import BaseInputImageTag from '@x10d/vue-kit/src/components/BaseInputImageTag.vu
 import IPropertyFieldView from '@x10d/vue-kit/src/types/IPropertyFieldView.d'
 import IFormHandlers from '@x10d/vue-kit/src/types/IFormHandlers.d'
 
+import BaseVideoInput from '@/components/BaseVideoInput.vue'
+
 import { Locale, localesMappings } from '@/interfaces'
 
 import {
+    extendVideosValues,
     setLanguageDependentModelValues,
     setLanguageDependentFieldsVisibility,
 } from '@/module-views/common-parts'
@@ -138,6 +141,12 @@ const commonFormFields : Array<IPropertyFieldView> = [
         labelPosition: 'top',
         tooltip: 'Ссылки на фотографии',
     },
+    {
+        name: 'videos',
+        title: 'Видео',
+        typeOfControl: BaseVideoInput,
+        labelPosition: 'top',
+    },
 ]
 
 const commonFormHandlers : IFormHandlers = {
@@ -188,5 +197,7 @@ export const updateFormHandlers : IFormHandlers = {
     open: (model, formFields) => {
         setLanguageDependentModelValues(model)
         setLanguageDependentFieldsVisibility(model, formFields)
+
+        extendVideosValues(model)
     },
 }

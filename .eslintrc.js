@@ -38,6 +38,8 @@ module.exports = {
             args: 'after-used',
             ignoreRestSiblings: false,
         }],
+
+        '@typescript-eslint/camelcase': 'off',
     },
 
     overrides: [
