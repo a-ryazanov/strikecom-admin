@@ -42,6 +42,7 @@ const newsView = {
                 name: 'titleRu',
                 title: 'Заголовок',
                 typeOfCell: 'html',
+                // @ts-ignore
                 formatCellText: ({ data }) => (data
                     ? `<span>${data}</span>`
                     : '<span style="color:#EB171F;">Не указан</span>'),
@@ -51,6 +52,7 @@ const newsView = {
                 name: 'createdAt',
                 title: 'Дата создания',
                 typeOfCell: 'string',
+                // @ts-ignore
                 formatCellText: ({ data }) => format(new Date(data), 'dd-MM-yyyy HH:mm'),
                 minWidth: 80,
                 sortable: true,
@@ -72,12 +74,12 @@ const newsView = {
             {
                 name: 'publish',
                 textContent: 'Опубликовать',
-                hiddenCondition: item => item.published,
+                hiddenCondition: (item : any) => item.published,
                 confirmation: {
                     title: 'Публикация новости',
                     text: 'Вы точно хотите опубликовать новость?',
                 },
-                handler: async (vueComponent, model) => {
+                handler: async (vueComponent : any, model : any) => {
                     await tableSectionUpdateItemAction(
                         vueComponent,
                         {
@@ -90,12 +92,12 @@ const newsView = {
             {
                 name: 'unPublish',
                 textContent: 'Снять с публикации',
-                hiddenCondition: item => !item.published,
+                hiddenCondition: (item : any) => !item.published,
                 confirmation: {
                     title: 'Снятие новости с публикации',
                     text: 'Вы точно хотите снять новость с публикации?',
                 },
-                handler: async (vueComponent, model) => {
+                handler: async (vueComponent : any, model : any) => {
                     await tableSectionUpdateItemAction(
                         vueComponent,
                         {

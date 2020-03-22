@@ -55,6 +55,7 @@ const conflictsView = {
                 name: 'titleRu',
                 title: 'Заголовок',
                 typeOfCell: 'html',
+                // @ts-ignore
                 formatCellText: ({ data }) => (data
                     ? `<span>${data}</span>`
                     : '<span style="color:#EB171F;">Не указан</span>'),
@@ -64,6 +65,7 @@ const conflictsView = {
                 name: 'createdAt',
                 title: 'Дата создания',
                 typeOfCell: 'string',
+                // @ts-ignore
                 formatCellText: ({ data }) => format(new Date(data), 'dd-MM-yyyy HH:mm'),
                 minWidth: 120,
                 sortable: true,
@@ -74,7 +76,7 @@ const conflictsView = {
                 typeOfCell: 'html',
                 // @ts-ignore
                 formatCellText: ({ data }) => (data
-                // @ts-ignore
+                    // @ts-ignore
                     ? `<span>${catalogs.getCatalogValue('conflictReasons', data).nameRu}</span>`
                     : '<span style="color:#EB171F;">Не указана</span>'),
                 minWidth: 120,
@@ -83,6 +85,7 @@ const conflictsView = {
                 name: 'dateTo',
                 title: 'Дата окончания',
                 typeOfCell: 'string',
+                // @ts-ignore
                 formatCellText: ({ data }) => format(new Date(data), 'dd-MM-yyyy HH:mm'),
                 minWidth: 120,
                 nullPlaceholder: '—',
