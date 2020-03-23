@@ -218,7 +218,7 @@ export function setCatalogsDependentModelValueFromLocalValue(
 ) : void {
     const mappedFieldName = catalogsFieldsMappings[changedField.name]
 
-    model[mappedFieldName] = model[changedField.name].id
+    model[mappedFieldName] = model[changedField.name] ? model[changedField.name].id : null
 }
 
 
