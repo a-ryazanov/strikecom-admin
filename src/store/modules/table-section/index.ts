@@ -4,6 +4,7 @@ import { merge } from 'lodash-es'
 import {
     CLEAR_SECTION_DATA,
     MERGE_ITEM_BY_ID,
+    SET_ITEM_BY_ID,
     SET_SECTION_DATA_SOURCE_END_POINT,
     SET_LAST_RESPONSE_META,
     SET_SECTION_ITEMS,
@@ -81,6 +82,19 @@ const tableSectionModule : Module<TableSectionModule, any> = {
             //      Строго говоря, нужно дорабатывать x10d-vue-kit, поскольку
             //      вышеописанное не хорошо.
             merge(state.items[itemIdx], newItem)
+        },
+
+        [SET_ITEM_BY_ID](state, { newItem, id }) {
+            const itemIdx = state.items.findIndex(item => item.id === id)
+
+            if (itemIdx === -1) {
+                throw new Error('Setting non-existent item')
+            }
+
+            state.items[itemIdx] = {
+                ...state.items[itemIdx],
+                ...newItem,
+            }
         },
 
         [SET_SECTION_DATA_SOURCE_END_POINT](state, dataSourceEndPoint : string) {
@@ -184,7 +198,7 @@ const tableSectionModule : Module<TableSectionModule, any> = {
 
                 const { data: updatedItem } = await api.updateItem(state.dataSourceEndPoint, item)
 
-                commit(MERGE_ITEM_BY_ID, {
+                commit(SET_ITEM_BY_ID, {
                     id: item.id,
                     newItem: updatedItem,
                 })
