@@ -22,7 +22,8 @@ import {
     extendVideosValues,
     setCatalogsDependentModelValueFromLocalValue,
     setCatalogsDependentModelValuesFromServerValues,
-    setLanguageDependentModelValues,
+    setLanguageDependentModelValuesFromLocalValue,
+    setLanguageDependentModelValuesFromServerValues,
     setLanguageDependentFieldsVisibility,
     setLocalityDependentModelValues,
     setLocalityDependentFieldVisibility,
@@ -291,6 +292,7 @@ const commonFormHandlers : IFormHandlers = {
     input: (model, formFields, changedField) => {
         if (changedField.name === '_languages') {
             setLanguageDependentFieldsVisibility(model, formFields)
+            setLanguageDependentModelValuesFromLocalValue(model)
         }
 
         if (changedField.name === '_country') {
@@ -377,7 +379,7 @@ export const updateFormHandlers : IFormHandlers = {
         setLocalityDependentModelValues(model)
         setLocalityDependentFieldVisibility(model, formFields)
 
-        setLanguageDependentModelValues(model)
+        setLanguageDependentModelValuesFromServerValues(model)
         setLanguageDependentFieldsVisibility(model, formFields)
 
         setCatalogsDependentModelValuesFromServerValues(model, formFields, catalogsFieldsMappings)

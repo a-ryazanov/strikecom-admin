@@ -15,7 +15,8 @@ import {
 } from '@/interfaces'
 
 import {
-    setLanguageDependentModelValues,
+    setLanguageDependentModelValuesFromServerValues,
+    setLanguageDependentModelValuesFromLocalValue,
     setLanguageDependentFieldsVisibility,
     setCatalogsDependentModelValueFromLocalValue,
     setCatalogsDependentModelValuesFromServerValues,
@@ -228,6 +229,7 @@ const commonFormHandlers : IFormHandlers = {
 
         if (changedField.name === '_languages') {
             setLanguageDependentFieldsVisibility(model, formFields)
+            setLanguageDependentModelValuesFromLocalValue(model)
         }
 
         if (Object.keys(catalogsFieldsMappings).includes(changedField.name)) {
@@ -272,7 +274,7 @@ export const updateFormHandlers : IFormHandlers = {
     open: (model, formFields) => {
         setInheritDependentFieldsVisibility(model, formFields)
 
-        setLanguageDependentModelValues(model)
+        setLanguageDependentModelValuesFromServerValues(model)
         setLanguageDependentFieldsVisibility(model, formFields)
 
         setCatalogsDependentModelValuesFromServerValues(model, formFields, catalogsFieldsMappings)

@@ -11,7 +11,8 @@ import { Locale, localesMappings } from '@/interfaces'
 
 import {
     extendVideosValues,
-    setLanguageDependentModelValues,
+    setLanguageDependentModelValuesFromLocalValue,
+    setLanguageDependentModelValuesFromServerValues,
     setLanguageDependentFieldsVisibility,
 } from '@/module-views/common-parts'
 
@@ -153,6 +154,7 @@ const commonFormHandlers : IFormHandlers = {
     input: (model, formFields, changedField) => {
         if (changedField.name === '_languages') {
             setLanguageDependentFieldsVisibility(model, formFields)
+            setLanguageDependentModelValuesFromLocalValue(model)
         }
     },
 }
@@ -195,7 +197,7 @@ export const updateFormFields : Array<IPropertyFieldView> = [
 export const updateFormHandlers : IFormHandlers = {
     ...commonFormHandlers,
     open: (model, formFields) => {
-        setLanguageDependentModelValues(model)
+        setLanguageDependentModelValuesFromServerValues(model)
         setLanguageDependentFieldsVisibility(model, formFields)
 
         extendVideosValues(model)

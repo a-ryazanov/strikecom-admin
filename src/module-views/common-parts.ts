@@ -1,5 +1,10 @@
 import Vue from 'vue'
-import { flatten, forEach, map } from 'lodash-es'
+import {
+    flatten,
+    forEach,
+    map,
+    some,
+} from 'lodash-es'
 
 import IFormView from '@x10d/vue-kit/src/types/IFormView.d'
 import IModalPayload from '@x10d/vue-kit/src/types/IModalPayload.d'
@@ -122,28 +127,27 @@ export function assembleCommonModalConfig(
 }
 
 
-// Сделано так, чтобы при открытии формы редактирования проверять наличие в серверной модели
-// только одного поля из пары, для того, чтобы установить значение мультиселекта выбора языка
-export const languageDependentFieldGroups = [
-    [
-        'titleRu',
-        'titleEn',
-        'titleEs',
-        'titleDe',
-    ],
-    [
-        'contentRu',
-        'contentEn',
-        'contentEs',
-        'contentDe',
-    ],
-]
-
 export const languageDependentFieldMappings : Dictionary<any> = {
-    titleRu: { id: Locale.RU, title: 'Русский' },
-    titleEn: { id: Locale.EN, title: 'Английский' },
-    titleEs: { id: Locale.ES, title: 'Испанский' },
-    titleDe: { id: Locale.DE, title: 'Немецкий' },
+    [Locale.RU]: {
+        id: Locale.RU,
+        title: 'Русский',
+        dependentModelFields: ['titleRu', 'contentRu'],
+    },
+    [Locale.EN]: {
+        id: Locale.EN,
+        title: 'Английский',
+        dependentModelFields: ['titleEn', 'contentEn'],
+    },
+    [Locale.ES]: {
+        id: Locale.ES,
+        title: 'Испанский',
+        dependentModelFields: ['titleEs', 'contentEs'],
+    },
+    [Locale.DE]: {
+        id: Locale.DE,
+        title: 'Немецкий',
+        dependentModelFields: ['titleDe', 'contentDe'],
+    },
 }
 
 export function setLanguageDependentFieldsVisibility(
@@ -151,7 +155,8 @@ export function setLanguageDependentFieldsVisibility(
     formFields : Array<IPropertyFieldView>,
 ) : void {
     const modelLanguages = map(model._languages, 'id')
-    const languageDependentFieldNames = flatten(languageDependentFieldGroups)
+    const languageDependentFieldNames =
+        flatten(map(languageDependentFieldMappings, 'dependentModelFields'))
 
     const languageDependentFieldsIdx = formFields.reduce<Array<number>>(
         (accumulator, field, index) => {
@@ -170,19 +175,34 @@ export function setLanguageDependentFieldsVisibility(
     })
 }
 
-export function setLanguageDependentModelValues(model : any) : void {
-    languageDependentFieldGroups[0].forEach((fieldName) => {
-        if (model[fieldName]) {
+export function setLanguageDependentModelValuesFromServerValues(model : any) : void {
+    forEach(languageDependentFieldMappings, (value, key) => {
+        const areModelContainLanguageFields =
+            some(value.dependentModelFields, field => !!model[field])
+
+        if (areModelContainLanguageFields) {
             Vue.set(
                 model,
                 '_languages',
                 model._languages
                     ? [
                         ...model._languages,
-                        languageDependentFieldMappings[fieldName],
+                        languageDependentFieldMappings[key],
                     ]
-                    : [languageDependentFieldMappings[fieldName]],
+                    : [ languageDependentFieldMappings[key] ],
             )
+        }
+    })
+}
+
+export function setLanguageDependentModelValuesFromLocalValue(model : any) : void {
+    const modelLanguages = map(model._languages, 'id')
+
+    forEach(languageDependentFieldMappings, (value) => {
+        if (!modelLanguages.includes(value.id)) {
+            forEach(value.dependentModelFields, (field) => {
+                model[field] = null
+            })
         }
     })
 }
