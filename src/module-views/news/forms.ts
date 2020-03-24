@@ -1,7 +1,5 @@
 import { map } from 'lodash-es'
 
-import BaseInputImageTag from '@x10d/vue-kit/src/components/BaseInputImageTag.vue'
-
 import IPropertyFieldView from '@x10d/vue-kit/src/types/IPropertyFieldView.d'
 import IFormHandlers from '@x10d/vue-kit/src/types/IFormHandlers.d'
 
@@ -138,7 +136,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
     {
         name: 'photoUrls',
         title: 'Фотографии',
-        typeOfControl: BaseInputImageTag,
+        typeOfControl: 'tag',
         labelPosition: 'top',
         tooltip: 'Ссылки на фотографии',
     },
