@@ -1,5 +1,7 @@
 import { format } from 'date-fns'
 
+import BaseModalError from '@x10d/vue-kit/src/components/BaseModalError.vue'
+
 import {
     createFormFields as createEventFormFields,
     createFromConflictsFormHandlers as createEventFormHandlers,
@@ -13,6 +15,11 @@ import {
 } from './forms'
 
 import store from '@/store'
+
+import {
+    MERGE_ITEM_BY_ID,
+    SET_SECTION_LOADING_STATE,
+} from '@/store/modules/table-section/mutation-types'
 
 import { ModuleView } from '@/interfaces'
 
@@ -30,13 +37,6 @@ import {
     tableSectionDeleteItemAction,
     tableSectionUpdateItemAction,
 } from '@/module-views/common-parts'
-
-
-
-import {
-    MERGE_ITEM_BY_ID,
-    SET_SECTION_LOADING_STATE,
-} from '@/store/modules/table-section/mutation-types'
 
 
 const conflictsView = {
@@ -187,6 +187,31 @@ const conflictsView = {
                         finally {
                             store.commit(SET_SECTION_LOADING_STATE, 'loaded')
                         }
+                    },
+                    // TODO По сути, нижеследующее - это cross-field-validation, и, по-хорошему,
+                    //      нужно дорабатывать x10d-vue-kit, но это значительная доработка и
+                    //      неизвестно будет ли она когда либо сделана :(
+                    async function ({ reason, payload }, vueComponent) {
+                        if (
+                            reason === 'accept' &&
+                            payload.formData.date > payload.formData.conflict.dateTo
+                        ) {
+                            vueComponent.$qrKitOpenModal(
+                                BaseModalError,
+                                {
+                                    mainErrorText: 'Некорректная дата события.',
+                                    additionalErrorTexts: [
+                                        // eslint-disable-next-line max-len
+                                        'Событие, привязанное к конфликту, не может происходить после окончания конфликта.',
+                                    ],
+                                    hideAcceptButton: false,
+                                },
+                            )
+
+                            await Promise.reject(payload)
+                        }
+
+                        return payload
                     },
                 ),
                 handler: async (vueComponent : any, model : any) => {

@@ -97,6 +97,7 @@ export function assembleCommonModalConfig(
     acceptButtonText : string,
     formView : IFormView,
     preinit ?: IModalPayload['preinit'],
+    modalCompletingInterceptor ?: IModalPayload['modalCompletingInterceptor'],
 ) : {
         payload : IModalPayload
         options : object
@@ -119,6 +120,7 @@ export function assembleCommonModalConfig(
             },
             formView,
             preinit,
+            modalCompletingInterceptor,
         },
         options: {
             width: COMMON_MODAL_FORM_WIDTH,
