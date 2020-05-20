@@ -45,7 +45,7 @@ import { api, catalogs, firebase } from '@/services';
 
                 return {
                     // eslint-disable-next-line max-len
-                    mainErrorText: 'Произошла неизвестная ошибка!Пожалуйста, сообщите о ней разработчикам.',
+                    mainErrorText: 'Произошла неизвестная ошибка! Пожалуйста, сообщите о ней разработчикам.',
                     hideAcceptButton: false,
                 }
             },
