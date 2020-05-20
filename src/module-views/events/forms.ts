@@ -18,6 +18,8 @@ import {
 
 import {
     extendVideosValues,
+    setCoordsDependentModelValuesFromLocalValue,
+    setCoordsDependentModelValuesFromServerValues,
     setCatalogsDependentModelValueFromLocalValue,
     setCatalogsDependentModelValuesFromServerValues,
     setLanguageDependentModelValuesFromLocalValue,
@@ -114,24 +116,12 @@ const commonFormFields : Array<IPropertyFieldView> = [
         hidden: true,
     },
     {
-        name: 'latitude',
-        title: 'Широта',
-        typeOfControl: 'number',
-        labelPosition: 'side',
-        specificControlProps: {
-            showSpinners: false,
-        },
-        validator: 'required|max_value:90|min_value:-90',
-    },
-    {
-        name: 'longitude',
-        title: 'Долгота',
-        typeOfControl: 'number',
-        labelPosition: 'side',
-        specificControlProps: {
-            showSpinners: false,
-        },
-        validator: 'required|max_value:180|min_value:-180',
+        name: '_googleCoords',
+        title: 'Координаты',
+        typeOfControl: 'string',
+        labelPosition: 'top',
+        tooltip: 'Широта и долгота через запятую, без пробелов',
+        validator: 'required',
     },
     {
         name: 'date',
@@ -315,6 +305,10 @@ const commonFormHandlers : IFormHandlers = {
             )
         }
 
+        if (changedField.name === '_googleCoords') {
+            setCoordsDependentModelValuesFromLocalValue(model)
+        }
+
         if (changedField.name === 'conflict') {
             model.conflictId = model.conflict.id
         }
@@ -379,6 +373,8 @@ export const updateFormHandlers : IFormHandlers = {
 
         setLanguageDependentModelValuesFromServerValues(model)
         setLanguageDependentFieldsVisibility(model, formFields)
+
+        setCoordsDependentModelValuesFromServerValues(model)
 
         setCatalogsDependentModelValuesFromServerValues(model, formFields, catalogsFieldsMappings)
 

@@ -15,6 +15,8 @@ import {
 } from '@/interfaces'
 
 import {
+    setCoordsDependentModelValuesFromLocalValue,
+    setCoordsDependentModelValuesFromServerValues,
     setLanguageDependentModelValuesFromServerValues,
     setLanguageDependentModelValuesFromLocalValue,
     setLanguageDependentFieldsVisibility,
@@ -107,24 +109,12 @@ const commonFormFields : Array<IPropertyFieldView> = [
         catalogName: 'industries',
     },
     {
-        name: 'latitude',
-        title: 'Широта',
-        typeOfControl: 'number',
-        labelPosition: 'side',
-        specificControlProps: {
-            showSpinners: false,
-        },
-        validator: 'required|max_value:90|min_value:-90',
-    },
-    {
-        name: 'longitude',
-        title: 'Долгота',
-        typeOfControl: 'number',
-        labelPosition: 'side',
-        specificControlProps: {
-            showSpinners: false,
-        },
-        validator: 'required|max_value:180|min_value:-180',
+        name: '_googleCoords',
+        title: 'Координаты',
+        typeOfControl: 'string',
+        labelPosition: 'top',
+        tooltip: 'Широта и долгота через запятую, без пробелов',
+        validator: 'required',
     },
     {
         name: 'dateFrom',
@@ -232,6 +222,10 @@ const commonFormHandlers : IFormHandlers = {
             setLanguageDependentModelValuesFromLocalValue(model)
         }
 
+        if (changedField.name === '_googleCoords') {
+            setCoordsDependentModelValuesFromLocalValue(model)
+        }
+
         if (Object.keys(catalogsFieldsMappings).includes(changedField.name)) {
             setCatalogsDependentModelValueFromLocalValue(
                 model,
@@ -276,6 +270,8 @@ export const updateFormHandlers : IFormHandlers = {
 
         setLanguageDependentModelValuesFromServerValues(model)
         setLanguageDependentFieldsVisibility(model, formFields)
+
+        setCoordsDependentModelValuesFromServerValues(model)
 
         setCatalogsDependentModelValuesFromServerValues(model, formFields, catalogsFieldsMappings)
     },

@@ -23,6 +23,7 @@ import { CONFLICTS_ROUTE } from '@/router/route-names'
 
 import {
     assembleCommonModalConfig,
+    setCoordsDependentModelValuesFromServerValues,
     setLocalityDependentFieldVisibility,
     setLocalityDependentModelValues,
     tableSectionCreateItemAction,
@@ -175,6 +176,8 @@ const conflictsView = {
                             setLocalityDependentModelValues(eventFormData)
                             // @ts-ignore
                             setLocalityDependentFieldVisibility(eventFormData, formView.fields)
+
+                            setCoordsDependentModelValuesFromServerValues(eventFormData)
 
                             return eventFormData
                         }

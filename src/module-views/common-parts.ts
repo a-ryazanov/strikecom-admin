@@ -127,6 +127,24 @@ export function assembleCommonModalConfig(
 }
 
 
+export function setCoordsDependentModelValuesFromLocalValue(model : any) : void {
+    const [latitude, longitude] = model._googleCoords.split(',')
+
+    if (latitude !== undefined && longitude !== undefined) {
+        model.latitude = parseFloat(latitude)
+        model.longitude = parseFloat(longitude)
+    }
+}
+
+export function setCoordsDependentModelValuesFromServerValues(model : any) : void {
+    Vue.set(
+        model,
+        '_googleCoords',
+        `${model.latitude},${model.longitude}`,
+    )
+}
+
+
 export const languageDependentFieldMappings : Dictionary<any> = {
     [Locale.RU]: {
         id: Locale.RU,
