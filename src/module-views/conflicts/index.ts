@@ -144,8 +144,6 @@ const conflictsView = {
                 handler: tableSectionDeleteItemAction,
             },
             {
-                name: 'addEvent',
-                textContent: 'Добавить событие',
                 modalConfig: assembleCommonModalConfig(
                     'Создание события',
                     'Добавить',
@@ -192,28 +190,35 @@ const conflictsView = {
                     //      нужно дорабатывать x10d-vue-kit, но это значительная доработка и
                     //      неизвестно будет ли она когда либо сделана :(
                     async function ({ reason, payload }, vueComponent) {
-                        if (
-                            reason === 'accept' &&
-                            payload.formData.date > payload.formData.conflict.dateTo
-                        ) {
-                            vueComponent.$qrKitOpenModal(
-                                BaseModalError,
-                                {
-                                    mainErrorText: 'Некорректная дата события.',
-                                    additionalErrorTexts: [
-                                        // eslint-disable-next-line max-len
-                                        'Событие, привязанное к конфликту, не может происходить после окончания конфликта.',
-                                    ],
-                                    hideAcceptButton: false,
-                                },
-                            )
+                        if (reason === 'accept') {
+                            if (
+                                payload.formData.date < payload.formData.conflict.dateFrom ||
+                                (
+                                    payload.formData.conflict.dateTo !== null &&
+                                    payload.formData.date > payload.formData.conflict.dateTo
+                                )
+                            ) {
+                                vueComponent.$qrKitOpenModal(
+                                    BaseModalError,
+                                    {
+                                        mainErrorText: 'Некорректная дата события.',
+                                        additionalErrorTexts: [
+                                            // eslint-disable-next-line max-len
+                                            'Событие, привязанное к конфликту, не может происходить до начала или после завершения конфликта.',
+                                        ],
+                                        hideAcceptButton: false,
+                                    },
+                                )
 
-                            await Promise.reject(payload)
+                                await Promise.reject(payload)
+                            }
                         }
 
                         return payload
                     },
                 ),
+                name: 'addEvent',
+                textContent: 'Добавить событие',
                 handler: async (vueComponent : any, model : any) => {
                     try {
                         vueComponent.$store.commit(SET_SECTION_LOADING_STATE, 'pending')
