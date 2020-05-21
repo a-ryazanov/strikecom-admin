@@ -84,7 +84,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
         typeOfControl: 'multiselect',
         labelPosition: 'top',
         specificControlProps: {
-            incomingOptions: catalogs.getCatalog('conflictReasons'),
+            fetchOptions: () => catalogs.getCatalog('conflictReasons') || [],
             formatFieldTitle: (value : any) => value.nameRu,
         },
         catalogName: 'conflictReasons',
@@ -103,7 +103,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
         typeOfControl: 'multiselect',
         labelPosition: 'top',
         specificControlProps: {
-            incomingOptions: catalogs.getCatalog('industries'),
+            fetchOptions: () => catalogs.getCatalog('industries') || [],
             formatFieldTitle: (value : any) => value.nameRu,
         },
         catalogName: 'industries',
@@ -143,7 +143,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
         typeOfControl: 'multiselect',
         labelPosition: 'top',
         specificControlProps: {
-            incomingOptions: catalogs.getCatalog('conflictResults'),
+            fetchOptions: () => catalogs.getCatalog('conflictResults') || [],
             formatFieldTitle: (value : any) => value.nameRu,
         },
         catalogName: 'conflictResults',

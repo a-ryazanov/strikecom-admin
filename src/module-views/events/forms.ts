@@ -43,7 +43,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
         typeOfControl: 'multiselect',
         labelPosition: 'top',
         specificControlProps: {
-            incomingOptions: catalogs.getCatalog('eventTypes'),
+            fetchOptions: () => catalogs.getCatalog('eventTypes') || [],
             formatFieldTitle: (value : any) => value.nameRu,
         },
         catalogName: 'eventTypes',
@@ -53,7 +53,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
         title: 'Страна',
         typeOfControl: 'multiselect',
         specificControlProps: {
-            incomingOptions: catalogs.getCatalog('countries'),
+            fetchOptions: () => catalogs.getCatalog('countries') || [],
             formatFieldTitle: (value : any) => value.nameRu,
         },
         labelPosition: 'top',

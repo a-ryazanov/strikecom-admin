@@ -68,7 +68,7 @@ export const addVideoFormView : IFormView = {
             labelPosition: 'top',
             validator: 'required',
             specificControlProps: {
-                incomingOptions: catalogs.getCatalog('videoTypes'),
+                fetchOptions: () => catalogs.getCatalog('videoTypes') || [],
                 formatFieldTitle: (value : any) => videoTypesMappings[value.code],
             },
         },
