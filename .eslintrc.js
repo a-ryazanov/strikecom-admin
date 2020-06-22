@@ -31,6 +31,8 @@ module.exports = {
         // обращения к файлам, которые как-то кэшируются и не проявляются
         // на последующих правилах; т.е. какие-то в любом случае будут занимать это время.
 
+        'linebreak-style': ['error', process.env.NODE_ENV === 'prod' ? 'unix' : 'windows'],
+
         'import/extensions': ['error', 'never', { vue: 'always' }],
 
         '@typescript-eslint/no-unused-vars': ['error', {
