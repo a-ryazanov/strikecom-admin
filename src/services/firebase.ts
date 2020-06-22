@@ -2,6 +2,7 @@ import { Store } from 'vuex'
 import * as fb from 'firebase/app'
 import 'firebase/auth'
 
+// eslint-disable-next-line import/no-cycle
 import { api } from '@/services/api'
 
 import { SET_USER } from '@/store/modules/auth/mutation-types'
