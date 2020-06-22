@@ -48,6 +48,7 @@ import {
 
 import TheNavBarUserPanel from '@/components/TheNavBarUserPanel.vue'
 
+// eslint-disable-next-line import/no-cycle
 import { routes } from '@/router'
 
 

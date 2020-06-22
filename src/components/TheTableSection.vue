@@ -64,6 +64,7 @@ import BaseActionButton from '@x10d/vue-kit/src/components/BaseActionButton.vue'
 import BasePagination from '@x10d/vue-kit/src/components/BasePagination.vue'
 import BaseTable from '@x10d/vue-kit/src/components/BaseTable.vue'
 
+// eslint-disable-next-line import/no-cycle
 import BaseSectionLayout from '@/components/BaseSectionLayout.vue'
 import BaseSearch from '@/components/BaseSearch.vue'
 

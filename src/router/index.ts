@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 
 import Login from '@/router-views/Login.vue'
 
+// eslint-disable-next-line import/no-cycle
 import TheTableSection from '@/components/TheTableSection.vue'
 
 import store from '@/store'
