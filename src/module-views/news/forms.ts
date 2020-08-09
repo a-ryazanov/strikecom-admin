@@ -5,13 +5,18 @@ import IFormHandlers from '@x10d/vue-kit/src/types/IFormHandlers.d'
 
 import BaseVideoInput from '@/components/BaseVideoInput.vue'
 
-import { Locale, localesMappings } from '@/interfaces'
+import {
+    Locale,
+    localesMappings,
+    networksMappings,
+} from '@/interfaces'
 
 import {
     extendVideosValues,
     setLanguageDependentModelValuesFromLocalValue,
     setLanguageDependentModelValuesFromServerValues,
     setLanguageDependentFieldsVisibility,
+    setNetworksDependentModelValuesFromLocalValue, setNetworksDependentModelValuesFromServerValues,
 } from '@/module-views/common-parts'
 
 
@@ -118,6 +123,24 @@ const commonFormFields : Array<IPropertyFieldView> = [
         localeName: Locale.DE,
     },
     {
+        name: 'networks',
+        title: 'Cоцсети',
+        typeOfControl: 'multiselect',
+        labelPosition: 'top',
+        tooltip: 'Cоцсети, в которые пойдет публикация',
+        specificControlProps: {
+            incomingOptions: map(networksMappings, (value, key) => ({
+                // Поле id нужно для  BaseMultiselect, чтобы он мог отслеживать уникальность
+                // элементов массива.
+                id: key,
+                title: value,
+            })),
+            multiple: true,
+            placeholder: 'Выберите соцсети',
+        },
+        validator: 'required',
+    },
+    {
         name: 'sourceLink',
         title: 'Ссылка на источник',
         typeOfControl: 'string',
@@ -153,6 +176,10 @@ const commonFormHandlers : IFormHandlers = {
         if (changedField.name === '_languages') {
             setLanguageDependentFieldsVisibility(model, formFields)
             setLanguageDependentModelValuesFromLocalValue(model)
+        }
+
+        if (changedField.name === '_networks') {
+            setNetworksDependentModelValuesFromLocalValue(model)
         }
     },
 }
@@ -201,6 +228,8 @@ export const updateFormHandlers : IFormHandlers = {
     open: (model, formFields) => {
         setLanguageDependentModelValuesFromServerValues(model)
         setLanguageDependentFieldsVisibility(model, formFields)
+
+        setNetworksDependentModelValuesFromServerValues(model)
 
         extendVideosValues(model)
     },

@@ -12,6 +12,7 @@ import {
     Dictionary,
     Locale,
     localesMappings,
+    networksMappings,
 } from '@/interfaces'
 
 import {
@@ -22,6 +23,8 @@ import {
     setLanguageDependentFieldsVisibility,
     setCatalogsDependentModelValueFromLocalValue,
     setCatalogsDependentModelValuesFromServerValues,
+    setNetworksDependentModelValuesFromLocalValue,
+    setNetworksDependentModelValuesFromServerValues,
 } from '@/module-views/common-parts'
 
 
@@ -30,6 +33,7 @@ const catalogsFieldsMappings : Dictionary = {
     _conflictReason: 'conflictReasonId',
     _conflictResult: 'conflictResultId',
     _industry: 'industryId',
+    _networks: 'networksId',
 }
 
 function setInheritDependentFieldsVisibility(
@@ -202,6 +206,24 @@ const commonFormFields : Array<IPropertyFieldView> = [
         validator: 'required|max:255',
         localeName: Locale.DE,
     },
+    {
+        name: 'networks',
+        title: 'Cоцсети',
+        typeOfControl: 'multiselect',
+        labelPosition: 'top',
+        tooltip: 'Cоцсети, в которые пойдет публикация',
+        specificControlProps: {
+            incomingOptions: map(networksMappings, (value, key) => ({
+                // Поле id нужно для  BaseMultiselect, чтобы он мог отслеживать уникальность
+                // элементов массива.
+                id: key,
+                title: value,
+            })),
+            multiple: true,
+            placeholder: 'Выберите соцсети',
+        },
+        validator: 'required',
+    },
 ]
 
 const commonFormHandlers : IFormHandlers = {
@@ -220,6 +242,10 @@ const commonFormHandlers : IFormHandlers = {
         if (changedField.name === '_languages') {
             setLanguageDependentFieldsVisibility(model, formFields)
             setLanguageDependentModelValuesFromLocalValue(model)
+        }
+
+        if (changedField.name === '_networks') {
+            setNetworksDependentModelValuesFromLocalValue(model)
         }
 
         if (changedField.name === '_googleCoords') {
@@ -274,6 +300,8 @@ export const updateFormHandlers : IFormHandlers = {
 
         setLanguageDependentModelValuesFromServerValues(model)
         setLanguageDependentFieldsVisibility(model, formFields)
+
+        setNetworksDependentModelValuesFromServerValues(model)
 
         setCoordsDependentModelValuesFromServerValues(model)
 
