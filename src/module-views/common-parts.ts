@@ -12,7 +12,7 @@ import IPropertyFieldView from '@x10d/vue-kit/src/types/IPropertyFieldView.d'
 
 import { catalogs } from '@/services/catalogs'
 
-import { Dictionary, Locale } from '@/interfaces'
+import { Dictionary, Locale, Networks } from '@/interfaces'
 
 import {
     CREATE_ITEM,
@@ -170,6 +170,21 @@ export const languageDependentFieldMappings : Dictionary<any> = {
     },
 }
 
+export const networksDependentFieldMappings : Dictionary<any> = {
+    [Networks.TG]: {
+        id: Networks.TG,
+        title: 'telegram',
+    },
+    [Networks.OD]: {
+        id: Networks.OD,
+        title: 'odnoklassniki',
+    },
+    [Networks.VK]: {
+        id: Networks.VK,
+        title: 'vkontakte',
+    },
+}
+
 export function setLanguageDependentFieldsVisibility(
     model : any,
     formFields : Array<IPropertyFieldView>,
@@ -227,6 +242,37 @@ export function setLanguageDependentModelValuesFromLocalValue(model : any) : voi
     })
 }
 
+export function setNetworksDependentModelValuesFromServerValues(model : any) : void {
+    forEach(networksDependentFieldMappings, (value, key) => {
+        const areModelContainNetworksFields =
+            some(value.dependentModelFields, field => !!model[field])
+
+        if (areModelContainNetworksFields) {
+            Vue.set(
+                model,
+                '_networks',
+                model._networks
+                    ? [
+                        ...model._networks,
+                        networksDependentFieldMappings[key],
+                    ]
+                    : [ networksDependentFieldMappings[key] ],
+            )
+        }
+    })
+}
+
+export function setNetworksDependentModelValuesFromLocalValue(model : any) : void {
+    const modelNetworks = map(model._networks, 'id')
+
+    forEach(networksDependentFieldMappings, (value) => {
+        if (!modelNetworks.includes(value.id)) {
+            forEach(value.dependentModelFields, (field) => {
+                model[field] = null
+            })
+        }
+    })
+}
 
 export function setCatalogsDependentModelValuesFromServerValues(
     model : any,
