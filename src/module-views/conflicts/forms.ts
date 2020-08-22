@@ -11,8 +11,7 @@ import { catalogs } from '@/services/catalogs'
 import {
     Dictionary,
     Locale,
-    localesMappings,
-    networksMappings,
+    localesMappings
 } from '@/interfaces'
 
 import {
@@ -22,9 +21,7 @@ import {
     setLanguageDependentModelValuesFromLocalValue,
     setLanguageDependentFieldsVisibility,
     setCatalogsDependentModelValueFromLocalValue,
-    setCatalogsDependentModelValuesFromServerValues,
-    setNetworksDependentModelValuesFromLocalValue,
-    setNetworksDependentModelValuesFromServerValues,
+    setCatalogsDependentModelValuesFromServerValues
 } from '@/module-views/common-parts'
 
 
@@ -32,8 +29,7 @@ import {
 const catalogsFieldsMappings : Dictionary = {
     _conflictReason: 'conflictReasonId',
     _conflictResult: 'conflictResultId',
-    _industry: 'industryId',
-    _networks: 'networksId',
+    _industry: 'industryId'
 }
 
 function setInheritDependentFieldsVisibility(
@@ -205,25 +201,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
         hidden: true,
         validator: 'required|max:255',
         localeName: Locale.DE,
-    },
-    {
-        name: 'networks',
-        title: 'Cоцсети',
-        typeOfControl: 'multiselect',
-        labelPosition: 'top',
-        tooltip: 'Cоцсети, в которые пойдет публикация',
-        specificControlProps: {
-            incomingOptions: map(networksMappings, (value, key) => ({
-                // Поле id нужно для  BaseMultiselect, чтобы он мог отслеживать уникальность
-                // элементов массива.
-                id: key,
-                title: value,
-            })),
-            multiple: true,
-            placeholder: 'Выберите соцсети',
-        },
-        validator: 'required',
-    },
+    }
 ]
 
 const commonFormHandlers : IFormHandlers = {
@@ -242,10 +220,6 @@ const commonFormHandlers : IFormHandlers = {
         if (changedField.name === '_languages') {
             setLanguageDependentFieldsVisibility(model, formFields)
             setLanguageDependentModelValuesFromLocalValue(model)
-        }
-
-        if (changedField.name === '_networks') {
-            setNetworksDependentModelValuesFromLocalValue(model)
         }
 
         if (changedField.name === '_googleCoords') {
@@ -299,9 +273,8 @@ export const updateFormHandlers : IFormHandlers = {
         setInheritDependentFieldsVisibility(model, formFields)
 
         setLanguageDependentModelValuesFromServerValues(model)
-        setLanguageDependentFieldsVisibility(model, formFields)
 
-        setNetworksDependentModelValuesFromServerValues(model)
+        setLanguageDependentFieldsVisibility(model, formFields)
 
         setCoordsDependentModelValuesFromServerValues(model)
 
