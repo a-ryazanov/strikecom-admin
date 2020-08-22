@@ -188,6 +188,13 @@ const commonFormHandlers : IFormHandlers = {
 export const createFormFields : Array<IPropertyFieldView> = [
     ...commonFormFields,
     {
+        name: 'pushRequired',
+        title: 'Уведомления в приложениях',
+        typeOfControl: 'switch',
+        labelPosition: 'side',
+        tooltip: 'Отправить push-уведомления?',
+    },
+    {
         name: 'published',
         title: 'Публикация',
         typeOfControl: 'switch',
@@ -199,8 +206,9 @@ export const createFormFields : Array<IPropertyFieldView> = [
 export const createFormHandlers : IFormHandlers = {
     ...commonFormHandlers,
     open: (model) => {
-        model.date = Date.now()
-        model.published = true
+        model.date = Date.now();
+        model.pushRequired = true;
+        model.published = true;
     },
 }
 
