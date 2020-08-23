@@ -250,10 +250,10 @@ export function setNetworksDependentModelValuesFromServerValues(model : any) : v
         if (areModelContainNetworksFields) {
             Vue.set(
                 model,
-                '_networks',
-                model._networks
+                '_publishTo',
+                model._publishTo
                     ? [
-                        ...model._networks,
+                        ...model._publishTo,
                         networksDependentFieldMappings[key],
                     ]
                     : [ networksDependentFieldMappings[key] ],
@@ -263,7 +263,7 @@ export function setNetworksDependentModelValuesFromServerValues(model : any) : v
 }
 
 export function setNetworksDependentModelValuesFromLocalValue(model : any) : void {
-    const modelNetworks = map(model._networks, 'id')
+    const modelNetworks = map(model._publishTo, 'id')
 
     forEach(networksDependentFieldMappings, (value) => {
         if (!modelNetworks.includes(value.id)) {
