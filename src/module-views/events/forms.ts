@@ -37,7 +37,7 @@ import {
 const catalogsFieldsMappings : Dictionary = {
     _eventStatus: 'eventStatusId',
     _eventType: 'eventTypeId',
-    _networks: 'networksId',
+    _publishTo: 'publishToId',
 }
 
 const commonFormFields : Array<IPropertyFieldView> = [
@@ -61,7 +61,6 @@ const commonFormFields : Array<IPropertyFieldView> = [
             formatFieldTitle: (value : any) => value.nameRu,
         },
         labelPosition: 'top',
-        validator: 'required',
     },
     {
         name: '_region',
@@ -250,7 +249,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
         localeName: Locale.DE,
     },
     {
-        name: 'networks',
+        name: 'publishTo',
         title: 'Cоцсети',
         typeOfControl: 'multiselect',
         labelPosition: 'top',
@@ -264,8 +263,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
             })),
             multiple: true,
             placeholder: 'Выберите соцсети',
-        },
-        validator: 'required',
+        }
     },
     {
         name: 'sourceLink',
@@ -305,7 +303,7 @@ const commonFormHandlers : IFormHandlers = {
             setLanguageDependentModelValuesFromLocalValue(model)
         }
 
-        if (changedField.name === '_networks') {
+        if (changedField.name === '_publishTo') {
             setNetworksDependentModelValuesFromLocalValue(model)
         }
 

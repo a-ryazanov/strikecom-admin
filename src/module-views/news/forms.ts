@@ -123,7 +123,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
         localeName: Locale.DE,
     },
     {
-        name: 'networks',
+        name: 'publishTo',
         title: 'Cоцсети',
         typeOfControl: 'multiselect',
         labelPosition: 'top',
@@ -138,7 +138,6 @@ const commonFormFields : Array<IPropertyFieldView> = [
             multiple: true,
             placeholder: 'Выберите соцсети',
         },
-        validator: 'required',
     },
     {
         name: 'sourceLink',
@@ -178,7 +177,7 @@ const commonFormHandlers : IFormHandlers = {
             setLanguageDependentModelValuesFromLocalValue(model)
         }
 
-        if (changedField.name === '_networks') {
+        if (changedField.name === '_publishTo') {
             setNetworksDependentModelValuesFromLocalValue(model)
         }
     },
