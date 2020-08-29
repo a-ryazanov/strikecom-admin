@@ -249,6 +249,23 @@ const commonFormFields : Array<IPropertyFieldView> = [
         localeName: Locale.DE,
     },
     {
+        name: 'publishTo',
+        title: 'Cоцсети',
+        typeOfControl: 'multiselect',
+        labelPosition: 'top',
+        tooltip: 'Cоцсети, в которые пойдет публикация',
+        specificControlProps: {
+            incomingOptions: map(networksMappings, (value, key) => ({
+                // Поле id нужно для  BaseMultiselect, чтобы он мог отслеживать уникальность
+                // элементов массива.
+                id: key,
+                title: value,
+            })),
+            multiple: true,
+            placeholder: 'Выберите соцсети',
+        }
+    },
+    {
         name: 'sourceLink',
         title: 'Ссылка на источник',
         typeOfControl: 'string',
@@ -276,6 +293,13 @@ const commonFormFields : Array<IPropertyFieldView> = [
         title: 'Видео',
         typeOfControl: BaseVideoInput,
         labelPosition: 'top',
+    },
+    {
+        name: 'pushRequired',
+        title: 'Уведомления в приложениях',
+        typeOfControl: 'switch',
+        labelPosition: 'side',
+        tooltip: 'Отправить push-уведомления?',
     },
 ]
 
@@ -334,30 +358,6 @@ const commonFormHandlers : IFormHandlers = {
 
 export const createFormFields : Array<IPropertyFieldView> = [
     ...commonFormFields,
-    {
-        name: 'publishTo',
-        title: 'Cоцсети',
-        typeOfControl: 'multiselect',
-        labelPosition: 'top',
-        tooltip: 'Cоцсети, в которые пойдет публикация',
-        specificControlProps: {
-            incomingOptions: map(networksMappings, (value, key) => ({
-                // Поле id нужно для  BaseMultiselect, чтобы он мог отслеживать уникальность
-                // элементов массива.
-                id: key,
-                title: value,
-            })),
-            multiple: true,
-            placeholder: 'Выберите соцсети',
-        }
-    },
-    {
-        name: 'pushRequired',
-        title: 'Уведомления в приложениях',
-        typeOfControl: 'switch',
-        labelPosition: 'side',
-        tooltip: 'Отправить push-уведомления?',
-    },
     {
         name: 'published',
         title: 'Публикация',
