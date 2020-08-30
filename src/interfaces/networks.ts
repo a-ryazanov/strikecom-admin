@@ -1,7 +1,7 @@
 export enum Networks {
     TG = '1',
-    OD = '3',
-    VK = '4',
+    OD = '2',
+    VK = '3',
 }
 
 export const networksMappings = {

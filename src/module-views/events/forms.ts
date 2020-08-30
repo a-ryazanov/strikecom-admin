@@ -13,7 +13,7 @@ import { api } from '@/services/api'
 import {
     Dictionary,
     Locale,
-    localesMappings,
+    localesMappings, Networks,
     networksMappings,
 } from '@/interfaces'
 
@@ -27,9 +27,7 @@ import {
     setLanguageDependentModelValuesFromServerValues,
     setLanguageDependentFieldsVisibility,
     setLocalityDependentModelValues,
-    setLocalityDependentFieldVisibility,
-    setNetworksDependentModelValuesFromLocalValue,
-    setNetworksDependentModelValuesFromServerValues,
+    setLocalityDependentFieldVisibility
 } from '@/module-views/common-parts'
 
 
@@ -255,12 +253,8 @@ const commonFormFields : Array<IPropertyFieldView> = [
         labelPosition: 'top',
         tooltip: 'Cоцсети, в которые пойдет публикация',
         specificControlProps: {
-            incomingOptions: map(networksMappings, (value, key) => ({
-                // Поле id нужно для  BaseMultiselect, чтобы он мог отслеживать уникальность
-                // элементов массива.
-                id: key,
-                title: value,
-            })),
+            incomingOptions: map(networksMappings, (value, key) => (key)),
+            formatFieldTitle: (key: Networks) => networksMappings[key],
             multiple: true,
             placeholder: 'Выберите соцсети',
         }
@@ -311,7 +305,6 @@ const commonFormHandlers : IFormHandlers = {
         }
 
         if (changedField.name === '_publishTo') {
-            setNetworksDependentModelValuesFromLocalValue(model)
         }
 
 
@@ -406,8 +399,6 @@ export const updateFormHandlers : IFormHandlers = {
 
         setLanguageDependentModelValuesFromServerValues(model)
         setLanguageDependentFieldsVisibility(model, formFields)
-
-        setNetworksDependentModelValuesFromServerValues(model)
 
         setCoordsDependentModelValuesFromServerValues(model)
 
