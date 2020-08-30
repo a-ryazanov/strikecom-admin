@@ -7,7 +7,7 @@ import BaseVideoInput from '@/components/BaseVideoInput.vue'
 
 import {
     Locale,
-    localesMappings,
+    localesMappings, Networks,
     networksMappings,
 } from '@/interfaces'
 
@@ -15,8 +15,7 @@ import {
     extendVideosValues,
     setLanguageDependentModelValuesFromLocalValue,
     setLanguageDependentModelValuesFromServerValues,
-    setLanguageDependentFieldsVisibility,
-    setNetworksDependentModelValuesFromLocalValue, setNetworksDependentModelValuesFromServerValues,
+    setLanguageDependentFieldsVisibility
 } from '@/module-views/common-parts'
 
 
@@ -129,12 +128,8 @@ const commonFormFields : Array<IPropertyFieldView> = [
         labelPosition: 'top',
         tooltip: 'Cоцсети, в которые пойдет публикация',
         specificControlProps: {
-            incomingOptions: map(networksMappings, (value, key) => ({
-                // Поле id нужно для  BaseMultiselect, чтобы он мог отслеживать уникальность
-                // элементов массива.
-                id: key,
-                title: value,
-            })),
+            incomingOptions: map(networksMappings, (value, key) => (key)),
+            formatFieldTitle: (key: Networks) => networksMappings[key],
             multiple: true,
             placeholder: 'Выберите соцсети',
         }
@@ -182,10 +177,6 @@ const commonFormHandlers : IFormHandlers = {
         if (changedField.name === '_languages') {
             setLanguageDependentFieldsVisibility(model, formFields)
             setLanguageDependentModelValuesFromLocalValue(model)
-        }
-
-        if (changedField.name === '_publishTo') {
-            setNetworksDependentModelValuesFromLocalValue(model)
         }
     },
 }
@@ -235,9 +226,6 @@ export const updateFormHandlers : IFormHandlers = {
     open: (model, formFields) => {
         setLanguageDependentModelValuesFromServerValues(model)
         setLanguageDependentFieldsVisibility(model, formFields)
-
-        setNetworksDependentModelValuesFromServerValues(model)
-
         extendVideosValues(model)
     },
 }
