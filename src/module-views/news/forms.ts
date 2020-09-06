@@ -122,19 +122,6 @@ const commonFormFields : Array<IPropertyFieldView> = [
         localeName: Locale.DE,
     },
     {
-        name: 'publishTo',
-        title: 'Cоцсети',
-        typeOfControl: 'multiselect',
-        labelPosition: 'top',
-        tooltip: 'Cоцсети, в которые пойдет публикация',
-        specificControlProps: {
-            incomingOptions: map(networksMappings, (value, key) => (key)),
-            formatFieldTitle: (key: Networks) => networksMappings[key],
-            multiple: true,
-            placeholder: 'Выберите соцсети',
-        }
-    },
-    {
         name: 'sourceLink',
         title: 'Ссылка на источник',
         typeOfControl: 'string',
@@ -162,6 +149,19 @@ const commonFormFields : Array<IPropertyFieldView> = [
         title: 'Видео',
         typeOfControl: BaseVideoInput,
         labelPosition: 'top',
+    },
+    {
+        name: 'publishTo',
+        title: 'Cоцсети',
+        typeOfControl: 'multiselect',
+        labelPosition: 'top',
+        tooltip: 'Cоцсети, в которые пойдет публикация',
+        specificControlProps: {
+            incomingOptions: map(networksMappings, (value, key) => (key)),
+            formatFieldTitle: (key: Networks) => networksMappings[key],
+            multiple: true,
+            placeholder: 'Выберите соцсети',
+        }
     },
     {
         name: 'pushRequired',
@@ -196,6 +196,7 @@ export const createFormFields : Array<IPropertyFieldView> = [
 export const createFormHandlers : IFormHandlers = {
     ...commonFormHandlers,
     open: (model) => {
+        model.publishTo = [Networks.TG,Networks.OD,Networks.VK];
         model.date = Date.now()
         model.pushRequired = true
         model.published = true
@@ -224,6 +225,8 @@ export const updateFormFields : Array<IPropertyFieldView> = [
 export const updateFormHandlers : IFormHandlers = {
     ...commonFormHandlers,
     open: (model, formFields) => {
+        model.publishTo = [Networks.TG,Networks.OD,Networks.VK];
+        model.pushRequired = true;
         setLanguageDependentModelValuesFromServerValues(model)
         setLanguageDependentFieldsVisibility(model, formFields)
         extendVideosValues(model)
