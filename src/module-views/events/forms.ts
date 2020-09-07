@@ -414,4 +414,10 @@ export const updateFormHandlers : IFormHandlers = {
 
 export const createFromConflictsFormHandlers : IFormHandlers = {
     ...commonFormHandlers,
+    open: (model) => {
+        model.publishTo = [Networks.TG,Networks.OD,Networks.VK];
+        model.date = Date.now();
+        model.pushRequired = true;
+        model.published = true
+    }
 }
