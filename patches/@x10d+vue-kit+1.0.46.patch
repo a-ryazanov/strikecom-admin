@@ -1,0 +1,13 @@
+diff --git a/node_modules/@x10d/vue-kit/src/components/BaseMultiselect.vue b/node_modules/@x10d/vue-kit/src/components/BaseMultiselect.vue
+index d6e62a9..796afe2 100644
+--- a/node_modules/@x10d/vue-kit/src/components/BaseMultiselect.vue
++++ b/node_modules/@x10d/vue-kit/src/components/BaseMultiselect.vue
+@@ -160,7 +160,7 @@ export default {
+             },
+             set(newVal) {
+                 const valueToEmit = isValueConsideredEmpty(newVal)
+-                    ? null
++                    ? []
+                     : newVal
+ 
+                 this.$emit('input', valueToEmit)
