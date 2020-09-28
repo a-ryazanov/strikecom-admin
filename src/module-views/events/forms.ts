@@ -276,19 +276,6 @@ const commonFormFields : Array<IPropertyFieldView> = [
         labelPosition: 'top',
     },
     {
-        name: 'publishTo',
-        title: 'Cоцсети',
-        typeOfControl: 'multiselect',
-        labelPosition: 'top',
-        tooltip: 'Cоцсети, в которые пойдет публикация',
-        specificControlProps: {
-            incomingOptions: map(networksMappings, (value, key) => (key)),
-            formatFieldTitle: (key: Networks) => networksMappings[key],
-            multiple: true,
-            placeholder: 'Выберите соцсети',
-        }
-    },
-    {
         name: 'pushRequired',
         title: 'Уведомления в приложениях',
         typeOfControl: 'switch',
@@ -352,6 +339,19 @@ const commonFormHandlers : IFormHandlers = {
 export const createFormFields : Array<IPropertyFieldView> = [
     ...commonFormFields,
     {
+        name: 'publishTo',
+        title: 'Cоцсети',
+        typeOfControl: 'multiselect',
+        labelPosition: 'top',
+        tooltip: 'Cоцсети, в которые пойдет публикация',
+        specificControlProps: {
+            incomingOptions: map(networksMappings, (value, key) => (key)),
+            formatFieldTitle: (key: Networks) => networksMappings[key],
+            multiple: true,
+            placeholder: 'Выберите соцсети',
+        }
+    },
+    {
         name: 'published',
         title: 'Публикация',
         typeOfControl: 'switch',
@@ -400,7 +400,6 @@ export const updateFormHandlers : IFormHandlers = {
     ...commonFormHandlers,
     open: async (model, formFields) => {
         model.pushRequired = true;
-        model.publishTo = [Networks.TG,Networks.OD,Networks.VK];
         setLocalityDependentModelValues(model)
         setLocalityDependentFieldVisibility(model, formFields)
 
