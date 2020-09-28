@@ -151,19 +151,6 @@ const commonFormFields : Array<IPropertyFieldView> = [
         labelPosition: 'top',
     },
     {
-        name: 'publishTo',
-        title: 'Cоцсети',
-        typeOfControl: 'multiselect',
-        labelPosition: 'top',
-        tooltip: 'Cоцсети, в которые пойдет публикация',
-        specificControlProps: {
-            incomingOptions: map(networksMappings, (value, key) => (key)),
-            formatFieldTitle: (key: Networks) => networksMappings[key],
-            multiple: true,
-            placeholder: 'Выберите соцсети',
-        }
-    },
-    {
         name: 'pushRequired',
         title: 'Уведомления в приложениях',
         typeOfControl: 'switch',
@@ -184,6 +171,19 @@ const commonFormHandlers : IFormHandlers = {
 
 export const createFormFields : Array<IPropertyFieldView> = [
     ...commonFormFields,
+    {
+        name: 'publishTo',
+        title: 'Cоцсети',
+        typeOfControl: 'multiselect',
+        labelPosition: 'top',
+        tooltip: 'Cоцсети, в которые пойдет публикация',
+        specificControlProps: {
+            incomingOptions: map(networksMappings, (value, key) => (key)),
+            formatFieldTitle: (key: Networks) => networksMappings[key],
+            multiple: true,
+            placeholder: 'Выберите соцсети',
+        }
+    },
     {
         name: 'published',
         title: 'Публикация',
@@ -221,7 +221,6 @@ export const updateFormFields : Array<IPropertyFieldView> = [
 export const updateFormHandlers : IFormHandlers = {
     ...commonFormHandlers,
     open: (model, formFields) => {
-        model.publishTo = [Networks.TG,Networks.OD,Networks.VK];
         model.pushRequired = true;
         setLanguageDependentModelValuesFromServerValues(model)
         setLanguageDependentFieldsVisibility(model, formFields)
