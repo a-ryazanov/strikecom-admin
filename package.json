@@ -14,7 +14,7 @@
   "dependencies": {
     "@x10d/eslint-config": "bitbucket:x10d_frontend/x10d-eslint-config#1.1.2",
     "@x10d/vue-kit": "bitbucket:x10d_frontend/x10d-vue-kit#master",
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "core-js": "^3.3.2",
     "date-fns": "^2.8.1",
     "element-ui": "^2.12.0",
