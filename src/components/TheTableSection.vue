@@ -37,12 +37,21 @@
                         @sorting-parameters-changed="changeSortingParameters"
                     />
 
-                    <BasePagination
-                        :last-page="sectionData.lastResponseMeta.lastPage"
-                        :current-page="sectionData.lastResponseMeta.currentPage"
+                    <section
                         class="section__pagination"
-                        @page-changed="handlePageChanging"
-                    />
+                    >
+                        <BasePagination
+                            :last-page="sectionData.lastResponseMeta.lastPage"
+                            :current-page="sectionData.lastResponseMeta.currentPage"
+                            @page-changed="handlePageChanging"
+                        />
+
+                        <BaseInput
+                            :value="sectionData.lastResponseMeta.currentPage.toString()"
+                            class="sectionPagination__input"
+                            @input="debouncedOnPageChange"
+                        />
+                    </section>
                 </template>
 
                 <span
@@ -59,11 +68,14 @@
 
 <script>
 import { mapState } from 'vuex'
+import { debounce } from 'lodash-es'
 
 import BaseActionButton from '@x10d/vue-kit/src/components/BaseActionButton.vue'
 import BasePagination from '@x10d/vue-kit/src/components/BasePagination.vue'
 import BaseTable from '@x10d/vue-kit/src/components/BaseTable.vue'
+import BaseInput from '@x10d/vue-kit/src/components/BaseInput.vue'
 
+// eslint-disable-next-line import/no-cycle
 import BaseSectionLayout from '@/components/BaseSectionLayout.vue'
 import BaseSearch from '@/components/BaseSearch.vue'
 
@@ -87,6 +99,13 @@ export default {
         BaseSectionLayout,
         BaseSearch,
         BaseTable,
+        BaseInput,
+    },
+
+    data() {
+        return {
+            debouncedOnPageChange: () => {},
+        }
     },
 
     computed: {
@@ -132,6 +151,8 @@ export default {
         )
 
         this.$store.dispatch(FETCH_ITEMS)
+
+        this.debouncedOnPageChange = debounce(this.handlePageChanging, 400)
     },
 
     methods: {
@@ -154,9 +175,11 @@ export default {
         },
 
         handlePageChanging(page) {
-            this.$store.dispatch(FETCH_ITEMS, {
-                page,
-            })
+            if (page > 0) {
+                this.$store.dispatch(FETCH_ITEMS, {
+                    page,
+                })
+            }
         },
 
         async handleSearch() {
@@ -189,5 +212,11 @@ export default {
     color $globalColorSlateGray
 
 .section__pagination
+  display flex
+  flex-direction row
   margin-top 20px
+
+.sectionPagination__input
+  width 32px
+  margin-left 12px
 </style>
