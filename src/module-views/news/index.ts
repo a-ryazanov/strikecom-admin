@@ -29,7 +29,7 @@ const newsView = {
     name: NEWS_ROUTE,
     dataSourceEndPoint: 'news',
     title: 'Новости',
-    allowSearch: false,
+    allowSearch: true,
     tableView: {
         columns: [
             {
