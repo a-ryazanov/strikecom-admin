@@ -171,7 +171,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
         title: 'Заголовок на русском',
         typeOfControl: 'string',
         labelPosition: 'top',
-        hidden: true,
+        hidden: false,
         validator: 'required|max:255',
         localeName: Locale.RU,
     },
@@ -245,6 +245,10 @@ export const createFormHandlers : IFormHandlers = {
     ...commonFormHandlers,
     open: (model) => {
         model.dateFrom = Date.now()
+        model._languages = [{
+            id: Locale.RU,
+            title: localesMappings[Locale.RU],
+        }]
     },
 }
 
