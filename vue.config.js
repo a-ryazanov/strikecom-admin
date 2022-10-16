@@ -4,10 +4,11 @@ const vueWebpackHelpers = require('@x10d/vue-kit/src/utils/webpack')
 
 
 module.exports = {
+    publicPath: 'moderation',
     lintOnSave: false,
 
     css: {
-        sourceMap: true,
+        sourceMap: false,
     },
 
     chainWebpack(config) {
