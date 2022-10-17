@@ -21,7 +21,7 @@ import {
     SET_SECTION_LOADING_STATE,
 } from '@/store/modules/table-section/mutation-types'
 
-import { ModuleView } from '@/interfaces'
+import { Locale, localesMappings, ModuleView } from '@/interfaces'
 
 import { api } from '@/services/api'
 import { catalogs } from '@/services/catalogs'
@@ -169,6 +169,10 @@ const conflictsView = {
                                 longitude: formData.longitude,
                                 date: Date.now(),
                                 published: true,
+                                _languages: [{
+                                    id: Locale.RU,
+                                    title: localesMappings[Locale.RU],
+                                }],
                             }
 
                             setLocalityDependentModelValues(eventFormData)
