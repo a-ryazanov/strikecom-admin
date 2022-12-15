@@ -4,7 +4,7 @@ const vueWebpackHelpers = require('@x10d/vue-kit/src/utils/webpack')
 
 
 module.exports = {
-    publicPath: 'moderation',
+    publicPath: './',
     lintOnSave: false,
 
     css: {
