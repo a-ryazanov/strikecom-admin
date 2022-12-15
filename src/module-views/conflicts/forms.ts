@@ -11,7 +11,7 @@ import { catalogs } from '@/services/catalogs'
 import {
     Dictionary,
     Locale,
-    localesMappings
+    localesMappings,
 } from '@/interfaces'
 
 import {
@@ -21,7 +21,7 @@ import {
     setLanguageDependentModelValuesFromLocalValue,
     setLanguageDependentFieldsVisibility,
     setCatalogsDependentModelValueFromLocalValue,
-    setCatalogsDependentModelValuesFromServerValues
+    setCatalogsDependentModelValuesFromServerValues,
 } from '@/module-views/common-parts'
 
 
@@ -29,7 +29,8 @@ import {
 const catalogsFieldsMappings : Dictionary = {
     _conflictReason: 'conflictReasonId',
     _conflictResult: 'conflictResultId',
-    _industry: 'industryId'
+    _conflictType: 'mainTypeId',
+    _industry: 'industryId',
 }
 
 function setInheritDependentFieldsVisibility(
@@ -89,6 +90,17 @@ const commonFormFields : Array<IPropertyFieldView> = [
         },
         catalogName: 'conflictReasons',
         validator: 'required',
+    },
+    {
+        name: '_conflictType',
+        title: 'Тип конфликта',
+        typeOfControl: 'multiselect',
+        labelPosition: 'top',
+        specificControlProps: {
+            fetchOptions: () => catalogs.getCatalog('eventTypes') || [],
+            formatFieldTitle: (value : any) => value.nameRu,
+        },
+        catalogName: 'eventTypes',
     },
     {
         name: 'companyName',
@@ -201,7 +213,7 @@ const commonFormFields : Array<IPropertyFieldView> = [
         hidden: true,
         validator: 'required|max:255',
         localeName: Locale.DE,
-    }
+    },
 ]
 
 const commonFormHandlers : IFormHandlers = {
@@ -245,6 +257,13 @@ export const createFormHandlers : IFormHandlers = {
     ...commonFormHandlers,
     open: (model) => {
         model.dateFrom = Date.now()
+        model._conflictResult = {
+            id: 7,
+            nameDe: 'Im Gange',
+            nameEn: 'In progress',
+            nameEs: 'En progreso',
+            nameRu: 'В прогрессе',
+        }
         model._languages = [{
             id: Locale.RU,
             title: localesMappings[Locale.RU],
