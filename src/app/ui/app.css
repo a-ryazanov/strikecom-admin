@@ -1,0 +1,8 @@
+.app {
+  min-height: 100vh;
+}
+
+.app-loader {
+  font-size: 24px;
+  margin: auto;
+}
