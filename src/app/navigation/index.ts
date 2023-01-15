@@ -9,6 +9,8 @@ export const router = createHistoryRouter({
   routes,
 })
 
+export const $activeRoute = router.$activeRoutes.map((routes) => routes[0])
+
 redirect({
   clock: router.routeNotFound,
   route: newsRoute,
