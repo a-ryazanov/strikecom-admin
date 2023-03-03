@@ -257,6 +257,7 @@ export const createFormHandlers : IFormHandlers = {
     ...commonFormHandlers,
     open: (model) => {
         model.dateFrom = Date.now()
+        model.conflictResultId = 7
         model._conflictResult = {
             id: 7,
             nameDe: 'Im Gange',
