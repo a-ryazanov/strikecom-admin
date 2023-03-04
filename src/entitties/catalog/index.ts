@@ -1,0 +1,1 @@
+export { $catalogs } from './model'
