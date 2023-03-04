@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+zabastcom.local+4.pem
+zabastcom.local+4-key.pem
