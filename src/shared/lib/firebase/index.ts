@@ -1,13 +1,16 @@
-import { createEffect } from 'effector'
+import { createEffect, createEvent } from 'effector'
 import {
   getAuth,
   signInWithEmailAndPassword as signInWithEmail,
   signInWithPopup,
   GoogleAuthProvider,
   AuthError,
+  User,
   UserCredential,
 } from 'firebase/auth'
 import { initializeApp } from 'firebase/app'
+
+import { EmailAndPassword } from './types'
 
 const app = initializeApp({
   apiKey: 'AIzaSyBqMWYu8ke0r0ONrI3SKR2C2h2Q4N261vc',
@@ -20,19 +23,32 @@ const app = initializeApp({
 })
 
 const auth = getAuth(app)
-auth.useDeviceLanguage()
 
-interface EmailAndPassword {
-  email: string
-  password: string
-}
+export const authStateChanged = createEvent<User | null>()
+
+export const initializeAuthFx = createEffect<void, void, AuthError>(() => {
+  auth.useDeviceLanguage()
+
+  return new Promise((resolve, reject) => {
+    auth.onAuthStateChanged(
+      (user) => {
+        authStateChanged(user)
+        resolve()
+      },
+      (error) => {
+        reject(error)
+      },
+    )
+  })
+})
+
 export const signInWithEmailAndPasswordFx = createEffect<
   EmailAndPassword,
   UserCredential,
   AuthError
->(({ email, password }: EmailAndPassword) => signInWithEmail(auth, email, password))
+>(({ email, password }) => signInWithEmail(auth, email, password))
 
-export const signInWithGoogleFx = createEffect<never, UserCredential, AuthError>(() => {
+export const signInWithGoogleFx = createEffect<void, UserCredential, AuthError>(() => {
   const provider = new GoogleAuthProvider()
 
   return signInWithPopup(auth, provider)

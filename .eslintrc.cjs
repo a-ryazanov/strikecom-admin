@@ -20,6 +20,7 @@ module.exports = {
   rules: {
     '@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: true }],
     '@typescript-eslint/array-type': ['error', { default: 'generic' }],
-    '@typescript-eslint/promise-function-async': 'off'
+    '@typescript-eslint/promise-function-async': 'off',
+    '@typescript-eslint/no-invalid-void-type': 'off',
   },
 }
