@@ -1,23 +1,39 @@
+import { AlertOutlined, FireOutlined, MessageOutlined } from '@ant-design/icons'
+import { Link, useRouter } from '@tanstack/react-router'
 import { Layout, Menu } from 'antd'
-import { Link } from 'atomic-router-react'
-import { useUnit } from 'effector-react'
-
 import React from 'react'
 
-import { $activeRoute } from '../navigation'
-import { mainRoutes } from '../navigation/routes'
+import { CONFLICTS_ROUTE_PATH, EVENTS_ROUTE_PATH, NEWS_ROUTE_PATH } from '../../shared/config'
+
+export const routes = [
+  { path: NEWS_ROUTE_PATH, title: 'Новости', icon: MessageOutlined },
+  {
+    path: EVENTS_ROUTE_PATH,
+    title: 'События',
+    icon: AlertOutlined,
+  },
+  {
+    path: CONFLICTS_ROUTE_PATH,
+    title: 'Конфликты',
+    icon: FireOutlined,
+  },
+]
 
 export const Sidebar: React.FC = () => {
-  const activeRoute = useUnit($activeRoute)
+  const { state } = useRouter()
+  const activePathname = state.currentLocation.pathname
 
-  const items = mainRoutes.map((item) => ({
+  const items = routes.map((item) => ({
     key: item.title,
-    label: <Link to={item.route}>{item.title}</Link>,
+    pathname: `/${item.path}`,
+    // @ts-expect-error. Неясно, почему ошибка, документация сырая
+    label: <Link to={`/${item.path}`}>{item.title}</Link>,
     icon: <item.icon />,
-    route: item.route,
   }))
 
-  const selectedKeys = items.filter((item) => item.route === activeRoute).map((item) => item.key)
+  const selectedKeys = items
+    .filter((item) => item.pathname === activePathname)
+    .map((item) => item.key)
 
   return (
     <Layout.Sider width={200} collapsible>

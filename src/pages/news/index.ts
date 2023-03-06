@@ -1,2 +1,3 @@
-export { newsRoute } from './model/route'
-export { NewsPage } from './ui'
+import { NewsPage } from './ui'
+
+export default NewsPage

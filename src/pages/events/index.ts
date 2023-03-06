@@ -1,2 +1,3 @@
-export { eventsRoute } from './model/route'
-export { EventsPage } from './ui'
+import { EventsPage } from './ui'
+
+export default EventsPage

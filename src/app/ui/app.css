@@ -4,6 +4,7 @@
 
 .app__content {
   display: flex;
+  flex-direction: column;
 }
 
 .app__loader {
