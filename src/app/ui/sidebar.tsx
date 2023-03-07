@@ -4,6 +4,7 @@ import { Layout, Menu } from 'antd'
 import React from 'react'
 
 import { CONFLICTS_ROUTE_PATH, EVENTS_ROUTE_PATH, NEWS_ROUTE_PATH } from '../../shared/config'
+import { absolutePath } from '../../shared/lib/navigation'
 
 export const routes = [
   { path: NEWS_ROUTE_PATH, title: 'Новости', icon: MessageOutlined },
@@ -27,7 +28,7 @@ export const Sidebar: React.FC = () => {
     key: item.title,
     pathname: `/${item.path}`,
     // @ts-expect-error. Неясно, почему ошибка, документация сырая
-    label: <Link to={`/${item.path}`}>{item.title}</Link>,
+    label: <Link to={absolutePath(item.path)}>{item.title}</Link>,
     icon: <item.icon />,
   }))
 
