@@ -3,6 +3,7 @@ import {
   getAuth,
   signInWithEmailAndPassword as signInWithEmail,
   signInWithPopup,
+  signOut,
   GoogleAuthProvider,
   AuthError,
   User,
@@ -52,4 +53,8 @@ export const signInWithGoogleFx = createEffect<void, UserCredential, AuthError>(
   const provider = new GoogleAuthProvider()
 
   return signInWithPopup(auth, provider)
+})
+
+export const signOutFx = createEffect<void, void, AuthError>(() => {
+  return signOut(auth)
 })

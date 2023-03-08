@@ -1,33 +1,32 @@
-import { Outlet, useRouter } from '@tanstack/react-router'
+import { Outlet } from '@tanstack/react-router'
 import { Layout, Spin } from 'antd'
 import { useUnit } from 'effector-react'
 import React, { useEffect } from 'react'
 
+import '../../shared/lib/reset.css'
+
 import { initializeApp, $isAppInitialized } from '../model'
 
-import './app.css'
+import styles from './app.module.css'
 
-export const App: React.FC = () => {
+// React.memo, чтобы избежать повторных рендеров при изменении
+// значения любого провайдера.
+// https://alexsidorenko.com/blog/react-render-context/
+export const App: React.FC = React.memo(() => {
   const isAppInitialized = useUnit($isAppInitialized)
   const initialize = useUnit(initializeApp)
-
-  const isRouterIdle = useRouter().state.status === 'idle'
 
   useEffect(() => {
     initialize()
   }, [])
 
   return (
-    <Layout className="app">
-      <Layout.Content className="app__content">
-        {isAppInitialized && isRouterIdle ? (
-          <Outlet />
-        ) : (
-          <Spin size="large" className="app__loader" />
-        )}
+    <Layout className={styles.app}>
+      <Layout.Content className={styles.app__content}>
+        {isAppInitialized ? <Outlet /> : <Spin size="large" className={styles.app__loader} />}
       </Layout.Content>
     </Layout>
   )
-}
+})
 
 App.displayName = 'AppRoot'
