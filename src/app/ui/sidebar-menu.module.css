@@ -1,3 +1,7 @@
 .menu {
-    border-inline-end: none;
+    border-inline-end: none !important;
+}
+
+.menuItem__label_active, .menuItem__icon_active {
+    color: #1677ff !important;
 }
