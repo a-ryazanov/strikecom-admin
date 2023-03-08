@@ -16,10 +16,6 @@ export const SidebarUserCard: React.FC<Props> = (props) => {
   const photoUrl = useUnit($viewerPhoto)
   const name = useUnit($viewerName)
 
-  if (photoUrl === null || name === null) {
-    return null
-  }
-
   return (
     <Card
       size="small"
@@ -32,9 +28,9 @@ export const SidebarUserCard: React.FC<Props> = (props) => {
         paddingBottom: '10px',
       }}
     >
-      <Avatar icon={<UserOutlined />} src={photoUrl} />
+      <Avatar icon={<UserOutlined />} src={photoUrl !== null ? photoUrl : undefined} />
 
-      <p className={styles.card__username}>{name}</p>
+      <p className={styles.card__username}>{name === null ? name : 'Аноним'}</p>
 
       <SignOutButton className={styles.card__button} />
     </Card>
