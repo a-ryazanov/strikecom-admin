@@ -1,7 +1,7 @@
-import { createEffect, createEvent } from 'effector'
+import { createEffect, createEvent, createStore, attach } from 'effector'
 import {
   getAuth,
-  signInWithEmailAndPassword as signInWithEmail,
+  signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
   GoogleAuthProvider,
@@ -27,13 +27,26 @@ const auth = getAuth(app)
 
 export const authStateChanged = createEvent<User | null>()
 
+const $user = createStore<User | null>(null).on(authStateChanged, (_, user) => user)
+const getTokenFx = createEffect((user: User | null) => user?.getIdToken() ?? null)
+
+export const $token = createStore<string | null>(null).on(getTokenFx.doneData, (_, token) => token)
+
+export const refreshTokenFx = attach({
+  effect: getTokenFx,
+  source: $user,
+})
+
 export const initializeAuthFx = createEffect<void, void, AuthError>(() => {
   auth.useDeviceLanguage()
 
   return new Promise((resolve, reject) => {
     auth.onAuthStateChanged(
-      (user) => {
+      async (user) => {
         authStateChanged(user)
+
+        await getTokenFx(user)
+
         resolve()
       },
       (error) => {
@@ -47,7 +60,7 @@ export const signInWithEmailAndPasswordFx = createEffect<
   EmailAndPassword,
   UserCredential,
   AuthError
->(({ email, password }) => signInWithEmail(auth, email, password))
+>(({ email, password }) => signInWithEmailAndPassword(auth, email, password))
 
 export const signInWithGoogleFx = createEffect<void, UserCredential, AuthError>(() => {
   const provider = new GoogleAuthProvider()

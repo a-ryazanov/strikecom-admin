@@ -1010,6 +1010,11 @@
   resolved "https://registry.yarnpkg.com/@tanstack/store/-/store-0.0.1-beta.81.tgz#9fbc547bc4d1faaa2758b843d712fe02f76a7e5c"
   integrity sha512-OYFQ4RmDjSIzJnJrhsvpSpM4+lO/3NBaXGloC5IO3YNm0Ewgy/MSCePJgUamstXPmBAaLC2KEgi4O9FHyzA6lw==
 
+"@tinkoff/utils@^2.3.2":
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/@tinkoff/utils/-/utils-2.3.2.tgz#52b55b7d41e947894bd1a9e84e50cf8c70d19819"
+  integrity sha512-agb+QAnwsCOaLKiuPK3DFIiXMtdg6czVQkegPGXEkTS6iqobszZc+Qvy+uhcEe6lgznc5Zm5xnHrCgP9aw3fTg==
+
 "@types/eslint@^8.4.5":
   version "8.4.10"
   resolved "https://registry.yarnpkg.com/@types/eslint/-/eslint-8.4.10.tgz#19731b9685c19ed1552da7052b6f668ed7eb64bb"

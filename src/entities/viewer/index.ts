@@ -1,1 +1,1 @@
-export { $isAuthorized, $token, $viewerPhoto, $viewerName } from './model'
+export { $isAuthorized, $viewerPhoto, $viewerName } from './model'

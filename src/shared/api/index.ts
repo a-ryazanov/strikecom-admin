@@ -1,2 +1,3 @@
 export { fetchCatalogsChecksumFx, fetchCatalogsFx } from './catalogs'
-export type { Catalogs } from './types'
+export { fetchViewerProfileFx } from './viewer'
+export type { Catalogs, ViewerProfile } from './types'

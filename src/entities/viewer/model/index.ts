@@ -1,21 +1,18 @@
-import { createStore, createEffect, sample } from 'effector'
-import { User } from 'firebase/auth'
-import { authStateChanged } from '../../../shared/lib/firebase'
+import { createStore, sample } from 'effector'
 
-const getTokenFx = createEffect((user: User) => user.getIdToken())
+import { ViewerProfile, fetchViewerProfileFx } from '../../../shared/api'
+import { initializeAuthFx } from '../../../shared/lib/firebase'
 
-const $viewer = createStore<User | null>(null).on(authStateChanged, (_, payload) => payload)
-export const $isAuthorized = $viewer.map((user) => user !== null)
-export const $viewerPhoto = $viewer.map((user) => user?.photoURL ?? null)
-export const $viewerName = $viewer.map((user) => user?.displayName ?? null)
-
-export const $token = createStore<string | null>(null).on(
-  getTokenFx.doneData,
-  (_, payload) => payload,
+const $profile = createStore<ViewerProfile | null>(null).on(
+  fetchViewerProfileFx.doneData,
+  (_, profile) => profile.data,
 )
 
+export const $isAuthorized = $profile.map((profile) => profile !== null)
+export const $viewerPhoto = $profile.map((profile) => profile?.imageUrl ?? null)
+export const $viewerName = $profile.map((profile) => profile?.name ?? null)
+
 sample({
-  clock: authStateChanged,
-  filter: (user): user is User => user !== null,
-  target: getTokenFx,
+  clock: initializeAuthFx.done,
+  target: fetchViewerProfileFx,
 })

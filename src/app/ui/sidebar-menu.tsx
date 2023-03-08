@@ -6,6 +6,8 @@ import React from 'react'
 import { CONFLICTS_ROUTE_PATH, EVENTS_ROUTE_PATH, NEWS_ROUTE_PATH } from '../../shared/config'
 import { absolutePath } from '../../shared/lib/navigation'
 
+import styles from './sidebar-menu.module.css'
+
 const routes = [
   { path: NEWS_ROUTE_PATH, title: 'Новости', icon: MessageOutlined },
   {
@@ -36,7 +38,7 @@ export const SidebarMenu: React.FC = () => {
     .filter((item) => item.pathname === activePathname)
     .map((item) => item.key)
 
-  return <Menu mode="inline" items={items} selectedKeys={selectedKeys} />
+  return <Menu items={items} selectedKeys={selectedKeys} className={styles.menu} />
 }
 
 SidebarMenu.displayName = 'SidebarMenu'
