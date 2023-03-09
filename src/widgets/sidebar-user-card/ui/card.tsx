@@ -30,7 +30,7 @@ export const SidebarUserCard: React.FC<Props> = (props) => {
     >
       <Avatar icon={<UserOutlined />} src={photoUrl !== null ? photoUrl : undefined} />
 
-      <p className={styles.card__username}>{name === null ? name : 'Аноним'}</p>
+      <p className={styles.card__username}>{name !== null ? name : 'Аноним'}</p>
 
       <SignOutButton className={styles.card__button} />
     </Card>

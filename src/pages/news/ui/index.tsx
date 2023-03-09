@@ -1,10 +1,16 @@
-import React from 'react'
+import { useUnit } from 'effector-react'
+import React, { useEffect } from 'react'
 
-import { Table } from '../../../shared/ui'
-import { newsColumns } from '../lib'
+import { fetchNews, NewsTable } from '../../../entities/news'
 
 export const NewsPage: React.FC = () => {
-  return <Table columns={newsColumns} dataSource={[]}></Table>
+  const fetchData = useUnit(fetchNews)
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  return <NewsTable />
 }
 
 NewsPage.displayName = 'NewsPage'

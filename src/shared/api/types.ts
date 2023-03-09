@@ -11,9 +11,16 @@ export interface BaseRequestPayload {
   options: Options
 }
 
-interface BaseResponse<T> {
-  data: T
-  meta: any
+interface BaseResponse<D, M = unknown> {
+  data: D
+  meta?: M
+}
+
+export interface ListResponseMeta {
+  currentPage: number
+  lastPage: number
+  perPage: number
+  total: number
 }
 
 interface CatalogsChecksum {
@@ -37,3 +44,18 @@ export interface ViewerProfile {
   roles: Array<ViewerRole>
 }
 export type ViewerProfileResponse = BaseResponse<ViewerProfile>
+
+export interface News {
+  id: number
+  title: string
+  content: string
+  createdAt: number
+  date: number
+  sourceLink: string
+  published: boolean
+  photoUrls: Array<string>
+  tags: Array<string>
+  views: number
+}
+
+export type NewsListResponse = BaseResponse<Array<News>, ListResponseMeta>
