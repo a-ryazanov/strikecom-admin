@@ -2,7 +2,7 @@ import { RouterProvider } from '@tanstack/react-router'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 
-import 'antd/dist/reset.css'
+import '../shared/lib/reset.css'
 
 import { router } from './navigation'
 

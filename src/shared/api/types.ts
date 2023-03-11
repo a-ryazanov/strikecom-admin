@@ -11,9 +11,9 @@ export interface BaseRequestPayload {
   options: Options
 }
 
-interface BaseResponse<D, M = unknown> {
+interface BaseResponse<D, M = never> {
   data: D
-  meta?: M
+  meta: M
 }
 
 export interface ListResponseMeta {
@@ -21,6 +21,11 @@ export interface ListResponseMeta {
   lastPage: number
   perPage: number
   total: number
+}
+
+export interface BaseListRequestParams {
+  page: number
+  perPage: number
 }
 
 interface CatalogsChecksum {
@@ -57,5 +62,5 @@ export interface News {
   tags: Array<string>
   views: number
 }
-
 export type NewsListResponse = BaseResponse<Array<News>, ListResponseMeta>
+export interface NewsRequestParams extends BaseListRequestParams {}

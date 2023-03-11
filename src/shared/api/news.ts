@@ -1,15 +1,20 @@
 import { attach, Effect } from 'effector'
 import { HTTPError } from 'ky'
 
-import { makeRequestFx } from './http-client'
-import { BaseRequestPayload, NewsListResponse } from './types'
+import { formatToSearchParams } from '../lib/url'
 
-export const fetchNewsFx = attach({
-  effect: makeRequestFx as Effect<BaseRequestPayload, NewsListResponse, HTTPError>,
-  mapParams: () => ({
+import { makeRequestFx } from './http-client'
+import { BaseRequestPayload, NewsListResponse, NewsRequestParams } from './types'
+
+type FetchNewsFx = Effect<BaseRequestPayload, NewsListResponse, HTTPError>
+
+export const fetchNewsFx = attach<NewsRequestParams, FetchNewsFx>({
+  effect: makeRequestFx as FetchNewsFx,
+  mapParams: (params) => ({
     url: 'news',
     options: {
       method: 'get',
+      searchParams: formatToSearchParams(params),
     },
   }),
 })

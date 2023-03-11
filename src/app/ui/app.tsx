@@ -3,8 +3,6 @@ import { Layout, Spin } from 'antd'
 import { useUnit } from 'effector-react'
 import React, { useEffect } from 'react'
 
-import '../../shared/lib/reset.css'
-
 import { initializeApp, $isAppInitialized } from '../model'
 
 import styles from './app.module.css'

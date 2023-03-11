@@ -3,14 +3,45 @@ import React from 'react'
 
 import { Table } from '../../../shared/ui'
 
-import { tableColumns } from '../lib/table-columns'
-import { $formattedNews, $isLoading } from '../model'
+import { getTableColumns } from '../lib/get-table-columns'
+import { $formattedNews, $newsParams, $isLoading, $total, changeParams } from '../model'
+import { FormattedNews } from '../model/types'
 
-export const NewsTable: React.FC = () => {
-  const data = useUnit($formattedNews)
-  const isLoading = useUnit($isLoading)
+interface Props {
+  renderActions: (news: FormattedNews) => React.ReactNode
+}
 
-  return <Table columns={tableColumns} dataSource={data} loading={isLoading} />
+export const NewsTable: React.FC<Props> = (props) => {
+  const [data, total, isLoading, params, onChangeParams] = useUnit([
+    $formattedNews,
+    $total,
+    $isLoading,
+    $newsParams,
+    changeParams,
+  ])
+  const { page, perPage } = params
+  const columns = getTableColumns(props.renderActions)
+
+  const onPaginationChange = (currentPage: number, currentPerPage: number): void => {
+    onChangeParams({
+      page: currentPage,
+      perPage: currentPerPage,
+    })
+  }
+
+  return (
+    <Table<FormattedNews>
+      columns={columns}
+      dataSource={data}
+      loading={isLoading}
+      pagination={{
+        pageSize: perPage,
+        current: page,
+        total,
+        onChange: onPaginationChange,
+      }}
+    />
+  )
 }
 
 NewsTable.displayName = 'NewsTable'

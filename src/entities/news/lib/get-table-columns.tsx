@@ -4,7 +4,9 @@ import React from 'react'
 
 import { FormattedNews } from '../model/types'
 
-export const tableColumns: TableProps<FormattedNews>['columns'] = [
+export const getTableColumns = (
+  renderActions: (news: FormattedNews) => React.ReactNode,
+): TableProps<FormattedNews>['columns'] => [
   {
     title: 'ID',
     dataIndex: 'id',
@@ -34,5 +36,10 @@ export const tableColumns: TableProps<FormattedNews>['columns'] = [
       ) : (
         <CloseOutlined style={{ color: '#ff4d4f' }} />
       ),
+  },
+  {
+    title: 'Действия',
+    key: 'actions',
+    render: (_, news) => renderActions(news),
   },
 ]
