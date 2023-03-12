@@ -9,9 +9,7 @@ interface AuthFormProps {
 }
 
 export const AuthForm: React.FC<AuthFormProps> = (props) => {
-  const isLoading = useUnit($isLoading)
-  const errorMessage = useUnit($errorMessage)
-  const onFinish = useUnit(submitForm)
+  const [isLoading, errorMessage, onFinish] = useUnit([$isLoading, $errorMessage, submitForm])
 
   return (
     <Card title="Забастком" extra={props.extra}>

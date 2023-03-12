@@ -10,8 +10,7 @@ interface Props {
 }
 
 export const SignOutButton: React.FC<Props> = (props) => {
-  const onClick = useUnit(signOut)
-  const isLoading = useUnit($isSignOutProcessing)
+  const [onClick, isLoading] = useUnit([signOut, $isSignOutProcessing])
 
   return (
     <Button

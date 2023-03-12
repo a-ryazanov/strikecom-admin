@@ -13,8 +13,7 @@ interface Props {
 }
 
 export const SidebarUserCard: React.FC<Props> = (props) => {
-  const photoUrl = useUnit($viewerPhoto)
-  const name = useUnit($viewerName)
+  const [photoUrl, name] = useUnit([$viewerPhoto, $viewerName])
 
   return (
     <Card

@@ -11,8 +11,7 @@ import styles from './app.module.css'
 // значения любого провайдера.
 // https://alexsidorenko.com/blog/react-render-context/
 export const App: React.FC = React.memo(() => {
-  const isAppInitialized = useUnit($isAppInitialized)
-  const initialize = useUnit(initializeApp)
+  const [isAppInitialized, initialize] = useUnit([$isAppInitialized, initializeApp])
 
   useEffect(() => {
     initialize()
