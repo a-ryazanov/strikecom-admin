@@ -6,5 +6,6 @@ export type {
   ViewerProfile,
   News,
   BaseListRequestParams,
+  NewsRequestParams,
   ListResponseMeta,
 } from './types'

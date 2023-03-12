@@ -7,6 +7,7 @@ export const Table = <T extends object>(props: TableProps<T>): ReturnType<React.
   return (
     <UITable
       rowKey="id"
+      showSorterTooltip={false}
       pagination={{
         ...pagination,
         position: ['bottomLeft'],

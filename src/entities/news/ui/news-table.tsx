@@ -1,6 +1,8 @@
+import { TableProps } from 'antd'
 import { useUnit } from 'effector-react'
 import React from 'react'
 
+import { formatTableSorting } from '../../../shared/lib/format-table-sorting'
 import { Table } from '../../../shared/ui'
 
 import { getTableColumns } from '../lib/get-table-columns'
@@ -22,11 +24,22 @@ export const NewsTable: React.FC<Props> = (props) => {
   const { page, perPage } = params
   const columns = getTableColumns(props.renderActions)
 
-  const onPaginationChange = (currentPage: number, currentPerPage: number): void => {
-    onChangeParams({
-      page: currentPage,
-      perPage: currentPerPage,
-    })
+  const onTableChange: TableProps<FormattedNews>['onChange'] = (
+    pagination,
+    filters,
+    sorting,
+    { action },
+  ): void => {
+    if (action === 'paginate') {
+      onChangeParams({
+        page: pagination.current,
+        perPage: pagination.pageSize,
+      })
+    }
+
+    if (action === 'sort') {
+      onChangeParams(formatTableSorting<FormattedNews>(sorting))
+    }
   }
 
   return (
@@ -34,11 +47,11 @@ export const NewsTable: React.FC<Props> = (props) => {
       columns={columns}
       dataSource={data}
       loading={isLoading}
+      onChange={onTableChange}
       pagination={{
         pageSize: perPage,
         current: page,
         total,
-        onChange: onPaginationChange,
       }}
     />
   )

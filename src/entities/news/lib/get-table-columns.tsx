@@ -20,7 +20,6 @@ export const getTableColumns = (
     title: 'Дата создания',
     dataIndex: 'createdAt',
     sorter: true,
-    showSorterTooltip: false,
   },
   {
     title: 'Просмотры',

@@ -16,6 +16,8 @@ interface BaseResponse<D, M = never> {
   meta: M
 }
 
+type SortOrder = 'asc' | 'desc'
+
 export interface ListResponseMeta {
   currentPage: number
   lastPage: number
@@ -63,4 +65,7 @@ export interface News {
   views: number
 }
 export type NewsListResponse = BaseResponse<Array<News>, ListResponseMeta>
-export interface NewsRequestParams extends BaseListRequestParams {}
+export interface NewsRequestParams extends BaseListRequestParams {
+  'sort.field'?: 'createdAt'
+  'sort.order'?: SortOrder
+}
