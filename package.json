@@ -21,13 +21,15 @@
     "ky": "^0.33.2",
     "patronum": "^1.15.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-highlight-words": "^0.20.0"
   },
   "devDependencies": {
     "@feature-sliced/eslint-config": "^0.1.0-beta.6",
     "@types/node": "^18.11.18",
     "@types/react": "^18.0.26",
     "@types/react-dom": "^18.0.9",
+    "@types/react-highlight-words": "^0.16.4",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@vitejs/plugin-react": "^3.0.0",
     "eslint": "^8.0.1",
@@ -39,6 +41,7 @@
     "eslint-plugin-n": "^15.0.0",
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-react": "^7.31.11",
+    "postcss-nested": "^6.0.1",
     "prettier": "2.8.1",
     "typescript": "*",
     "vite": "^4.0.0",

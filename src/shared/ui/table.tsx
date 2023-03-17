@@ -1,8 +1,14 @@
-import { Table as UITable, TableProps } from 'antd'
+import { Table as UITable, TableProps as UITableProps, Input } from 'antd'
 import React from 'react'
 
+import './table.css'
+
+interface TableProps<T> extends UITableProps<T> {
+  onSearch: (value: string) => void
+}
+
 export const Table = <T extends object>(props: TableProps<T>): ReturnType<React.FC> => {
-  const { pagination, ...restProps } = props
+  const { pagination, onSearch, ...restProps } = props
 
   return (
     <UITable
@@ -15,6 +21,16 @@ export const Table = <T extends object>(props: TableProps<T>): ReturnType<React.
         showSizeChanger: true,
         pageSizeOptions: [10, 20, 50],
       }}
+      title={() => (
+        <Input.Search
+          onSearch={props.onSearch}
+          style={{ width: 300 }}
+          placeholder="Поиск"
+          enterButton="Искать"
+          size="middle"
+          allowClear
+        />
+      )}
       {...restProps}
     ></UITable>
   )

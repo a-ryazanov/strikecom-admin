@@ -22,7 +22,7 @@ export const NewsTable: React.FC<Props> = (props) => {
     changeParams,
   ])
   const { page, perPage } = params
-  const columns = getTableColumns(props.renderActions)
+  const columns = getTableColumns(props.renderActions, params)
 
   const onTableChange: TableProps<FormattedNews>['onChange'] = (
     pagination,
@@ -42,12 +42,19 @@ export const NewsTable: React.FC<Props> = (props) => {
     }
   }
 
+  const onSearch = (search: string): void => {
+    onChangeParams({
+      fulltext: search,
+    })
+  }
+
   return (
     <Table<FormattedNews>
       columns={columns}
       dataSource={data}
       loading={isLoading}
       onChange={onTableChange}
+      onSearch={onSearch}
       pagination={{
         pageSize: perPage,
         current: page,

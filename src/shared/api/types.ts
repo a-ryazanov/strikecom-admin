@@ -66,6 +66,7 @@ export interface News {
 }
 export type NewsListResponse = BaseResponse<Array<News>, ListResponseMeta>
 export interface NewsRequestParams extends BaseListRequestParams {
+  fulltext?: string
   'sort.field'?: 'createdAt'
   'sort.order'?: SortOrder
 }
