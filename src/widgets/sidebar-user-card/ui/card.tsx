@@ -4,7 +4,7 @@ import { useUnit } from 'effector-react/compat'
 import React from 'react'
 
 import { $viewerName, $viewerPhoto } from '../../../entities/viewer'
-import { SignOutButton } from '../../../features/sign-out'
+import { SignOutButton } from '../../../features/auth/sign-out'
 
 import styles from './card.module.css'
 
