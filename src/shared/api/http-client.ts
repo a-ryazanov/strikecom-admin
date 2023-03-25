@@ -3,12 +3,13 @@ import { createEffect, attach, sample } from 'effector'
 import ky, { HTTPError } from 'ky'
 
 import { $token, refreshTokenFx } from '../lib/firebase'
+import { Locale } from '../lib/i18n'
 import { showErrorMessageFx } from '../ui/notifications'
 
 import { BaseRequestPayload } from './types'
 
 const httpClient = ky.create({
-  prefixUrl: `${window.ZBC_API_URL}/all`,
+  prefixUrl: `${window.ZBC_API_URL}/${Locale.ALL}`,
   headers: { Accept: 'application/json' },
   retry: {
     statusCodes: [401, 408, 429, 500, 502, 503, 504],

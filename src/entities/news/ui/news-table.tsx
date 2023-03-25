@@ -11,6 +11,7 @@ import { FormattedNews } from '../model/types'
 
 interface Props {
   renderActions: (news: FormattedNews) => React.ReactNode
+  globalActions: React.ReactNode
 }
 
 export const NewsTable: React.FC<Props> = (props) => {
@@ -55,6 +56,7 @@ export const NewsTable: React.FC<Props> = (props) => {
       loading={isLoading}
       onChange={onTableChange}
       onSearch={onSearch}
+      actions={props.globalActions}
       pagination={{
         pageSize: perPage,
         current: page,

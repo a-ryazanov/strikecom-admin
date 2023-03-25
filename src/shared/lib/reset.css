@@ -41,3 +41,19 @@ table {
     border-collapse: collapse;
     border-spacing: 0;
 }
+
+.ant-table {
+    border-radius: 0 !important;
+}
+
+.ant-table-title {
+    padding: 11px 16px !important;
+}
+
+.ant-modal-confirm-content {
+    max-width: 100% !important;
+}
+
+.ant-form-item {
+    margin-bottom: 12px !important;
+}
